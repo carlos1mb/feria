@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LeafSale — MVP</title>
+  <meta name="description" content="LeafSale S.A.S. — MVP de gestión simple de ventas, inventario, clientes y reportes para feria empresarial escolar." />
+  <style>
+    :root{
+      --mint:#1ABC9C;         /* verde menta */
+      --mint-700:#12806E;
+      --bg:#F6FBF9;           /* fondo claro natural */
+      --card:#FFFFFF;
+      --text:#2F3B3A;         /* gris verdoso oscuro */
+      --muted:#6B7A78;
+      --line:#E6F2EE;
+      --warn:#E67E22;
+      --danger:#E74C3C;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+      background:linear-gradient(180deg, var(--bg), #fff 60%);
+      color:var(--text);
+    }
+    header{
+      position:sticky; top:0; z-index:50; backdrop-filter:saturate(1.2) blur(6px);
+      background:rgba(246,251,249,.75); border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:1100px; margin:0 auto; padding:12px 20px}
+    .brand{display:flex; align-items:center; gap:12px}
+    .logo{width:36px; height:36px; display:grid; place-items:center; background:var(--mint); border-radius:12px; box-shadow:0 6px 18px rgba(26,188,156,.25)}
+    .brand h1{font-size:1.15rem; margin:0; letter-spacing:.3px}
+    .nav{display:flex; gap:8px; flex-wrap:wrap}
+    .nav button{appearance:none; border:1px solid var(--line); background:var(--card); color:var(--text); padding:8px 12px; border-radius:10px; cursor:pointer}
+    .nav button.active{background:var(--mint); color:#fff; border-color:transparent}
+
+    .hero{display:grid; grid-template-columns: 1.2fr .8fr; gap:22px; padding:28px 20px}
+    @media (max-width: 860px){ .hero{grid-template-columns:1fr} }
+    .card{background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 8px 24px rgba(0,0,0,.04)}
+    .card .in{padding:18px}
+    .title{font-size:1.6rem; margin:0 0 6px}
+    .tag{display:inline-flex; align-items:center; gap:6px; font-size:.85rem; color:#fff; background:var(--mint); border-radius:999px; padding:4px 10px}
+
+    .kpis{display:grid; grid-template-columns: repeat(4,1fr); gap:12px}
+    @media (max-width: 900px){ .kpis{grid-template-columns: repeat(2,1fr)} }
+    @media (max-width: 520px){ .kpis{grid-template-columns: 1fr} }
+    .kpi{padding:14px; border:1px dashed var(--line); border-radius:14px; background:#FAFDFC}
+    .kpi .n{font-weight:700; font-size:1.4rem}
+    .kpi .l{color:var(--muted); font-size:.85rem}
+
+    .grid{display:grid; grid-template-columns: 1fr 1fr; gap:18px}
+    @media (max-width: 1000px){ .grid{grid-template-columns:1fr} }
+
+    form{display:grid; grid-template-columns: repeat(12,1fr); gap:10px; align-items:end}
+    label{font-size:.9rem; color:var(--muted)}
+    input, select{width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:#fff}
+    input:focus, select:focus{outline:2px solid rgba(26,188,156,.25)}
+    .btn{appearance:none; cursor:pointer; border:none; background:var(--mint); color:#fff; padding:10px 14px; border-radius:12px; font-weight:600; box-shadow:0 6px 18px rgba(26,188,156,.25)}
+    .btn.secondary{background:#ECF8F5; color:var(--mint-700)}
+    .btn.warn{background:var(--warn)}
+    .btn.danger{background:var(--danger)}
+    .btn:disabled{opacity:.6; cursor:not-allowed}
+
+    table{width:100%; border-collapse:collapse; border:1px solid var(--line); border-radius:12px; overflow:hidden}
+    th,td{padding:10px 12px; border-bottom:1px solid var(--line); text-align:left}
+    th{background:#FAFDFC; font-size:.9rem; color:var(--muted)}
+    tbody tr:hover{background:#F9FFFD}
+
+    footer{padding:24px 20px; color:var(--muted)}
+    .muted{color:var(--muted)}
+    .pill{display:inline-block; padding:2px 8px; border-radius:999px; border:1px solid var(--line); font-size:.8rem}
+    .stack{display:flex; gap:10px; flex-wrap:wrap}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap" style="display:flex; align-items:center; justify-content:space-between; gap:14px;">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">
+          <!-- Simple leaf icon -->
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M20 4C12 4 4 10 4 16c0 3.314 2.239 6 5 6 5 0 11-8 11-18Z" fill="#fff"/>
+            <path d="M9 18c2-6 6-10 11-12" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1>LeafSale <span class="pill">MVP</span></h1>
+      </div>
+      <nav class="nav" id="nav">
+        <button data-view="inicio" class="active">Inicio</button>
+        <button data-view="inventario">Inventario</button>
+        <button data-view="ventas">Ventas</button>
+        <button data-view="clientes">Clientes</button>
+        <button data-view="reportes">Reportes</button>
+        <button data-view="acerca">Acerca de</button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap" id="view">
+    <!-- Vista Inicio -->
+    <section data-section="inicio">
+      <div class="hero">
+        <div class="card">
+          <div class="in">
+            <span class="tag">Gestión simple • Diseño natural</span>
+            <h2 class="title">Tu negocio florece, nosotros lo organizamos.</h2>
+            <p class="muted">Esta demo sin base de datos permite registrar <strong>productos</strong>, <strong>ventas</strong> y <strong>clientes</strong> usando <em>localStorage</em>. Ideal para mostrar en feria: interfaz limpia, flujos esenciales y métricas en tiempo real.</p>
+            <div class="stack" style="margin-top:12px">
+              <button class="btn" onclick="go('ventas')">+ Registrar venta</button>
+              <button class="btn secondary" onclick="go('reportes')">Ver reportes</button>
+              <button class="btn warn" onclick="seedDemo()">Cargar datos de ejemplo</button>
+              <button class="btn danger" onclick="resetAll()">Reiniciar demo</button>
+            </div>
+            <div class="kpis" style="margin-top:16px">
+              <div class="kpi"><div class="l">Ventas de hoy</div><div class="n" id="kpi_hoy">$0</div></div>
+              <div class="kpi"><div class="l">Tickets hoy</div><div class="n" id="kpi_tickets">0</div></div>
+              <div class="kpi"><div class="l">Productos activos</div><div class="n" id="kpi_prod">0</div></div>
+              <div class="kpi"><div class="l">Top producto (7d)</div><div class="n" id="kpi_top">—</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="in">
+            <h3 style="margin:.2rem 0 8px">¿Qué incluye el MVP?</h3>
+            <ul class="muted">
+              <li>Inventario con altas/bajas y edición rápida.</li>
+              <li>Ventas que descuentan stock y calculan total.</li>
+              <li>Gestión básica de clientes.</li>
+              <li>Indicadores y gráfico de ventas últimos 7 días.</li>
+              <li>Modo demo con datos cargables y botón de reinicio.</li>
+              <li>100% Frontend (HTML/CSS/JS) — sin servidor.</li>
+            </ul>
+            <div style="margin-top:10px">
+              <span class="pill">SaaS • Freemium • Mobile-first</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Inventario -->
+    <section data-section="inventario" hidden>
+      <div class="grid">
+        <div class="card">
+          <div class="in">
+            <h3>Agregar producto</h3>
+            <form id="formProd">
+              <div style="grid-column: span 6">
+                <label>Nombre</label>
+                <input required name="nombre" placeholder="p. ej., Brownie" />
+              </div>
+              <div style="grid-column: span 3">
+                <label>Precio (COP)</label>
+                <input required name="precio" type="number" min="0" step="1" />
+              </div>
+              <div style="grid-column: span 3">
+                <label>Stock</label>
+                <input required name="stock" type="number" min="0" step="1" />
+              </div>
+              <div style="grid-column: span 12; display:flex; gap:10px; justify-content:flex-end">
+                <button class="btn" type="submit">Guardar</button>
+                <button class="btn secondary" type="reset">Limpiar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="card">
+          <div class="in">
+            <h3>Listado de productos</h3>
+            <table>
+              <thead>
+                <tr><th>Producto</th><th>Precio</th><th>Stock</th><th style="width:130px">Acciones</th></tr>
+              </thead>
+              <tbody id="tbProd"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ventas -->
+    <section data-section="ventas" hidden>
+      <div class="grid">
+        <div class="card">
+          <div class="in">
+            <h3>Registrar venta</h3>
+            <form id="formVenta">
+              <div style="grid-column: span 5">
+                <label>Producto</label>
+                <select required name="producto" id="selProd"></select>
+              </div>
+              <div style="grid-column: span 3">
+                <label>Cantidad</label>
+                <input required name="cantidad" type="number" min="1" step="1" value="1" />
+              </div>
+              <div style="grid-column: span 4">
+                <label>Cliente (opcional)</label>
+                <select name="cliente" id="selCli">
+                  <option value="">—</option>
+                </select>
+              </div>
+              <div style="grid-column: span 12; display:flex; gap:10px; justify-content:flex-end">
+                <button class="btn" type="submit">Confirmar venta</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="card">
+          <div class="in">
+            <h3>Historial de ventas</h3>
+            <table>
+              <thead>
+                <tr><th>Fecha</th><th>Producto</th><th>Cant.</th><th>Total</th><th>Cliente</th></tr>
+              </thead>
+              <tbody id="tbVentas"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Clientes -->
+    <section data-section="clientes" hidden>
+      <div class="grid">
+        <div class="card">
+          <div class="in">
+            <h3>Agregar cliente</h3>
+            <form id="formCli">
+              <div style="grid-column: span 6">
+                <label>Nombre</label>
+                <input required name="nombre" placeholder="p. ej., Ana Pérez" />
+              </div>
+              <div style="grid-column: span 6">
+                <label>Contacto</label>
+                <input name="contacto" placeholder="WhatsApp, email…" />
+              </div>
+              <div style="grid-column: span 12; display:flex; gap:10px; justify-content:flex-end">
+                <button class="btn" type="submit">Guardar</button>
+                <button class="btn secondary" type="reset">Limpiar</button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div class="card">
+          <div class="in">
+            <h3>Listado de clientes</h3>
+            <table>
+              <thead>
+                <tr><th>Nombre</th><th>Contacto</th><th style="width:100px">Acciones</th></tr>
+              </thead>
+              <tbody id="tbCli"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reportes -->
+    <section data-section="reportes" hidden>
+      <div class="grid">
+        <div class="card">
+          <div class="in">
+            <h3>Indicadores (últimos 7 días)</h3>
+            <div class="kpis" style="margin-top:8px">
+              <div class="kpi"><div class="l">Total vendido</div><div class="n" id="rep_total">$0</div></div>
+              <div class="kpi"><div class="l">Tickets</div><div class="n" id="rep_tickets">0</div></div>
+              <div class="kpi"><div class="l">Ticket promedio</div><div class="n" id="rep_avg">$0</div></div>
+              <div class="kpi"><div class="l">Producto top</div><div class="n" id="rep_top">—</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="in">
+            <h3>Ventas por día (7d)</h3>
+            <canvas id="chart" width="800" height="260" style="width:100%; height:auto"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Acerca de -->
+    <section data-section="acerca" hidden>
+      <div class="card">
+        <div class="in">
+          <h3>LeafSale S.A.S. — Propuesta</h3>
+          <p class="muted">Aplicación de gestión de ventas, inventario y clientes pensada para emprendedores y microempresas. Enfoque <strong>simple</strong>, <strong>accesible</strong> y <strong>estético</strong>. Modelo <em>freemium</em> y visión de SaaS. Inspirada en una identidad minimalista y natural.</p>
+          <div class="stack" style="margin-top:6px">
+            <span class="pill">Diseño minimalista</span>
+            <span class="pill">Mobile-first</span>
+            <span class="pill">SaaS</span>
+            <span class="pill">Educación + Emprendimiento</span>
+          </div>
+          <hr style="border:none; border-top:1px solid var(--line); margin:16px 0">
+          <p style="margin:0"><strong>Contacto demo:</strong> hola@leafsale.co • @leafsale (IG/TikTok)</p>
+          <p class="muted" style="margin-top:4px">Esta es una demostración académica sin conexión a servidor. Los datos se guardan en tu navegador y puedes reiniciarla.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="wrap">
+    <small>© 2025 LeafSale S.A.S. • Proyecto formativo — SENA / ENSC • Elaborado para feria escolar. Hecho con ♥ en Colombia.</small>
+  </footer>
+
+<script>
+  // --- Utilidades de almacenamiento ---
+  const key = {
+    prod: 'leafsale.prod',
+    ventas: 'leafsale.ventas',
+    cli: 'leafsale.cli'
+  }
+  const get = (k, d=[]) => JSON.parse(localStorage.getItem(k) || JSON.stringify(d));
+  const set = (k, v) => localStorage.setItem(k, JSON.stringify(v));
+
+  // --- Navegación simple ---
+  const nav = document.getElementById('nav');
+  const sections = [...document.querySelectorAll('main [data-section]')];
+  nav.addEventListener('click', (e)=>{
+    const b = e.target.closest('button'); if(!b) return;
+    go(b.dataset.view);
+  });
+  function go(view){
+    [...nav.querySelectorAll('button')].forEach(x=>x.classList.toggle('active', x.dataset.view===view));
+    sections.forEach(s=>{ s.hidden = (s.dataset.section !== view); });
+    // refrescar cuando entramos a vistas
+    if(view==='inventario'){ renderProd(); }
+    if(view==='ventas'){ fillSelects(); renderVentas(); }
+    if(view==='clientes'){ renderCli(); }
+    if(view==='reportes'){ renderReportes(); }
+    if(view==='inicio'){ refreshKPIs(); }
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  // --- Inventario ---
+  const formProd = document.getElementById('formProd');
+  const tbProd = document.getElementById('tbProd');
+  formProd.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const fd = new FormData(formProd);
+    const p = {
+      id: crypto.randomUUID(),
+      nombre: (fd.get('nombre')||'').toString().trim(),
+      precio: Number(fd.get('precio'))||0,
+      stock: Number(fd.get('stock'))||0
+    };
+    const list = get(key.prod);
+    list.push(p); set(key.prod, list);
+    formProd.reset(); renderProd(); fillSelects(); refreshKPIs();
+  });
+  function renderProd(){
+    const list = get(key.prod);
+    tbProd.innerHTML = list.map(p=>`
+      <tr>
+        <td>${escapeHtml(p.nombre)}</td>
+        <td>$${fmt(p.precio)}</td>
+        <td>${p.stock}</td>
+        <td>
+          <div class="stack">
+            <button class="btn secondary" onclick='editProd("${p.id}")'>Editar</button>
+            <button class="btn danger" onclick='delProd("${p.id}")'>Eliminar</button>
+          </div>
+        </td>
+      </tr>`).join('') || `<tr><td colspan="4" class="muted">Sin productos. Agrega el primero.</td></tr>`;
+  }
+  function editProd(id){
+    const list = get(key.prod);
+    const i = list.findIndex(x=>x.id===id); if(i<0) return;
+    const p = list[i];
+    const nombre = prompt('Nombre', p.nombre); if(nombre===null) return;
+    const precio = Number(prompt('Precio (COP)', p.precio)); if(Number.isNaN(precio)) return;
+    const stock = Number(prompt('Stock', p.stock)); if(Number.isNaN(stock)) return;
+    list[i] = {...p, nombre: nombre.trim(), precio, stock}; set(key.prod, list);
+    renderProd(); fillSelects(); refreshKPIs();
+  }
+  function delProd(id){
+    if(!confirm('¿Eliminar producto?')) return;
+    const list = get(key.prod).filter(x=>x.id!==id); set(key.prod, list);
+    renderProd(); fillSelects(); refreshKPIs();
+  }
+
+  // --- Clientes ---
+  const formCli = document.getElementById('formCli');
+  const tbCli = document.getElementById('tbCli');
+  formCli.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const fd = new FormData(formCli);
+    const c = {
+      id: crypto.randomUUID(),
+      nombre: (fd.get('nombre')||'').toString().trim(),
+      contacto: (fd.get('contacto')||'').toString().trim()
+    };
+    const list = get(key.cli); list.push(c); set(key.cli, list);
+    formCli.reset(); renderCli(); fillSelects();
+  });
+  function renderCli(){
+    const list = get(key.cli);
+    tbCli.innerHTML = list.map(c=>`
+      <tr>
+        <td>${escapeHtml(c.nombre)}</td>
+        <td>${escapeHtml(c.contacto||'—')}</td>
+        <td><button class="btn danger" onclick='delCli("${c.id}")'>Eliminar</button></td>
+      </tr>`).join('') || `<tr><td colspan="3" class="muted">Aún no hay clientes.</td></tr>`;
+  }
+  function delCli(id){
+    if(!confirm('¿Eliminar cliente?')) return;
+    const list = get(key.cli).filter(x=>x.id!==id); set(key.cli, list);
+    renderCli(); fillSelects();
+  }
+
+  // --- Ventas ---
+  const formVenta = document.getElementById('formVenta');
+  const tbVentas = document.getElementById('tbVentas');
+  const selProd = document.getElementById('selProd');
+  const selCli = document.getElementById('selCli');
+
+  function fillSelects(){
+    const prods = get(key.prod);
+    selProd.innerHTML = prods.map(p=>`<option value="${p.id}">${escapeHtml(p.nombre)} — $${fmt(p.precio)} (stock ${p.stock})</option>`).join('');
+    const clis = get(key.cli);
+    selCli.innerHTML = '<option value="">—</option>' + clis.map(c=>`<option value="${c.id}">${escapeHtml(c.nombre)}</option>`).join('');
+  }
+
+  formVenta.addEventListener('submit', (e)=>{
+    e.preventDefault();
+    const fd = new FormData(formVenta);
+    const idp = fd.get('producto');
+    const cant = Number(fd.get('cantidad'))||1;
+    const idc = fd.get('cliente')||'';
+    const prods = get(key.prod);
+    const i = prods.findIndex(x=>x.id===idp);
+    if(i<0) return alert('Producto inválido');
+    if(prods[i].stock < cant) return alert('Stock insuficiente');
+
+    prods[i].stock -= cant; set(key.prod, prods);
+    const total = cant * Number(prods[i].precio);
+    const ventas = get(key.ventas);
+    ventas.push({ id: crypto.randomUUID(), pid:idp, cid:idc, cant, total, ts: Date.now() });
+    set(key.ventas, ventas);
+    formVenta.reset(); fillSelects(); renderVentas(); refreshKPIs();
+  });
+
+  function renderVentas(){
+    const ventas = get(key.ventas).sort((a,b)=>b.ts-a.ts);
+    const prods = get(key.prod); const clis = get(key.cli);
+    tbVentas.innerHTML = ventas.map(v=>{
+      const p = prods.find(x=>x.id===v.pid) || {nombre:'(eliminado)'};
+      const c = clis.find(x=>x.id===v.cid) || null;
+      const d = new Date(v.ts);
+      const fecha = d.toLocaleString();
+      return `<tr><td>${fecha}</td><td>${escapeHtml(p.nombre)}</td><td>${v.cant}</td><td>$${fmt(v.total)}</td><td>${c?escapeHtml(c.nombre):'—'}</td></tr>`
+    }).join('') || `<tr><td colspan="5" class="muted">Sin ventas registradas.</td></tr>`;
+  }
+
+  // --- Reportes y KPIs ---
+  function refreshKPIs(){
+    const ventas = get(key.ventas);
+    const prods = get(key.prod);
+    // Hoy
+    const now = new Date(); const start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const hoy = ventas.filter(v=>v.ts>=start);
+    const totalHoy = hoy.reduce((s,v)=>s+v.total,0);
+    document.getElementById('kpi_hoy').textContent = '$'+fmt(totalHoy);
+    document.getElementById('kpi_tickets').textContent = hoy.length;
+    document.getElementById('kpi_prod').textContent = prods.length;
+    const top = topProduct(7);
+    document.getElementById('kpi_top').textContent = top?.nombre || '—';
+  }
+
+  function topProduct(days){
+    const ventas = get(key.ventas);
+    const prods = get(key.prod);
+    const from = Date.now() - days*86400000;
+    const agg = {};
+    for(const v of ventas){ if(v.ts>=from) agg[v.pid] = (agg[v.pid]||0)+v.cant; }
+    let bestId=null,bestQty=-1; for(const [pid,qty] of Object.entries(agg)){ if(qty>bestQty){ bestQty=qty; bestId=pid; } }
+    if(!bestId) return null; return prods.find(p=>p.id===bestId) || null;
+  }
+
+  function renderReportes(){
+    // KPIs 7d
+    const ventas = get(key.ventas);
+    const from = Date.now() - 6*86400000; // incluye hoy
+    const days = [...Array(7)].map((_,i)=> new Date(from + i*86400000));
+    const byDay = days.map(d=>({d, total:0}));
+    const start = new Date(days[0].getFullYear(), days[0].getMonth(), days[0].getDate()).getTime();
+    for(const v of ventas){ if(v.ts>=start){ const idx = Math.min(6, Math.floor((v.ts - start)/86400000)); byDay[idx].total += v.total; } }
+    const total = byDay.reduce((s,x)=>s+x.total,0);
+    const tickets = ventas.filter(v=>v.ts>=start).length;
+    document.getElementById('rep_total').textContent = '$'+fmt(total);
+    document.getElementById('rep_tickets').textContent = tickets;
+    document.getElementById('rep_avg').textContent = '$'+fmt(tickets? total/tickets: 0);
+    const top = topProduct(7); document.getElementById('rep_top').textContent = top?.nombre || '—';
+    drawChart(byDay);
+  }
+
+  function drawChart(rows){
+    const c = document.getElementById('chart'); const ctx = c.getContext('2d');
+    const W = c.width, H = c.height; ctx.clearRect(0,0,W,H);
+    const pad = {l:40,r:14,t:16,b:24};
+    const max = Math.max(10000, ...rows.map(x=>x.total));
+    const xw = (W - pad.l - pad.r) / rows.length;
+    // ejes
+    ctx.globalAlpha=1; ctx.lineWidth=1; ctx.strokeStyle = '#DDEDEA';
+    for(let i=0;i<=4;i++){
+      const y = pad.t + (H-pad.t-pad.b)*i/4;
+      ctx.beginPath(); ctx.moveTo(pad.l,y); ctx.lineTo(W-pad.r,y); ctx.stroke();
+      const v = Math.round((1-i/4)*max);
+      ctx.fillStyle = '#6B7A78'; ctx.font = '12px system-ui'; ctx.textAlign='right'; ctx.fillText('$'+fmt(v), pad.l-6, y+4);
+    }
+    // barras
+    rows.forEach((row, i)=>{
+      const h = (row.total/max)*(H-pad.t-pad.b);
+      const x = pad.l + i*xw + 8; const y = H - pad.b - h; const w = xw - 16;
+      ctx.fillStyle = 'rgba(26,188,156,.85)';
+      ctx.fillRect(x,y,w,h);
+      // etiqueta día
+      ctx.fillStyle = '#6B7A78'; ctx.textAlign='center'; ctx.fillText(dayLabel(row.d), x + w/2, H-6);
+    });
+  }
+
+  const dayLabel = d => d.toLocaleDateString(undefined,{weekday:'short'});
+  const fmt = n => n.toLocaleString('es-CO');
+  const escapeHtml = s => s.replace(/[&<>"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
+
+  // --- Demo helpers ---
+  function resetAll(){ if(confirm('Esto borrará todos los datos de la demo.')){ localStorage.removeItem(key.prod); localStorage.removeItem(key.ventas); localStorage.removeItem(key.cli); seedEmpty(); refreshKPIs(); renderProd(); renderVentas(); renderCli(); fillSelects(); drawChart([]); } }
+  function seedEmpty(){ set(key.prod, get(key.prod)); set(key.ventas, get(key.ventas)); set(key.cli, get(key.cli)); }
+  function seedDemo(){
+    const prods = [
+      {id:crypto.randomUUID(), nombre:'Brownie cacao 70%', precio:4500, stock:24},
+      {id:crypto.randomUUID(), nombre:'Café molido 250g', precio:18000, stock:12},
+      {id:crypto.randomUUID(), nombre:'Agenda minimal 2026', precio:26000, stock:8}
+    ]; set(key.prod, prods);
+    const cli = [
+      {id:crypto.randomUUID(), nombre:'Ana Pérez', contacto:'300 123 4567'},
+      {id:crypto.randomUUID(), nombre:'Tienda Verde', contacto:'@tiendaverde'}
+    ]; set(key.cli, cli);
+    const now = Date.now();
+    const ventas = [
+      {id:crypto.randomUUID(), pid:prods[0].id, cid:cli[0].id, cant:2, total:9000, ts: now- 1*3600_000},
+      {id:crypto.randomUUID(), pid:prods[1].id, cid:cli[1].id, cant:1, total:18000, ts: now- 8*3600_000},
+      {id:crypto.randomUUID(), pid:prods[2].id, cid:'',          cant:1, total:26000, ts: now- 2*86400_000},
+      {id:crypto.randomUUID(), pid:prods[0].id, cid:'',          cant:3, total:13500, ts: now- 4*86400_000},
+    ]; set(key.ventas, ventas);
+    // ajustar stocks
+    set(key.prod, get(key.prod).map(p=>{
+      const vendido = ventas.filter(v=>v.pid===p.id).reduce((s,v)=>s+v.cant,0);
+      return {...p, stock: Math.max(0, p.stock - vendido)};
+    }));
+    refreshKPIs(); renderProd(); renderVentas(); renderCli(); fillSelects(); go('inicio'); alert('Datos de ejemplo cargados.');
+  }
+
+  // Init: si está vacío, crear contenedores
+  if(localStorage.getItem(key.prod)===null) set(key.prod, []);
+  if(localStorage.getItem(key.ventas)===null) set(key.ventas, []);
+  if(localStorage.getItem(key.cli)===null) set(key.cli, []);
+  refreshKPIs();
+</script>
+</body>
+</html>
