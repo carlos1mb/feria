@@ -1,1264 +1,720 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EduGestión MVP - Sistema de Gestión Educativa (FIXED)</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* Estilos base (Mantenidos del original) */
-        .min-h-screen { min-height: 100vh; }
-        .flex-1 { flex: 1; }
-        .relative { position: relative; }
-        .absolute { position: absolute; }
-        .right-0 { right: 0; }
-        .mt-2 { margin-top: 0.5rem; }
-        .z-50 { z-index: 50; }
-        @media (max-width: 1023px) {
-            .lg\:block { display: none; }
-            .lg\:hidden { display: block; }
-            .w-64 { width: 16rem; }
-        }
-        .prose { color: #374151; }
-        body { overflow-x: hidden; }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EduGestión — MVP (Vanilla JS)</title>
+  <style>
+    :root{
+      --bg:#0f172a;/* slate-900 */
+      --panel:#111827;/* gray-900 */
+      --muted:#1f2937;/* gray-800 */
+      --accent:#22d3ee;/* cyan-400 */
+      --accent-2:#a78bfa;/* violet-400 */
+      --text:#e5e7eb;/* gray-200 */
+      --sub:#9ca3af;/* gray-400 */
+      --ok:#10b981; --warn:#f59e0b; --bad:#ef4444;
+      --card:#0b1220;
+      --radius:16px;
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;background:linear-gradient(120deg,#0a0f1c,#0f172a 45%,#0a1224);color:var(--text)}
+    a{color:var(--accent)}
+
+    /* Layout */
+    .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+    .sidebar{background:linear-gradient(160deg,#0c1222,#0f172a 40%,#0c1120);border-right:1px solid #1f2937;padding:18px;position:sticky;top:0;align-self:start;height:100vh}
+    .brand{display:flex;gap:12px;align-items:center;margin-bottom:18px}
+    .logo{width:40px;height:40px;border-radius:10px;background: radial-gradient(120px 80px at 20% 20%, #22d3ee, transparent 70%), radial-gradient(100px 100px at 80% 70%, #a78bfa, transparent 70%), #0b1220;border:1px solid #1f2937;box-shadow:inset 0 0 0 2px rgba(255,255,255,.03)}
+    .brand h1{font-size:18px;margin:0;letter-spacing:.4px}
+    .brand small{display:block;color:var(--sub);font-weight:500}
+
+    .nav{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+    .nav button{appearance:none;border:none;text-align:left;padding:12px 14px;border-radius:12px;background:#0b1220;color:var(--text);cursor:pointer;border:1px solid #1f2937;transition:.2s;display:flex;align-items:center;gap:10px}
+    .nav button:hover{transform:translateY(-1px);box-shadow:0 8px 18px rgba(0,0,0,.25)}
+    .nav button.active{outline:2px solid var(--accent);background:linear-gradient(180deg,#0e1527,#0b1220)}
+
+    .main{padding:24px}
+
+    /* Topbar */
+    .top{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .top .search{flex:1;display:flex;gap:8px}
+    .input{background:#0b1220;border:1px solid #1f2937;color:var(--text);padding:10px 12px;border-radius:12px}
+    .btn{background:linear-gradient(180deg,#14b8a6,#06b6d4);border:none;color:#001018;font-weight:700;padding:10px 14px;border-radius:12px;cursor:pointer;transition:.2s}
+    .btn:hover{filter:brightness(1.1)}
+    .btn.secondary{background:#0b1220;color:var(--text);border:1px solid #203047}
+    .btn.ghost{background:transparent;border:1px dashed #334155;color:var(--text)}
+
+    /* Cards & grids */
+    .cards{display:grid;grid-template-columns:repeat(4,minmax(220px,1fr));gap:16px;margin-bottom:18px}
+    .card{background:linear-gradient(180deg,#0e1527,#0b1220);border:1px solid #1f2937;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+    .card h3{margin:0 0 8px 0;font-size:14px;color:var(--sub)}
+    .metric{font-size:28px;font-weight:800;letter-spacing:.2px}
+    .trend{margin-top:6px;font-size:12px}
+    .trend.up{color:var(--ok)}
+    .trend.down{color:var(--bad)}
+
+    /* Panels */
+    .panel{background:linear-gradient(180deg,#0d1425,#0b1220);border:1px solid #1f2937;border-radius:var(--radius);padding:16px;margin-bottom:18px;box-shadow:var(--shadow)}
+    .panel h2{margin:0 0 12px 0;font-size:18px}
+
+    .grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}
+
+    /* Table */
+    table{width:100%;border-collapse:separate;border-spacing:0 8px}
+    thead th{text-align:left;color:var(--sub);font-size:12px;font-weight:600;padding:0 12px}
+    tbody tr{background:#0b1220;border:1px solid #1f2937}
+    tbody td{padding:10px 12px;border-top:1px solid #1f2937;border-bottom:1px solid #1f2937}
+    tbody tr{border-radius:12px}
+    tbody tr td:first-child{border-left:1px solid #1f2937;border-top-left-radius:12px;border-bottom-left-radius:12px}
+    tbody tr td:last-child{border-right:1px solid #1f2937;border-top-right-radius:12px;border-bottom-right-radius:12px}
+
+    .tag{padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid #334155;background:#0b1220}
+
+    /* Forms */
+    form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .full{grid-column:1/-1}
+    label{display:grid;gap:6px;font-size:12px;color:var(--sub)}
+    select, input[type="text"], input[type="number"], input[type="date"], textarea{background:#0b1220;border:1px solid #1f2937;color:var(--text);padding:10px 12px;border-radius:12px}
+
+    /* Pills */
+    .pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+    .pill{background:#0b1220;border:1px solid #243246;padding:6px 10px;border-radius:999px;font-size:12px;color:var(--sub)}
+
+    /* Footer */
+    .footer{margin-top:28px;color:var(--sub);font-size:12px;text-align:center}
+
+    /* Responsive */
+    @media (max-width:1100px){
+      .cards{grid-template-columns:repeat(2,minmax(200px,1fr))}
+      .grid{grid-template-columns:1fr}
+      .app{grid-template-columns:100%}
+      .sidebar{position:static;height:auto}
+    }
+    @media (max-width:640px){
+      .cards{grid-template-columns:1fr}
+      form{grid-template-columns:1fr}
+      .nav{flex-direction:row;flex-wrap:wrap}
+    }
+  </style>
 </head>
 <body>
-    <div id="root"></div>
-
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <script>
-        // Renombra y desestructura las funciones de React
-        const { useState, useEffect, createElement: e } = React;
-
-        /**
-         * Componente auxiliar para renderizar iconos Lucide como componentes de React SVG.
-         * Esto soluciona el problema de importación/referencia del CDN.
-         * @param {string} name - Nombre del ícono (e.g., 'User', 'BookOpen').
-         * @param {string} className - Clases de Tailwind CSS.
-         */
-        const LucideIcon = ({ name, className }) => {
-            const iconData = lucide.icons[name];
-            if (!iconData) return e('div', { className: className, style: { width: '24px', height: '24px', background: 'gray' } });
-
-            const [tagName, attrs, children] = iconData;
-
-            // Transpila el array de datos de Lucide a un árbol de elementos de React
-            const renderIconElement = (element) => {
-                if (!element) return null;
-                if (typeof element === 'string') return element; // Si es un string (texto)
-
-                const [tag, props, innerChildren] = element;
-                
-                // Normaliza las propiedades SVG para React
-                const reactProps = { ...props, className: className };
-                if (reactProps.strokeWidth) {
-                    reactProps.strokeWidth = props['stroke-width'];
-                    delete reactProps['stroke-width'];
-                }
-
-                if (reactProps.strokeLinecap) {
-                    reactProps.strokeLinecap = props['stroke-linecap'];
-                    delete reactProps['stroke-linecap'];
-                }
-
-                if (reactProps.strokeLinejoin) {
-                    reactProps.strokeLinejoin = props['stroke-linejoin'];
-                    delete reactProps['stroke-linejoin'];
-                }
-
-                // Evita warning de React si el tag no es un SVG válido (como un comentario o valor nulo)
-                if (typeof tag !== 'string' || tag === 'path' || tag === 'svg') {
-                    return e(tag, { ...reactProps, key: JSON.stringify(props) }, 
-                        innerChildren ? innerChildren.map((child, index) => e(renderIconElement, { element: child, key: index })) : null
-                    );
-                }
-                return null;
-            };
-
-            // El Lucide Data array es: [ 'svg', { ...props }, [ ...paths ] ]
-            return renderIconElement(iconData);
-        };
-
-        // Mapeo de los íconos del código TSX al componente auxiliar
-        const Icons = {
-            User: (props) => e(LucideIcon, { name: 'User', ...props }),
-            BookOpen: (props) => e(LucideIcon, { name: 'BookOpen', ...props }),
-            Calendar: (props) => e(LucideIcon, { name: 'Calendar', ...props }),
-            MessageSquare: (props) => e(LucideIcon, { name: 'MessageSquare', ...props }),
-            BarChart3: (props) => e(LucideIcon, { name: 'BarChart3', ...props }),
-            Settings: (props) => e(LucideIcon, { name: 'Settings', ...props }),
-            LogOut: (props) => e(LucideIcon, { name: 'LogOut', ...props }),
-            Bell: (props) => e(LucideIcon, { name: 'Bell', ...props }),
-            Search: (props) => e(LucideIcon, { name: 'Search', ...props }),
-            Download: (props) => e(LucideIcon, { name: 'Download', ...props }),
-            Upload: (props) => e(LucideIcon, { name: 'Upload', ...props }),
-            Users: (props) => e(LucideIcon, { name: 'Users', ...props }),
-            GraduationCap: (props) => e(LucideIcon, { name: 'GraduationCap', ...props }),
-            FileText: (props) => e(LucideIcon, { name: 'FileText', ...props }),
-            Home: (props) => e(LucideIcon, { name: 'Home', ...props }),
-            Menu: (props) => e(LucideIcon, { name: 'Menu', ...props }),
-            X: (props) => e(LucideIcon, { name: 'X', ...props }),
-            ChevronDown: (props) => e(LucideIcon, { name: 'ChevronDown', ...props }),
-            Plus: (props) => e(LucideIcon, { name: 'Plus', ...props }),
-            Edit: (props) => e(LucideIcon, { name: 'Edit', ...props }),
-            Trash2: (props) => e(LucideIcon, { name: 'Trash2', ...props }),
-            Eye: (props) => e(LucideIcon, { name: 'Eye', ...props }),
-            Send: (props) => e(LucideIcon, { name: 'Send', ...props }),
-            Filter: (props) => e(LucideIcon, { name: 'Filter', ...props }),
-            Clock: (props) => e(LucideIcon, { name: 'Clock', ...props }),
-            CheckCircle: (props) => e(LucideIcon, { name: 'CheckCircle', ...props }),
-            AlertCircle: (props) => e(LucideIcon, { name: 'AlertCircle', ...props })
-        };
-
-        // ********** LÓGICA DE LA APLICACIÓN (IDÉNTICA A LA VERSIÓN ANTERIOR) **********
-
-        // Estado principal
-        const EduGestionMVP = () => {
-            const [currentUser, setCurrentUser] = useState(null);
-            const [currentView, setCurrentView] = useState('login');
-            const [notifications, setNotifications] = useState([]);
-            const [showNotifications, setShowNotifications] = useState(false);
-            const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-            // Datos de demostración (se mantiene el original para brevedad)
-            const usuarios = {
-                admin: { username: 'admin', password: 'admin123', role: 'directivo', nombre: 'Carlos Martínez', cargo: 'Rector' },
-                docente1: { username: 'docente1', password: 'doc123', role: 'docente', nombre: 'María González', asignatura: 'Matemáticas' },
-                docente2: { username: 'docente2', password: 'doc123', role: 'docente', nombre: 'Juan Pérez', asignatura: 'Español' },
-                estudiante1: { username: 'est1', password: 'est123', role: 'estudiante', nombre: 'Ana López', grado: '11-A', codigo: '2025001' },
-                estudiante2: { username: 'est2', password: 'est123', role: 'estudiante', nombre: 'Luis Ramírez', grado: '11-A', codigo: '2025002' },
-                padre1: { username: 'padre1', password: 'pad123', role: 'padre', nombre: 'Roberto López', hijo: 'Ana López', grado: '11-A' }
-            };
-
-            const estudiantes = [
-                { id: 1, codigo: '2025001', nombre: 'Ana López', grado: '11-A', promedio: 4.5, asistencia: 95 },
-                { id: 2, codigo: '2025002', nombre: 'Luis Ramírez', grado: '11-A', promedio: 4.2, asistencia: 92 },
-                { id: 3, codigo: '2025003', nombre: 'Sofía Castro', grado: '11-A', promedio: 4.8, asistencia: 98 },
-                { id: 4, codigo: '2025004', nombre: 'Pedro Morales', grado: '11-A', promedio: 3.9, asistencia: 88 },
-                { id: 5, codigo: '2025005', nombre: 'Laura Díaz', grado: '11-B', promedio: 4.6, asistencia: 96 },
-                { id: 6, codigo: '2025006', nombre: 'Carlos Herrera', grado: '11-B', promedio: 4.1, asistencia: 90 },
-            ];
-
-            const calificaciones = {
-                '2025001': {
-                    'Matemáticas': { p1: 4.5, p2: 4.6, p3: 4.4, final: 4.5 },
-                    'Español': { p1: 4.7, p2: 4.8, p3: 4.6, final: 4.7 },
-                    'Ciencias': { p1: 4.3, p2: 4.5, p3: 4.6, final: 4.5 },
-                    'Sociales': { p1: 4.4, p2: 4.6, p3: 4.5, final: 4.5 },
-                    'Inglés': { p1: 4.2, p2: 4.4, p3: 4.3, final: 4.3 },
-                },
-                '2025002': {
-                    'Matemáticas': { p1: 4.0, p2: 4.2, p3: 4.3, final: 4.2 },
-                    'Español': { p1: 4.1, p2: 4.3, p3: 4.2, final: 4.2 },
-                    'Ciencias': { p1: 4.3, p2: 4.1, p3: 4.2, final: 4.2 },
-                    'Sociales': { p1: 4.2, p2: 4.3, p3: 4.1, final: 4.2 },
-                    'Inglés': { p1: 4.0, p2: 4.1, p3: 4.2, final: 4.1 },
-                }
-            };
-
-            const anuncios = [
-                { id: 1, titulo: 'Reunión de padres', contenido: 'Se les informa que el día 20 de octubre habrá reunión general de padres a las 2:00 PM', fecha: '2025-10-10', autor: 'Dirección', prioridad: 'alta' },
-                { id: 2, titulo: 'Entrega de boletines', contenido: 'Los boletines del tercer periodo estarán disponibles a partir del 25 de octubre', fecha: '2025-10-12', autor: 'Coordinación Académica', prioridad: 'media' },
-                { id: 3, titulo: 'Feria Empresarial SENATIC', contenido: 'Los estudiantes del programa de software participarán en la feria el 30 de octubre', fecha: '2025-10-14', autor: 'SENA', prioridad: 'alta' },
-            ];
-
-            const mensajes = [
-                { id: 1, de: 'María González', para: 'Roberto López', asunto: 'Rendimiento de Ana', contenido: 'Estimado padre de familia, quiero informarle que Ana ha mostrado un excelente desempeño...', fecha: '2025-10-13', leido: true },
-                { id: 2, de: 'Juan Pérez', para: 'Roberto López', asunto: 'Tarea pendiente', contenido: 'Por favor recordarle a su hija que debe entregar la tarea de español...', fecha: '2025-10-14', leido: false },
-            ];
-
-
-            // Componente de Login (manteniendo la misma estructura transpila)
-            const LoginView = () => {
-                const [username, setUsername] = useState('');
-                const [password, setPassword] = useState('');
-                const [error, setError] = useState('');
-
-                const handleLogin = (e) => {
-                    e.preventDefault();
-                    const user = usuarios[username];
-                    if (user && user.password === password) {
-                        setCurrentUser(user);
-                        setCurrentView('dashboard');
-                        setError('');
-                        setNotifications([
-                            { id: 1, texto: 'Bienvenido al sistema EduGestión', tipo: 'success' },
-                            { id: 2, texto: 'Tienes 3 mensajes nuevos', tipo: 'info' }
-                        ]);
-                    } else {
-                        setError('Usuario o contraseña incorrectos');
-                    }
-                };
-
-                const usuarios_demo = [
-                    { user: 'admin', pass: 'admin123', rol: 'Directivo' },
-                    { user: 'docente1', pass: 'doc123', rol: 'Docente' },
-                    { user: 'est1', pass: 'est123', rol: 'Estudiante' },
-                    { user: 'padre1', pass: 'pad123', rol: 'Padre de Familia' }
-                ];
-
-                return e('div', { className: "min-h-screen bg-gradient-to-br from-blue-600 via-blue-700 to-orange-600 flex items-center justify-center p-4" },
-                    e('div', { className: "bg-white rounded-2xl shadow-2xl w-full max-w-5xl overflow-hidden grid md:grid-cols-2" },
-                        // Panel izquierdo - Información
-                        e('div', { className: "bg-gradient-to-br from-blue-600 to-blue-800 p-12 text-white flex flex-col justify-center" },
-                            e('div', { className: "mb-8" },
-                                e('div', { className: "flex items-center justify-center mb-6" },
-                                    e('div', { className: "bg-white p-4 rounded-full" },
-                                        e(Icons.GraduationCap, { className: "h-16 w-16 text-blue-600" })
-                                    )
-                                ),
-                                e('h1', { className: "text-4xl font-bold mb-4 text-center" }, "EduGestión S.A.S."),
-                                e('p', { className: "text-blue-100 text-center text-lg italic" }, "\"Gestión inteligente para una educación organizada\"")
-                            ),
-                            
-                            e('div', { className: "space-y-4 mb-8" },
-                                e('div', { className: "flex items-start" },
-                                    e(Icons.CheckCircle, { className: "h-6 w-6 mr-3 flex-shrink-0 mt-1" }),
-                                    e('div', null,
-                                        e('h3', { className: "font-semibold" }, "Gestión Académica Integral"),
-                                        e('p', { className: "text-sm text-blue-100" }, "Control completo de calificaciones y asistencia")
-                                    )
-                                ),
-                                e('div', { className: "flex items-start" },
-                                    e(Icons.CheckCircle, { className: "h-6 w-6 mr-3 flex-shrink-0 mt-1" }),
-                                    e('div', null,
-                                        e('h3', { className: "font-semibold" }, "Comunicación Efectiva"),
-                                        e('p', { className: "text-sm text-blue-100" }, "Conexión directa entre docentes y familias")
-                                    )
-                                ),
-                                e('div', { className: "flex items-start" },
-                                    e(Icons.CheckCircle, { className: "h-6 w-6 mr-3 flex-shrink-0 mt-1" }),
-                                    e('div', null,
-                                        e('h3', { className: "font-semibold" }, "100% en la Nube"),
-                                        e('p', { className: "text-sm text-blue-100" }, "Acceso desde cualquier dispositivo")
-                                    )
-                                )
-                            ),
-
-                            e('div', { className: "bg-blue-700 bg-opacity-50 rounded-lg p-4 text-sm" },
-                                e('p', { className: "font-semibold mb-2" }, "Desarrollado por:"),
-                                e('p', { className: "text-blue-100" }, "Estudiantes SENA - Escuela Normal Superior de Corozal"),
-                                e('p', { className: "text-blue-100" }, "Programa Técnico en Programación de Software")
-                            )
-                        ),
-
-                        // Panel derecho - Formulario
-                        e('div', { className: "p-12" },
-                            e('h2', { className: "text-3xl font-bold text-gray-800 mb-2" }, "Iniciar Sesión"),
-                            e('p', { className: "text-gray-600 mb-8" }, "Ingresa tus credenciales para acceder"),
-
-                            e('form', { onSubmit: handleLogin, className: "space-y-6" },
-                                e('div', null,
-                                    e('label', { className: "block text-sm font-medium text-gray-700 mb-2" }, "Usuario"),
-                                    e('input', {
-                                        type: 'text',
-                                        value: username,
-                                        onChange: (e) => setUsername(e.target.value),
-                                        className: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-                                        placeholder: "Ingresa tu usuario",
-                                        required: true
-                                    })
-                                ),
-
-                                e('div', null,
-                                    e('label', { className: "block text-sm font-medium text-gray-700 mb-2" }, "Contraseña"),
-                                    e('input', {
-                                        type: 'password',
-                                        value: password,
-                                        onChange: (e) => setPassword(e.target.value),
-                                        className: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-                                        placeholder: "Ingresa tu contraseña",
-                                        required: true
-                                    })
-                                ),
-
-                                error && (
-                                    e('div', { className: "bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center" },
-                                        e(Icons.AlertCircle, { className: "h-5 w-5 mr-2" }),
-                                        error
-                                    )
-                                ),
-
-                                e('button', {
-                                    type: 'submit',
-                                    className: "w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 transition-all transform hover:scale-105 shadow-lg"
-                                }, "Ingresar al Sistema")
-                            ),
-
-                            e('div', { className: "mt-8 border-t pt-6" },
-                                e('p', { className: "text-sm text-gray-600 font-semibold mb-3" }, "Usuarios de demostración:"),
-                                e('div', { className: "grid grid-cols-2 gap-2 text-xs" },
-                                    usuarios_demo.map((u, i) => (
-                                        e('div', { key: i, className: "bg-gray-50 p-2 rounded border border-gray-200" },
-                                            e('p', { className: "font-semibold text-blue-600" }, u.rol),
-                                            e('p', { className: "text-gray-600" }, "User: ", e('span', { className: "font-mono" }, u.user)),
-                                            e('p', { className: "text-gray-600" }, "Pass: ", e('span', { className: "font-mono" }, u.pass))
-                                        )
-                                    ))
-                                )
-                            )
-                        )
-                    )
-                );
-            };
-
-            // Navbar
-            const Navbar = () => e('nav', { className: "bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm" },
-                e('div', { className: "px-4 py-3" },
-                    e('div', { className: "flex items-center justify-between" },
-                        e('div', { className: "flex items-center space-x-4" },
-                            e('button', {
-                                onClick: () => setMobileMenuOpen(!mobileMenuOpen),
-                                className: "lg:hidden p-2 rounded-lg hover:bg-gray-100"
-                            },
-                                mobileMenuOpen ? e(Icons.X, { className: "h-6 w-6" }) : e(Icons.Menu, { className: "h-6 w-6" })
-                            ),
-                            e('div', { className: "flex items-center space-x-3" },
-                                e('div', { className: "bg-gradient-to-br from-blue-600 to-orange-500 p-2 rounded-lg" },
-                                    e(Icons.GraduationCap, { className: "h-6 w-6 text-white" })
-                                ),
-                                e('div', null,
-                                    e('h1', { className: "text-xl font-bold text-gray-800" }, "EduGestión"),
-                                    e('p', { className: "text-xs text-gray-500" }, "Sistema de Gestión Educativa")
-                                )
-                            )
-                        ),
-
-                        e('div', { className: "flex items-center space-x-4" },
-                            e('div', { className: "relative" },
-                                e('button', {
-                                    onClick: () => setShowNotifications(!showNotifications),
-                                    className: "relative p-2 rounded-lg hover:bg-gray-100 transition-colors"
-                                },
-                                    e(Icons.Bell, { className: "h-5 w-5 text-gray-600" }),
-                                    notifications.length > 0 && (
-                                        e('span', { className: "absolute top-1 right-1 h-4 w-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center" },
-                                            notifications.length
-                                        )
-                                    )
-                                ),
-                                
-                                showNotifications && (
-                                    e('div', { className: "absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50" },
-                                        e('div', { className: "px-4 py-2 border-b border-gray-200" },
-                                            e('h3', { className: "font-semibold text-gray-800" }, "Notificaciones")
-                                        ),
-                                        notifications.map(notif => (
-                                            e('div', { key: notif.id, className: "px-4 py-3 hover:bg-gray-50 cursor-pointer border-b border-gray-100" },
-                                                e('p', { className: "text-sm text-gray-700" }, notif.texto)
-                                            )
-                                        ))
-                                    )
-                                )
-                            ),
-
-                            e('div', { className: "flex items-center space-x-3 pl-4 border-l border-gray-200" },
-                                e('div', { className: "text-right hidden sm:block" },
-                                    e('p', { className: "text-sm font-semibold text-gray-800" }, currentUser.nombre),
-                                    e('p', { className: "text-xs text-gray-500 capitalize" }, currentUser.role)
-                                ),
-                                e('div', { className: "h-10 w-10 bg-gradient-to-br from-blue-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold" },
-                                    currentUser.nombre.charAt(0)
-                                )
-                            ),
-
-                            e('button', {
-                                onClick: () => {
-                                    setCurrentUser(null);
-                                    setCurrentView('login');
-                                    setNotifications([]);
-                                },
-                                className: "p-2 rounded-lg hover:bg-red-50 text-red-600 transition-colors",
-                                title: "Cerrar sesión"
-                            },
-                                e(Icons.LogOut, { className: "h-5 w-5" })
-                            )
-                        )
-                    )
-                )
-            );
-
-            // Sidebar
-            const Sidebar = () => {
-                const menuItems = {
-                    directivo: [
-                        { id: 'dashboard', icon: Icons.Home, label: 'Dashboard' },
-                        { id: 'estudiantes', icon: Icons.Users, label: 'Estudiantes' },
-                        { id: 'docentes', icon: Icons.GraduationCap, label: 'Docentes' },
-                        { id: 'calificaciones', icon: Icons.BookOpen, label: 'Calificaciones' },
-                        { id: 'asistencia', icon: Icons.Calendar, label: 'Asistencia' },
-                        { id: 'reportes', icon: Icons.BarChart3, label: 'Reportes' },
-                        { id: 'anuncios', icon: Icons.Bell, label: 'Anuncios' },
-                        { id: 'mensajes', icon: Icons.MessageSquare, label: 'Mensajes' },
-                        { id: 'configuracion', icon: Icons.Settings, label: 'Configuración' },
-                    ],
-                    docente: [
-                        { id: 'dashboard', icon: Icons.Home, label: 'Dashboard' },
-                        { id: 'mis-estudiantes', icon: Icons.Users, label: 'Mis Estudiantes' },
-                        { id: 'calificaciones', icon: Icons.BookOpen, label: 'Calificaciones' },
-                        { id: 'asistencia', icon: Icons.Calendar, label: 'Asistencia' },
-                        { id: 'anuncios', icon: Icons.Bell, label: 'Anuncios' },
-                        { id: 'mensajes', icon: Icons.MessageSquare, label: 'Mensajes' },
-                    ],
-                    estudiante: [
-                        { id: 'dashboard', icon: Icons.Home, label: 'Inicio' },
-                        { id: 'mis-notas', icon: Icons.BookOpen, label: 'Mis Notas' },
-                        { id: 'asistencia', icon: Icons.Calendar, label: 'Mi Asistencia' },
-                        { id: 'anuncios', icon: Icons.Bell, label: 'Anuncios' },
-                        { id: 'mensajes', icon: Icons.MessageSquare, label: 'Mensajes' },
-                    ],
-                    padre: [
-                        { id: 'dashboard', icon: Icons.Home, label: 'Inicio' },
-                        { id: 'rendimiento', icon: Icons.BarChart3, label: 'Rendimiento' },
-                        { id: 'asistencia', icon: Icons.Calendar, label: 'Asistencia' },
-                        { id: 'anuncios', icon: Icons.Bell, label: 'Anuncios' },
-                        { id: 'mensajes', icon: Icons.MessageSquare, label: 'Mensajes' },
-                    ]
-                };
-
-                const items = menuItems[currentUser.role] || [];
-
-                return e('aside', { className: `${mobileMenuOpen ? 'block' : 'hidden'} lg:block w-64 bg-white border-r border-gray-200 min-h-screen` },
-                    e('div', { className: "p-4 space-y-1" },
-                        items.map(item => (
-                            e('button', {
-                                key: item.id,
-                                onClick: () => {
-                                    setCurrentView(item.id);
-                                    setMobileMenuOpen(false);
-                                },
-                                className: `w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                                    currentView === item.id
-                                      ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md'
-                                      : 'text-gray-700 hover:bg-gray-100'
-                                }`
-                            },
-                                e(item.icon, { className: "h-5 w-5" }),
-                                e('span', { className: "font-medium" }, item.label)
-                            )
-                        ))
-                    )
-                );
-            };
-
-            // Vistas (se mantienen para brevedad)
-            const DashboardDirectivo = () => (
-                e('div', { className: "space-y-6" },
-                    e('div', { className: "flex items-center justify-between" },
-                        e('h2', { className: "text-2xl font-bold text-gray-800" }, "Dashboard Institucional"),
-                        e('button', { className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2" },
-                            e(Icons.Download, { className: "h-4 w-4" }),
-                            e('span', null, "Exportar Reporte")
-                        )
-                    ),
-
-                    e('div', { className: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" },
-                        e('div', { className: "bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg" },
-                            e('div', { className: "flex items-center justify-between mb-4" },
-                                e(Icons.Users, { className: "h-8 w-8" }),
-                                e('span', { className: "text-3xl font-bold" }, "458")
-                            ),
-                            e('p', { className: "text-blue-100" }, "Estudiantes Activos")
-                        ),
-
-                        e('div', { className: "bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg" },
-                            e('div', { className: "flex items-center justify-between mb-4" },
-                                e(Icons.GraduationCap, { className: "h-8 w-8" }),
-                                e('span', { className: "text-3xl font-bold" }, "32")
-                            ),
-                            e('p', { className: "text-green-100" }, "Docentes")
-                        ),
-
-                        e('div', { className: "bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg" },
-                            e('div', { className: "flex items-center justify-between mb-4" },
-                                e(Icons.BarChart3, { className: "h-8 w-8" }),
-                                e('span', { className: "text-3xl font-bold" }, "4.3")
-                            ),
-                            e('p', { className: "text-orange-100" }, "Promedio General")
-                        ),
-
-                        e('div', { className: "bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg" },
-                            e('div', { className: "flex items-center justify-between mb-4" },
-                                e(Icons.Calendar, { className: "h-8 w-8" }),
-                                e('span', { className: "text-3xl font-bold" }, "93%")
-                            ),
-                            e('p', { className: "text-purple-100" }, "Asistencia")
-                        )
-                    ),
-
-                    e('div', { className: "grid grid-cols-1 lg:grid-cols-2 gap-6" },
-                        e('div', { className: "bg-white rounded-xl shadow-md p-6 border border-gray-200" },
-                            e('h3', { className: "text-lg font-bold text-gray-800 mb-4" }, "Rendimiento por Grado"),
-                            e('div', { className: "space-y-3" },
-                                ['11-A', '11-B', '10-A', '10-B', '9-A'].map(grado => (
-                                    e('div', { key: grado },
-                                        e('div', { className: "flex justify-between mb-1" },
-                                            e('span', { className: "text-sm font-medium text-gray-700" }, grado),
-                                            e('span', { className: "text-sm font-bold text-blue-600" }, (Math.random() * 1 + 3.5).toFixed(1))
-                                        ),
-                                        e('div', { className: "w-full bg-gray-200 rounded-full h-2" },
-                                            e('div', { className: "bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full", style: { width: `${Math.random() * 30 + 70}%` } })
-                                        )
-                                    )
-                                ))
-                            )
-                        ),
-
-                        e('div', { className: "bg-white rounded-xl shadow-md p-6 border border-gray-200" },
-                            e('h3', { className: "text-lg font-bold text-gray-800 mb-4" }, "Actividad Reciente"),
-                            e('div', { className: "space-y-4" },
-                                e('div', { className: "flex items-start space-x-3 pb-3 border-b border-gray-100" },
-                                    e('div', { className: "bg-blue-100 p-2 rounded-lg" },
-                                        e(Icons.BookOpen, { className: "h-4 w-4 text-blue-600" })
-                                    ),
-                                    e('div', { className: "flex-1" },
-                                        e('p', { className: "text-sm font-medium text-gray-800" }, "Calificaciones actualizadas"),
-                                        e('p', { className: "text-xs text-gray-500" }, "María González - Matemáticas 11-A")
-                                    ),
-                                    e('span', { className: "text-xs text-gray-400" }, "Hace 2h")
-                                ),
-                                e('div', { className: "flex items-start space-x-3 pb-3 border-b border-gray-100" },
-                                    e('div', { className: "bg-green-100 p-2 rounded-lg" },
-                                        e(Icons.Calendar, { className: "h-4 w-4 text-green-600" })
-                                    ),
-                                    e('div', { className: "flex-1" },
-                                        e('p', { className: "text-sm font-medium text-gray-800" }, "Asistencia registrada"),
-                                        e('p', { className: "text-xs text-gray-500" }, "Juan Pérez - Español 11-B")
-                                    ),
-                                    e('span', { className: "text-xs text-gray-400" }, "Hace 3h")
-                                ),
-                                e('div', { className: "flex items-start space-x-3" },
-                                    e('div', { className: "bg-orange-100 p-2 rounded-lg" },
-                                        e(Icons.Bell, { className: "h-4 w-4 text-orange-600" })
-                                    ),
-                                    e('div', { className: "flex-1" },
-                                        e('p', { className: "text-sm font-medium text-gray-800" }, "Nuevo anuncio publicado"),
-                                        e('p', { className: "text-xs text-gray-500" }, "Reunión de padres - 20 de octubre")
-                                    ),
-                                    e('span', { className: "text-xs text-gray-400" }, "Hace 5h")
-                                )
-                            )
-                        )
-                    )
-                )
-            );
-
-            const EstudiantesView = () => (
-                e('div', { className: "space-y-6" },
-                    e('div', { className: "flex items-center justify-between" },
-                        e('h2', { className: "text-2xl font-bold text-gray-800" }, "Gestión de Estudiantes"),
-                        e('div', { className: "flex space-x-3" },
-                            e('button', { className: "px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center space-x-2" },
-                                e(Icons.Upload, { className: "h-4 w-4" }),
-                                e('span', null, "Importar")
-                            ),
-                            e('button', { className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2" },
-                                e(Icons.Plus, { className: "h-4 w-4" }),
-                                e('span', null, "Nuevo Estudiante")
-                            )
-                        )
-                    ),
-
-                    e('div', { className: "bg-white rounded-xl shadow-md p-6 border border-gray-200" },
-                        e('div', { className: "flex flex-col sm:flex-row gap-4 mb-6" },
-                            e('div', { className: "flex-1 relative" },
-                                e(Icons.Search, { className: "absolute left-3 top-3 h-5 w-5 text-gray-400" }),
-                                e('input', {
-                                    type: "text",
-                                    placeholder: "Buscar por nombre o código...",
-                                    className: "w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                })
-                            ),
-                            e('select', { className: "px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" },
-                                e('option', null, "Todos los grados"),
-                                e('option', null, "11-A"),
-                                e('option', null, "11-B"),
-                                e('option', null, "10-A"),
-                                e('option', null, "10-B")
-                            )
-                        ),
-
-                        e('div', { className: "overflow-x-auto" },
-                            e('table', { className: "w-full" },
-                                e('thead', { className: "bg-gray-50 border-b border-gray-200" },
-                                    e('tr', null,
-                                        e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Código"),
-                                        e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Nombre"),
-                                        e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Grado"),
-                                        e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Promedio"),
-                                        e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Asistencia"),
-                                        e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Acciones")
-                                    )
-                                ),
-                                e('tbody', { className: "divide-y divide-gray-200" },
-                                    estudiantes.map(est => (
-                                        e('tr', { key: est.id, className: "hover:bg-gray-50 transition-colors" },
-                                            e('td', { className: "px-4 py-3 text-sm font-mono text-gray-600" }, est.codigo),
-                                            e('td', { className: "px-4 py-3" },
-                                                e('div', { className: "flex items-center space-x-3" },
-                                                    e('div', { className: "h-8 w-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white text-sm font-bold" },
-                                                        est.nombre.charAt(0)
-                                                    ),
-                                                    e('span', { className: "text-sm font-medium text-gray-800" }, est.nombre)
-                                                )
-                                            ),
-                                            e('td', { className: "px-4 py-3 text-sm text-gray-600" }, est.grado),
-                                            e('td', { className: "px-4 py-3" },
-                                                e('span', { className: `inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                    est.promedio >= 4.5 ? 'bg-green-100 text-green-800' :
-                                                    est.promedio >= 4.0 ? 'bg-blue-100 text-blue-800' :
-                                                    est.promedio >= 3.5 ? 'bg-yellow-100 text-yellow-800' :
-                                                    'bg-red-100 text-red-800'
-                                                }`},
-                                                    est.promedio.toFixed(1)
-                                                )
-                                            ),
-                                            e('td', { className: "px-4 py-3" },
-                                                e('span', { className: `inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                    est.asistencia >= 95 ? 'bg-green-100 text-green-800' :
-                                                    est.asistencia >= 85 ? 'bg-yellow-100 text-yellow-800' :
-                                                    'bg-red-100 text-red-800'
-                                                }`},
-                                                    `${est.asistencia}%`
-                                                )
-                                            ),
-                                            e('td', { className: "px-4 py-3" },
-                                                e('div', { className: "flex space-x-2" },
-                                                    e('button', { className: "p-1 text-blue-600 hover:bg-blue-50 rounded", title: "Ver perfil" },
-                                                        e(Icons.Eye, { className: "h-4 w-4" })
-                                                    ),
-                                                    e('button', { className: "p-1 text-green-600 hover:bg-green-50 rounded", title: "Editar" },
-                                                        e(Icons.Edit, { className: "h-4 w-4" })
-                                                    ),
-                                                    e('button', { className: "p-1 text-red-600 hover:bg-red-50 rounded", title: "Eliminar" },
-                                                        e(Icons.Trash2, { className: "h-4 w-4" })
-                                                    )
-                                                )
-                                            )
-                                        )
-                                    ))
-                                )
-                            )
-                        )
-                    )
-                )
-            );
-
-            const CalificacionesView = () => {
-                const [selectedGrado, setSelectedGrado] = useState('11-A');
-                const [selectedAsignatura, setSelectedAsignatura] = useState('Matemáticas');
-
-                return (
-                    e('div', { className: "space-y-6" },
-                        e('div', { className: "flex items-center justify-between" },
-                            e('h2', { className: "text-2xl font-bold text-gray-800" }, "Gestión de Calificaciones"),
-                            e('button', { className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2" },
-                                e(Icons.Download, { className: "h-4 w-4" }),
-                                e('span', null, "Exportar Boletines")
-                            )
-                        ),
-
-                        e('div', { className: "bg-white rounded-xl shadow-md p-6 border border-gray-200" },
-                            e('div', { className: "grid grid-cols-1 md:grid-cols-3 gap-4 mb-6" },
-                                e('select', { 
-                                    value: selectedGrado,
-                                    onChange: (e) => setSelectedGrado(e.target.value),
-                                    className: "px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                },
-                                    e('option', null, "11-A"),
-                                    e('option', null, "11-B"),
-                                    e('option', null, "10-A"),
-                                    e('option', null, "10-B")
-                                ),
-
-                                e('select', { 
-                                    value: selectedAsignatura,
-                                    onChange: (e) => setSelectedAsignatura(e.target.value),
-                                    className: "px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                },
-                                    e('option', null, "Matemáticas"),
-                                    e('option', null, "Español"),
-                                    e('option', null, "Ciencias"),
-                                    e('option', null, "Sociales"),
-                                    e('option', null, "Inglés")
-                                ),
-
-                                e('select', { className: "px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" },
-                                    e('option', null, "Periodo 1"),
-                                    e('option', null, "Periodo 2"),
-                                    e('option', null, "Periodo 3"),
-                                    e('option', null, "Periodo 4")
-                                )
-                            ),
-
-                            e('div', { className: "overflow-x-auto" },
-                                e('table', { className: "w-full" },
-                                    e('thead', { className: "bg-gray-50 border-b border-gray-200" },
-                                        e('tr', null,
-                                            e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Estudiante"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "P1"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "P2"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "P3"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "Final"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "Estado")
-                                        )
-                                    ),
-                                    e('tbody', { className: "divide-y divide-gray-200" },
-                                        estudiantes.filter(e => e.grado === selectedGrado).map(est => {
-                                          const notas = calificaciones[est.codigo]?.[selectedAsignatura] || { p1: 0, p2: 0, p3: 0, final: 0 };
-                                          return (
-                                            e('tr', { key: est.id, className: "hover:bg-gray-50" },
-                                                e('td', { className: "px-4 py-3 text-sm font-medium text-gray-800" }, est.nombre),
-                                                e('td', { className: "px-4 py-3 text-center" },
-                                                    e('input', { 
-                                                        type: "number", 
-                                                        step: "0.1", 
-                                                        min: "0", 
-                                                        max: "5", 
-                                                        defaultValue: notas.p1,
-                                                        className: "w-16 px-2 py-1 text-center border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-                                                    })
-                                                ),
-                                                e('td', { className: "px-4 py-3 text-center" },
-                                                    e('input', { 
-                                                        type: "number", 
-                                                        step: "0.1", 
-                                                        min: "0", 
-                                                        max: "5", 
-                                                        defaultValue: notas.p2,
-                                                        className: "w-16 px-2 py-1 text-center border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-                                                    })
-                                                ),
-                                                e('td', { className: "px-4 py-3 text-center" },
-                                                    e('input', { 
-                                                        type: "number", 
-                                                        step: "0.1", 
-                                                        min: "0", 
-                                                        max: "5", 
-                                                        defaultValue: notas.p3,
-                                                        className: "w-16 px-2 py-1 text-center border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-                                                    })
-                                                ),
-                                                e('td', { className: "px-4 py-3 text-center" },
-                                                    e('span', { className: "font-bold text-blue-600" }, notas.final.toFixed(1))
-                                                ),
-                                                e('td', { className: "px-4 py-3 text-center" },
-                                                    e('span', { className: `inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                        notas.final >= 3.5 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                                                    }`},
-                                                        notas.final >= 3.5 ? 'Aprobado' : 'Reprobado'
-                                                    )
-                                                )
-                                            ));
-                                        })
-                                    )
-                                )
-                            ),
-
-                            e('div', { className: "mt-6 flex justify-end space-x-3" },
-                                e('button', { className: "px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50" },
-                                    "Cancelar"
-                                ),
-                                e('button', { className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700" },
-                                    "Guardar Cambios"
-                                )
-                            )
-                        )
-                    )
-                );
-            };
-
-            const AsistenciaView = () => {
-                const [selectedDate, setSelectedDate] = useState('2025-10-15');
-                const [selectedGrado, setSelectedGrado] = useState('11-A');
-
-                return (
-                    e('div', { className: "space-y-6" },
-                        e('div', { className: "flex items-center justify-between" },
-                            e('h2', { className: "text-2xl font-bold text-gray-800" }, "Control de Asistencia"),
-                            e('button', { className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2" },
-                                e(Icons.Download, { className: "h-4 w-4" }),
-                                e('span', null, "Exportar Reporte")
-                            )
-                        ),
-
-                        e('div', { className: "bg-white rounded-xl shadow-md p-6 border border-gray-200" },
-                            e('div', { className: "grid grid-cols-1 md:grid-cols-2 gap-4 mb-6" },
-                                e('div', null,
-                                    e('label', { className: "block text-sm font-medium text-gray-700 mb-2" }, "Fecha"),
-                                    e('input', { 
-                                        type: "date", 
-                                        value: selectedDate,
-                                        onChange: (e) => setSelectedDate(e.target.value),
-                                        className: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    })
-                                ),
-                                e('div', null,
-                                    e('label', { className: "block text-sm font-medium text-gray-700 mb-2" }, "Grado"),
-                                    e('select', { 
-                                        value: selectedGrado,
-                                        onChange: (e) => setSelectedGrado(e.target.value),
-                                        className: "w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    },
-                                        e('option', null, "11-A"),
-                                        e('option', null, "11-B"),
-                                        e('option', null, "10-A"),
-                                        e('option', null, "10-B")
-                                    )
-                                )
-                            ),
-
-                            e('div', { className: "overflow-x-auto" },
-                                e('table', { className: "w-full" },
-                                    e('thead', { className: "bg-gray-50 border-b border-gray-200" },
-                                        e('tr', null,
-                                            e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Código"),
-                                            e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Estudiante"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "Estado"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "Observaciones")
-                                        )
-                                    ),
-                                    e('tbody', { className: "divide-y divide-gray-200" },
-                                        estudiantes.filter(e => e.grado === selectedGrado).map(est => (
-                                            e('tr', { key: est.id, className: "hover:bg-gray-50" },
-                                                e('td', { className: "px-4 py-3 text-sm font-mono text-gray-600" }, est.codigo),
-                                                e('td', { className: "px-4 py-3 text-sm font-medium text-gray-800" }, est.nombre),
-                                                e('td', { className: "px-4 py-3 text-center" },
-                                                    e('div', { className: "flex justify-center space-x-2" },
-                                                        e('button', { className: "px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 text-sm font-medium" },
-                                                            "Presente"
-                                                        ),
-                                                        e('button', { className: "px-3 py-1 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 text-sm font-medium" },
-                                                            "Ausente"
-                                                        ),
-                                                        e('button', { className: "px-3 py-1 bg-yellow-100 text-yellow-700 rounded-lg hover:bg-yellow-200 text-sm font-medium" },
-                                                            "Tardanza"
-                                                        )
-                                                    )
-                                                ),
-                                                e('td', { className: "px-4 py-3" },
-                                                    e('input', { 
-                                                        type: "text", 
-                                                        placeholder: "Observaciones...",
-                                                        className: "w-full px-3 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500"
-                                                    })
-                                                )
-                                            )
-                                        ))
-                                    )
-                                )
-                            ),
-
-                            e('div', { className: "mt-6 flex justify-end" },
-                                e('button', { className: "px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium" },
-                                    "Guardar Asistencia"
-                                )
-                            )
-                        ),
-
-                        e('div', { className: "grid grid-cols-1 md:grid-cols-3 gap-6" },
-                            e('div', { className: "bg-white rounded-xl shadow-md p-6 border border-gray-200" },
-                                e('div', { className: "flex items-center justify-between mb-4" },
-                                    e('h3', { className: "font-semibold text-gray-800" }, "Presentes"),
-                                    e('div', { className: "h-12 w-12 bg-green-100 rounded-full flex items-center justify-center" },
-                                        e(Icons.CheckCircle, { className: "h-6 w-6 text-green-600" })
-                                    )
-                                ),
-                                e('p', { className: "text-3xl font-bold text-green-600" }, "24"),
-                                e('p', { className: "text-sm text-gray-500 mt-1" }, "93% de asistencia")
-                            ),
-
-                            e('div', { className: "bg-white rounded-xl shadow-md p-6 border border-gray-200" },
-                                e('div', { className: "flex items-center justify-between mb-4" },
-                                    e('h3', { className: "font-semibold text-gray-800" }, "Ausentes"),
-                                    e('div', { className: "h-12 w-12 bg-red-100 rounded-full flex items-center justify-center" },
-                                        e(Icons.AlertCircle, { className: "h-6 w-6 text-red-600" })
-                                    )
-                                ),
-                                e('p', { className: "text-3xl font-bold text-red-600" }, "2"),
-                                e('p', { className: "text-sm text-gray-500 mt-1" }, "7% de ausencias")
-                            ),
-
-                            e('div', { className: "bg-white rounded-xl shadow-md p-6 border border-gray-200" },
-                                e('div', { className: "flex items-center justify-between mb-4" },
-                                    e('h3', { className: "font-semibold text-gray-800" }, "Tardanzas"),
-                                    e('div', { className: "h-12 w-12 bg-yellow-100 rounded-full flex items-center justify-center" },
-                                        e(Icons.Clock, { className: "h-6 w-6 text-yellow-600" })
-                                    )
-                                ),
-                                e('p', { className: "text-3xl font-bold text-yellow-600" }, "1"),
-                                e('p', { className: "text-sm text-gray-500 mt-1" }, "Llegadas tarde")
-                            )
-                        )
-                    )
-                );
-            };
-
-            const AnunciosView = () => (
-                e('div', { className: "space-y-6" },
-                    e('div', { className: "flex items-center justify-between" },
-                        e('h2', { className: "text-2xl font-bold text-gray-800" }, "Anuncios Institucionales"),
-                        currentUser.role === 'directivo' && (
-                            e('button', { className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2" },
-                                e(Icons.Plus, { className: "h-4 w-4" }),
-                                e('span', null, "Nuevo Anuncio")
-                            )
-                        )
-                    ),
-
-                    e('div', { className: "space-y-4" },
-                        anuncios.map(anuncio => (
-                            e('div', { 
-                                key: anuncio.id, 
-                                className: "bg-white rounded-xl shadow-md p-6 border-l-4 border-gray-200 hover:shadow-lg transition-shadow",
-                                style: { borderLeftColor: anuncio.prioridad === 'alta' ? '#ef4444' : anuncio.prioridad === 'media' ? '#f59e0b' : '#3b82f6' }
-                            },
-                                e('div', { className: "flex items-start justify-between mb-3" },
-                                    e('div', { className: "flex-1" },
-                                        e('div', { className: "flex items-center space-x-3 mb-2" },
-                                            e('h3', { className: "text-lg font-bold text-gray-800" }, anuncio.titulo),
-                                            e('span', { className: `px-2 py-1 text-xs font-semibold rounded-full ${
-                                                anuncio.prioridad === 'alta' ? 'bg-red-100 text-red-700' :
-                                                anuncio.prioridad === 'media' ? 'bg-yellow-100 text-yellow-700' :
-                                                'bg-blue-100 text-blue-700'
-                                            }`},
-                                                anuncio.prioridad === 'alta' ? 'Urgente' : anuncio.prioridad === 'media' ? 'Importante' : 'Normal'
-                                            )
-                                        ),
-                                        e('p', { className: "text-gray-600 text-sm mb-3" }, anuncio.contenido),
-                                        e('div', { className: "flex items-center space-x-4 text-xs text-gray-500" },
-                                            e('span', { className: "flex items-center" },
-                                                e(Icons.User, { className: "h-3 w-3 mr-1" }),
-                                                anuncio.autor
-                                            ),
-                                            e('span', { className: "flex items-center" },
-                                                e(Icons.Calendar, { className: "h-3 w-3 mr-1" }),
-                                                anuncio.fecha
-                                            )
-                                        )
-                                    ),
-                                    currentUser.role === 'directivo' && (
-                                        e('div', { className: "flex space-x-2" },
-                                            e('button', { className: "p-2 text-blue-600 hover:bg-blue-50 rounded" },
-                                                e(Icons.Edit, { className: "h-4 w-4" })
-                                            ),
-                                            e('button', { className: "p-2 text-red-600 hover:bg-red-50 rounded" },
-                                                e(Icons.Trash2, { className: "h-4 w-4" })
-                                            )
-                                        )
-                                    )
-                                )
-                            )
-                        ))
-                    )
-                )
-            );
-
-            const MensajesView = () => (
-                e('div', { className: "space-y-6" },
-                    e('div', { className: "flex items-center justify-between" },
-                        e('h2', { className: "text-2xl font-bold text-gray-800" }, "Mensajería"),
-                        e('button', { className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2" },
-                            e(Icons.Plus, { className: "h-4 w-4" }),
-                            e('span', null, "Nuevo Mensaje")
-                        )
-                    ),
-
-                    e('div', { className: "grid grid-cols-1 lg:grid-cols-3 gap-6" },
-                        e('div', { className: "lg:col-span-1 bg-white rounded-xl shadow-md border border-gray-200" },
-                            e('div', { className: "p-4 border-b border-gray-200" },
-                                e('div', { className: "relative" },
-                                    e(Icons.Search, { className: "absolute left-3 top-3 h-4 w-4 text-gray-400" }),
-                                    e('input', {
-                                        type: "text",
-                                        placeholder: "Buscar mensajes...",
-                                        className: "w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
-                                    })
-                                )
-                            ),
-                            e('div', { className: "divide-y divide-gray-200" },
-                                mensajes.map(mensaje => (
-                                    e('div', { key: mensaje.id, className: `p-4 hover:bg-gray-50 cursor-pointer ${!mensaje.leido ? 'bg-blue-50' : ''}` },
-                                        e('div', { className: "flex items-start space-x-3" },
-                                            e('div', { className: "h-10 w-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0" },
-                                                mensaje.de.charAt(0)
-                                            ),
-                                            e('div', { className: "flex-1 min-w-0" },
-                                                e('p', { className: "text-sm font-semibold text-gray-800 truncate" }, mensaje.de),
-                                                e('p', { className: "text-xs text-gray-600 truncate" }, mensaje.asunto),
-                                                e('p', { className: "text-xs text-gray-400 mt-1" }, mensaje.fecha)
-                                            ),
-                                            !mensaje.leido && (
-                                                e('div', { className: "h-2 w-2 bg-blue-600 rounded-full flex-shrink-0" })
-                                            )
-                                        )
-                                    )
-                                ))
-                            )
-                        ),
-
-                        e('div', { className: "lg:col-span-2 bg-white rounded-xl shadow-md border border-gray-200 p-6" },
-                            e('div', { className: "border-b border-gray-200 pb-4 mb-4" },
-                                e('h3', { className: "text-lg font-bold text-gray-800 mb-2" }, "Rendimiento de Ana"),
-                                e('div', { className: "flex items-center space-x-4 text-sm text-gray-600" },
-                                    e('span', { className: "flex items-center" },
-                                        e(Icons.User, { className: "h-4 w-4 mr-1" }),
-                                        "María González"
-                                    ),
-                                    e('span', { className: "flex items-center" },
-                                        e(Icons.Calendar, { className: "h-4 w-4 mr-1" }),
-                                        "2025-10-13"
-                                    )
-                                )
-                            ),
-                            e('div', { className: "prose max-w-none" },
-                                e('p', { className: "text-gray-700 mb-4" }, "Estimado padre de familia,"),
-                                e('p', { className: "text-gray-700 mb-4" },
-                                    "Quiero informarle que Ana ha mostrado un excelente desempeño académico durante este periodo. ",
-                                    "Su dedicación y responsabilidad son ejemplares. Ha obtenido calificaciones destacadas en todas ",
-                                    "las evaluaciones y participa activamente en clase."
-                                ),
-                                e('p', { className: "text-gray-700 mb-4" },
-                                    "Le sugiero que continúe motivándola en sus estudios. Si tiene alguna pregunta o inquietud, ",
-                                    "no dude en contactarme."
-                                ),
-                                e('p', { className: "text-gray-700" }, "Cordialmente,", e('br', null), "María González", e('br', null), "Docente de Matemáticas")
-                            ),
-                            e('div', { className: "mt-6 pt-4 border-t border-gray-200" },
-                                e('textarea', { 
-                                    placeholder: "Escribir respuesta...",
-                                    rows: "3",
-                                    className: "w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                }),
-                                e('div', { className: "mt-3 flex justify-end" },
-                                    e('button', { className: "px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2" },
-                                        e(Icons.Send, { className: "h-4 w-4" }),
-                                        e('span', null, "Enviar Respuesta")
-                                    )
-                                )
-                            )
-                        )
-                    )
-                )
-            );
-            
-            const MisNotasView = () => {
-                const estudianteData = currentUser.role === 'estudiante' ? calificaciones['2025001'] : {};
-                
-                return (
-                    e('div', { className: "space-y-6" },
-                        e('div', { className: "flex items-center justify-between" },
-                            e('h2', { className: "text-2xl font-bold text-gray-800" }, "Mis Calificaciones"),
-                            e('button', { className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2" },
-                                e(Icons.Download, { className: "h-4 w-4" }),
-                                e('span', null, "Descargar Boletín")
-                            )
-                        ),
-
-                        e('div', { className: "grid grid-cols-1 md:grid-cols-4 gap-6" },
-                            e('div', { className: "bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg" },
-                                e('p', { className: "text-blue-100 mb-2" }, "Promedio General"),
-                                e('p', { className: "text-4xl font-bold" }, "4.5")
-                            ),
-                            e('div', { className: "bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg" },
-                                e('p', { className: "text-green-100 mb-2" }, "Asistencia"),
-                                e('p', { className: "text-4xl font-bold" }, "95%")
-                            ),
-                            e('div', { className: "bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg" },
-                                e('p', { className: "text-orange-100 mb-2" }, "Materias"),
-                                e('p', { className: "text-4xl font-bold" }, "5")
-                            ),
-                            e('div', { className: "bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg" },
-                                e('p', { className: "text-purple-100 mb-2" }, "Periodo Actual"),
-                                e('p', { className: "text-4xl font-bold" }, "3")
-                            )
-                        ),
-
-                        e('div', { className: "bg-white rounded-xl shadow-md p-6 border border-gray-200" },
-                            e('h3', { className: "text-lg font-bold text-gray-800 mb-4" }, "Detalle de Calificaciones"),
-                            e('div', { className: "overflow-x-auto" },
-                                e('table', { className: "w-full" },
-                                    e('thead', { className: "bg-gray-50 border-b border-gray-200" },
-                                        e('tr', null,
-                                            e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Asignatura"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "Periodo 1"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "Periodo 2"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "Periodo 3"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "Definitiva"),
-                                            e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "Estado")
-                                        )
-                                    ),
-                                    e('tbody', { className: "divide-y divide-gray-200" },
-                                        Object.entries(estudianteData).map(([asignatura, notas]) => (
-                                            e('tr', { key: asignatura, className: "hover:bg-gray-50" },
-                                                e('td', { className: "px-4 py-3 text-sm font-medium text-gray-800" }, asignatura),
-                                                e('td', { className: "px-4 py-3 text-center text-sm font-semibold text-gray-700" }, notas.p1),
-                                                e('td', { className: "px-4 py-3 text-center text-sm font-semibold text-gray-700" }, notas.p2),
-                                                e('td', { className: "px-4 py-3 text-center text-sm font-semibold text-gray-700" }, notas.p3),
-                                                e('td', { className: "px-4 py-3 text-center" },
-                                                    e('span', { className: `inline-flex px-3 py-1 text-sm font-bold rounded-full ${
-                                                        notas.final >= 4.5 ? 'bg-green-100 text-green-800' :
-                                                        notas.final >= 4.0 ? 'bg-blue-100 text-blue-800' :
-                                                        notas.final >= 3.5 ? 'bg-yellow-100 text-yellow-800' :
-                                                        'bg-red-100 text-red-800'
-                                                    }`},
-                                                        notas.final.toFixed(1)
-                                                    )
-                                                ),
-                                                e('td', { className: "px-4 py-3 text-center" },
-                                                    e('span', { className: `inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                                        notas.final >= 3.5 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                                                    }`},
-                                                        notas.final >= 3.5 ? 'Aprobado' : 'Reprobado'
-                                                    )
-                                                )
-                                            )
-                                        ))
-                                    )
-                                )
-                            )
-                        )
-                    )
-                );
-            };
-
-            const RendimientoPadreView = () => (
-                e('div', { className: "space-y-6" },
-                    e('div', { className: "flex items-center justify-between" },
-                        e('div', null,
-                            e('h2', { className: "text-2xl font-bold text-gray-800" }, `Rendimiento de ${currentUser.hijo}`),
-                            e('p', { className: "text-gray-600" }, `Grado: ${currentUser.grado}`)
-                        ),
-                        e('button', { className: "px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2" },
-                            e(Icons.Download, { className: "h-4 w-4" }),
-                            e('span', null, "Descargar Informe")
-                        )
-                    ),
-
-                    e('div', { className: "grid grid-cols-1 md:grid-cols-4 gap-6" },
-                        e('div', { className: "bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg" },
-                            e('div', { className: "flex items-center justify-between mb-4" },
-                                e(Icons.BookOpen, { className: "h-8 w-8" }),
-                                e('span', { className: "text-3xl font-bold" }, "4.5")
-                            ),
-                            e('p', { className: "text-blue-100" }, "Promedio General")
-                        ),
-
-                        e('div', { className: "bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg" },
-                            e('div', { className: "flex items-center justify-between mb-4" },
-                                e(Icons.Calendar, { className: "h-8 w-8" }),
-                                e('span', { className: "text-3xl font-bold" }, "95%")
-                            ),
-                            e('p', { className: "text-green-100" }, "Asistencia")
-                        ),
-
-                        e('div', { className: "bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg" },
-                            e('div', { className: "flex items-center justify-between mb-4" },
-                                e(Icons.CheckCircle, { className: "h-8 w-8" }),
-                                e('span', { className: "text-3xl font-bold" }, "5/5")
-                            ),
-                            e('p', { className: "text-orange-100" }, "Materias Aprobadas")
-                        ),
-
-                        e('div', { className: "bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg" },
-                            e('div', { className: "flex items-center justify-between mb-4" },
-                                e(Icons.BarChart3, { className: "h-8 w-8" }),
-                                e('span', { className: "text-3xl font-bold" }, "3°")
-                            ),
-                            e('p', { className: "text-purple-100" }, "Posición en Clase")
-                        )
-                    ),
-
-                    e('div', { className: "bg-white rounded-xl shadow-md p-6 border border-gray-200" },
-                        e('h3', { className: "text-lg font-bold text-gray-800 mb-4" }, "Calificaciones por Asignatura"),
-                        e('div', { className: "overflow-x-auto" },
-                            e('table', { className: "w-full" },
-                                e('thead', { className: "bg-gray-50 border-b border-gray-200" },
-                                    e('tr', null,
-                                        e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Asignatura"),
-                                        e('th', { className: "px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase" }, "Docente"),
-                                        e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "P1"),
-                                        e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "P2"),
-                                        e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "P3"),
-                                        e('th', { className: "px-4 py-3 text-center text-xs font-semibold text-gray-600 uppercase" }, "Definitiva")
-                                    )
-                                ),
-                                e('tbody', { className: "divide-y divide-gray-200" },
-                                    Object.entries(calificaciones['2025001']).map(([asignatura, notas]) => (
-                                        e('tr', { key: asignatura, className: "hover:bg-gray-50" },
-                                            e('td', { className: "px-4 py-3 text-sm font-medium text-gray-800" }, asignatura),
-                                            e('td', { className: "px-4 py-3 text-sm text-gray-600" },
-                                                asignatura === 'Matemáticas' ? 'María González' : 'Juan Pérez'
-                                            ),
-                                            e('td', { className: "px-4 py-3 text-center text-sm" }, notas.p1),
-                                            e('td', { className: "px-4 py-3 text-center text-sm" }, notas.p2),
-                                            e('td', { className: "px-4 py-3 text-center text-sm" }, notas.p3),
-                                            e('td', { className: "px-4 py-3 text-center" },
-                                                e('span', { className: `inline-flex px-3 py-1 text-sm font-bold rounded-full ${
-                                                    notas.final >= 4.5 ? 'bg-green-100 text-green-800' :
-                                                    notas.final >= 4.0 ? 'bg-blue-100 text-blue-800' :
-                                                    'bg-yellow-100 text-yellow-800'
-                                                }`},
-                                                    notas.final.toFixed(1)
-                                                )
-                                            )
-                                        )
-                                    ))
-                                )
-                            )
-                        )
-                    )
-                )
-            );
-
-            // Renderizado principal
-            const renderContent = () => {
-                if (currentView === 'dashboard') {
-                    if (currentUser.role === 'directivo') return e(DashboardDirectivo);
-                    if (currentUser.role === 'docente') return e(DashboardDirectivo);
-                    if (currentUser.role === 'estudiante') return e(MisNotasView);
-                    if (currentUser.role === 'padre') return e(RendimientoPadreView);
-                }
-                
-                switch(currentView) {
-                    case 'estudiantes': return e(EstudiantesView);
-                    case 'mis-estudiantes': return e(EstudiantesView);
-                    case 'calificaciones': return e(CalificacionesView);
-                    case 'mis-notas': return e(MisNotasView);
-                    case 'asistencia': return e(AsistenciaView);
-                    case 'anuncios': return e(AnunciosView);
-                    case 'mensajes': return e(MensajesView);
-                    case 'reportes': return e(DashboardDirectivo); // Simplificado
-                    case 'rendimiento': return e(RendimientoPadreView);
-                    case 'configuracion': return e(DashboardDirectivo); // Simplificado
-                    default: return e(DashboardDirectivo);
-                }
-            };
-
-            if (!currentUser) {
-                return e(LoginView);
-            }
-
-            return e('div', { className: "min-h-screen bg-gray-50" },
-                e(Navbar),
-                e('div', { className: "flex" },
-                    e(Sidebar),
-                    e('main', { className: "flex-1 p-6 lg:p-8" },
-                        renderContent()
-                    )
-                )
-            );
-        };
-
-
-        // Montar la aplicación
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(e(EduGestionMVP));
-    </script>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>EduGestión <small>MVP — Demo</small></h1>
+      </div>
+    </div>
+    <div class="nav" id="nav"></div>
+    <div class="footer">Hecho con ❤ en Vanilla JS — LocalStorage
+      <br/>Demo educativa sin backend
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="top">
+      <div class="search">
+        <input id="globalSearch" class="input" placeholder="Buscar en estudiantes, cursos, matrículas…" />
+        <button class="btn secondary" id="btnClear">Limpiar</button>
+      </div>
+      <div class="actions">
+        <button class="btn ghost" id="btnSeed">Cargar datos de ejemplo</button>
+        <button class="btn" id="btnExport">Exportar JSON</button>
+        <label class="btn secondary" style="cursor:pointer;display:inline-block">
+          Importar JSON
+          <input type="file" id="fileImport" accept="application/json" hidden />
+        </label>
+      </div>
+    </div>
+
+    <section id="view"></section>
+  </main>
+</div>
+
+<script>
+/* ==========================================================
+   EduGestión MVP — Vanilla JS + LocalStorage
+   Módulos: Dashboard, Estudiantes, Docentes, Cursos, Matrículas,
+            Asistencia, Calificaciones, Mensajes, Reportes
+   ========================================================== */
+const $ = (sel, ctx=document) => ctx.querySelector(sel);
+const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+const uid = (p='id')=> p+"_"+Math.random().toString(36).slice(2,9);
+
+const DB_KEY = 'edugestion_mvp_v1';
+const emptyDB = { students:[], teachers:[], courses:[], enrollments:[], attendance:[], grades:[], messages:[] };
+
+const db = {
+  data: load(),
+  save(){ localStorage.setItem(DB_KEY, JSON.stringify(this.data)); render(); },
+  reset(){ this.data = structuredClone(emptyDB); this.save(); }
+};
+function load(){ try{ return JSON.parse(localStorage.getItem(DB_KEY)) || structuredClone(emptyDB) }catch{ return structuredClone(emptyDB)} }
+
+// Routing / Views
+const routes = [
+  { id:'dashboard', label:'Dashboard', icon:'📊', render:renderDashboard },
+  { id:'students', label:'Estudiantes', icon:'🎓', render:renderStudents },
+  { id:'teachers', label:'Docentes', icon:'👩‍🏫', render:renderTeachers },
+  { id:'courses', label:'Cursos', icon:'📚', render:renderCourses },
+  { id:'enrollments', label:'Matrículas', icon:'🧾', render:renderEnrollments },
+  { id:'attendance', label:'Asistencia', icon:'🗓️', render:renderAttendance },
+  { id:'grades', label:'Calificaciones', icon:'🧮', render:renderGrades },
+  { id:'messages', label:'Mensajes', icon:'💬', render:renderMessages },
+  { id:'reports', label:'Reportes', icon:'📑', render:renderReports },
+];
+
+let state = { route:'dashboard', search:'' };
+
+function setRoute(id){ state.route=id; window.location.hash = id; highlightNav(); render(); }
+function highlightNav(){ $$('#nav button').forEach(b=>b.classList.toggle('active', b.dataset.id===state.route)); }
+
+function initNav(){
+  const nav = $('#nav');
+  nav.innerHTML = routes.map(r=>`<button data-id="${r.id}" aria-label="${r.label}">${r.icon} ${r.label}</button>`).join('');
+  nav.addEventListener('click', (e)=>{ const b=e.target.closest('button'); if(!b) return; setRoute(b.dataset.id); });
+}
+
+// Global search
+$('#globalSearch').addEventListener('input', e=>{ state.search = e.target.value.trim().toLowerCase(); render(); });
+$('#btnClear').addEventListener('click', ()=>{ state.search=''; $('#globalSearch').value=''; render(); });
+
+// Export / Import / Seed
+$('#btnExport').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(db.data,null,2)], {type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='edugestion_mvp.json'; a.click(); URL.revokeObjectURL(a.href);
+});
+$('#fileImport').addEventListener('change', async (e)=>{
+  const f = e.target.files[0]; if(!f) return;
+  const txt = await f.text();
+  try{ const json=JSON.parse(txt); db.data = Object.assign(structuredClone(emptyDB), json); db.save(); alert('Datos importados ✔'); }
+  catch{ alert('Archivo inválido'); }
+  e.target.value='';
+});
+$('#btnSeed').addEventListener('click', ()=>{ seed(); db.save(); alert('Datos de ejemplo cargados'); });
+
+// ---------- Render root ----------
+function render(){
+  const r = routes.find(x=>x.id===state.route) || routes[0];
+  $('#view').innerHTML = r.render();
+  attachHandlersForCurrentView();
+  // Update dashboard numbers in sidebar pills? (Optional)
+}
+
+// ---------- Components helpers ----------
+function kpiCard(title, value, trend=null){
+  const t = trend ? `<div class="trend ${trend>0?'up':'down'}">${trend>0? '▲ +'+trend+'%':'▼ '+trend+'%'} vs. ant.</div>` : '';
+  return `<div class="card"><h3>${title}</h3><div class="metric">${value}</div>${t}</div>`;
+}
+function table(headers, rows){
+  return `<div class="panel">
+    <table>
+      <thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>
+      <tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>
+    </table>
+  </div>`;
+}
+function pill(text){ return `<span class="pill">${text}</span>`; }
+
+// ---------- DASHBOARD ----------
+function renderDashboard(){
+  const s = db.data.students.length,
+        t = db.data.teachers.length,
+        c = db.data.courses.length,
+        e = db.data.enrollments.length;
+  const attendanceRate = calcAttendanceRate();
+  const avgGrade = calcAverageGrade();
+
+  return `
+    <div class="cards">
+      ${kpiCard('Estudiantes', s)}
+      ${kpiCard('Docentes', t)}
+      ${kpiCard('Cursos', c)}
+      ${kpiCard('Matrículas', e)}
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h2>Resumen académico</h2>
+        <div class="pills">${pill('Asistencia promedio: ' + (attendanceRate*100).toFixed(1) + '%')}${pill('Nota promedio: ' + (isNaN(avgGrade)?'—':avgGrade.toFixed(1)))}</div>
+        ${recentActivity()}
+      </div>
+      <div class="panel">
+        <h2>Acciones rápidas</h2>
+        <div style="display:grid;gap:8px">
+          <button class="btn" data-goto="students">➕ Registrar estudiante</button>
+          <button class="btn secondary" data-goto="courses">➕ Crear curso</button>
+          <button class="btn secondary" data-goto="enrollments">➕ Nueva matrícula</button>
+          <button class="btn secondary" data-goto="grades">➕ Registrar calificación</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function recentActivity(){
+  const items = [];
+  db.data.enrollments.slice(-5).forEach(x=> items.push({t:'Matrícula', d:x.createdAt}));
+  db.data.grades.slice(-5).forEach(x=> items.push({t:'Calificación', d:x.createdAt}));
+  db.data.attendance.slice(-5).forEach(x=> items.push({t:'Asistencia', d:x.date}));
+  items.sort((a,b)=> (b.d||'').localeCompare(a.d||''));
+  const rows = items.slice(0,8).map(x=>[`<span class="tag">${x.t}</span>`, new Date(x.d||Date.now()).toLocaleString()]);
+  return table(['Evento','Fecha/Hora'], rows.length?rows:[['—','—']]);
+}
+function calcAttendanceRate(){
+  const at = db.data.attendance; if(!at.length) return 0;
+  const present = at.filter(a=>a.present).length; return present/at.length;
+}
+function calcAverageGrade(){
+  const g = db.data.grades; if(!g.length) return NaN; return g.reduce((s,x)=>s+Number(x.value||0),0)/g.length;
+}
+
+// ---------- STUDENTS ----------
+function renderStudents(){
+  const rows = db.data.students
+    .filter(x=> matchSearch([x.firstName,x.lastName,x.document,x.group]))
+    .map(s=>[
+      `<strong>${s.lastName}, ${s.firstName}</strong><div class="sub" style="color:var(--sub);font-size:12px">Doc: ${s.document} • Grupo: ${s.group||'—'}</div>`,
+      `<span class="tag">${s.status||'Activo'}</span>`,
+      `<div style="display:flex;gap:8px"><button class="btn secondary" data-edit-stu="${s.id}">Editar</button><button class="btn ghost" data-del-stu="${s.id}">Eliminar</button></div>`
+    ]);
+
+  return `
+    <div class="panel">
+      <h2>Estudiantes</h2>
+      <form id="formStudent" class="full">
+        <label><span>Nombre</span><input required name="firstName" placeholder="Ana"/></label>
+        <label><span>Apellido</span><input required name="lastName" placeholder="Pérez"/></label>
+        <label><span>Documento</span><input required name="document" placeholder="123456"/></label>
+        <label><span>Grupo/Curso</span><input name="group" placeholder="11-2"/></label>
+        <label class="full"><span>Estado</span>
+          <select name="status"><option>Activo</option><option>Inactivo</option></select>
+        </label>
+        <div class="full" style="display:flex;gap:8px;justify-content:flex-end">
+          <input type="hidden" name="id" />
+          <button class="btn" type="submit">Guardar</button>
+          <button class="btn secondary" type="reset" id="resetStudent">Limpiar</button>
+        </div>
+      </form>
+    </div>
+    ${table(['Estudiante','Estado','Acciones'], rows)}
+  `;
+}
+
+// ---------- TEACHERS ----------
+function renderTeachers(){
+  const rows = db.data.teachers
+    .filter(x=> matchSearch([x.firstName,x.lastName,x.document, x.area]))
+    .map(t=>[
+      `<strong>${t.lastName}, ${t.firstName}</strong><div class="sub" style="color:var(--sub);font-size:12px">Doc: ${t.document} • Área: ${t.area||'—'}</div>`,
+      `<span class="tag">${t.email||'—'}</span>`,
+      `<div style="display:flex;gap:8px"><button class="btn secondary" data-edit-tea="${t.id}">Editar</button><button class="btn ghost" data-del-tea="${t.id}">Eliminar</button></div>`
+    ]);
+
+  return `
+    <div class="panel">
+      <h2>Docentes</h2>
+      <form id="formTeacher">
+        <label><span>Nombre</span><input required name="firstName"/></label>
+        <label><span>Apellido</span><input required name="lastName"/></label>
+        <label><span>Documento</span><input required name="document"/></label>
+        <label><span>Área</span><input name="area" placeholder="Matemáticas"/></label>
+        <label class="full"><span>Email</span><input type="text" name="email" placeholder="docente@colegio.edu.co"/></label>
+        <div class="full" style="display:flex;gap:8px;justify-content:flex-end">
+          <input type="hidden" name="id" />
+          <button class="btn" type="submit">Guardar</button>
+          <button class="btn secondary" type="reset" id="resetTeacher">Limpiar</button>
+        </div>
+      </form>
+    </div>
+    ${table(['Docente','Contacto','Acciones'], rows)}
+  `;
+}
+
+// ---------- COURSES ----------
+function renderCourses(){
+  const rows = db.data.courses
+    .filter(x=> matchSearch([x.name,x.code,x.grade, x.schedule]))
+    .map(c=>[
+      `<strong>${c.name}</strong><div class="sub" style="color:var(--sub);font-size:12px">Código: ${c.code} • Grado: ${c.grade||'—'} • Docente: ${teacherName(c.teacherId)||'—'}</div>`,
+      `<span class="tag">${c.schedule||'—'}</span>`,
+      `<div style="display:flex;gap:8px"><button class="btn secondary" data-edit-course="${c.id}">Editar</button><button class="btn ghost" data-del-course="${c.id}">Eliminar</button></div>`
+    ]);
+
+  return `
+    <div class="panel">
+      <h2>Cursos</h2>
+      <form id="formCourse">
+        <label><span>Nombre</span><input required name="name" placeholder="Matemáticas"/></label>
+        <label><span>Código</span><input required name="code" placeholder="MAT-11"/></label>
+        <label><span>Grado</span><input name="grade" placeholder="11"/></label>
+        <label><span>Horario</span><input name="schedule" placeholder="Lun-Mié 8:00-9:00"/></label>
+        <label class="full"><span>Docente</span>
+          <select name="teacherId">${options([{id:'',name:'— Seleccione —'}, ...db.data.teachers.map(t=>({id:t.id, name: t.lastName+", "+t.firstName}))])}</select>
+        </label>
+        <div class="full" style="display:flex;gap:8px;justify-content:flex-end">
+          <input type="hidden" name="id" />
+          <button class="btn" type="submit">Guardar</button>
+          <button class="btn secondary" type="reset" id="resetCourse">Limpiar</button>
+        </div>
+      </form>
+    </div>
+    ${table(['Curso','Horario','Acciones'], rows)}
+  `;
+}
+
+// ---------- ENROLLMENTS ----------
+function renderEnrollments(){
+  const rows = db.data.enrollments
+    .filter(x=> matchSearch([studentName(x.studentId), courseName(x.courseId)]))
+    .map(e=>[
+      `<div><strong>${studentName(e.studentId)}</strong><div class="sub" style="color:var(--sub);font-size:12px">Curso: ${courseName(e.courseId)}</div></div>`,
+      `<span class="tag">${new Date(e.createdAt).toLocaleDateString()}</span>`,
+      `<div style="display:flex;gap:8px"><button class="btn secondary" data-del-enr="${e.id}">Eliminar</button></div>`
+    ]);
+
+  return `
+    <div class="panel">
+      <h2>Matrículas</h2>
+      <form id="formEnroll">
+        <label><span>Estudiante</span>
+          <select required name="studentId">${options([{id:'',name:'— Seleccione —'}, ...db.data.students.map(s=>({id:s.id,name:s.lastName+", "+s.firstName}))])}</select>
+        </label>
+        <label><span>Curso</span>
+          <select required name="courseId">${options([{id:'',name:'— Seleccione —'}, ...db.data.courses.map(c=>({id:c.id,name:c.name}))])}</select>
+        </label>
+        <div class="full" style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn" type="submit">Matricular</button>
+        </div>
+      </form>
+    </div>
+    ${table(['Matrícula','Fecha','Acciones'], rows)}
+  `;
+}
+
+// ---------- ATTENDANCE ----------
+function renderAttendance(){
+  const rows = db.data.attendance
+    .filter(x=> matchSearch([studentName(x.studentId), courseName(x.courseId), x.date]))
+    .slice(-200)
+    .reverse()
+    .map(a=>[
+      `<strong>${studentName(a.studentId)}</strong><div class="sub" style="color:var(--sub);font-size:12px">${courseName(a.courseId)}</div>`,
+      `<span class="tag">${a.date}</span>`,
+      `<span class="tag" style="border-color:${a.present?'#14532d':'#4c1d1d'};color:${a.present?'#22c55e':'#ef4444'}">${a.present?'Presente':'Ausente'}</span>`,
+      `<div style="display:flex;gap:8px"><button class="btn secondary" data-del-att="${a.id}">Eliminar</button></div>`
+    ]);
+
+  return `
+    <div class="panel">
+      <h2>Asistencia</h2>
+      <form id="formAttendance">
+        <label><span>Estudiante</span>
+          <select required name="studentId">${options(db.data.students.map(s=>({id:s.id,name:s.lastName+", "+s.firstName})))}</select>
+        </label>
+        <label><span>Curso</span>
+          <select required name="courseId">${options(db.data.courses.map(c=>({id:c.id,name:c.name})) )}</select>
+        </label>
+        <label><span>Fecha</span><input type="date" required name="date" value="${nowDate()}"/></label>
+        <label><span>Estado</span>
+          <select name="present">
+            <option value="true">Presente</option>
+            <option value="false">Ausente</option>
+          </select>
+        </label>
+        <div class="full" style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn" type="submit">Registrar</button>
+        </div>
+      </form>
+    </div>
+    ${table(['Estudiante','Fecha','Asistencia','Acciones'], rows)}
+  `;
+}
+
+// ---------- GRADES ----------
+function renderGrades(){
+  const rows = db.data.grades
+    .filter(x=> matchSearch([studentName(x.studentId), courseName(x.courseId), x.assessment]))
+    .slice(-200)
+    .reverse()
+    .map(g=>[
+      `<div><strong>${studentName(g.studentId)}</strong><div class="sub" style="color:var(--sub);font-size:12px">${courseName(g.courseId)} • ${g.assessment||'Actividad'}</div></div>`,
+      `<span class="tag">${Number(g.value).toFixed(1)}</span>`,
+      `<div style="display:flex;gap:8px"><button class="btn secondary" data-edit-grade="${g.id}">Editar</button><button class="btn ghost" data-del-grade="${g.id}">Eliminar</button></div>`
+    ]);
+
+  return `
+    <div class="panel">
+      <h2>Calificaciones</h2>
+      <form id="formGrade">
+        <label><span>Estudiante</span>
+          <select required name="studentId">${options(db.data.students.map(s=>({id:s.id,name:s.lastName+", "+s.firstName})))}</select>
+        </label>
+        <label><span>Curso</span>
+          <select required name="courseId">${options(db.data.courses.map(c=>({id:c.id,name:c.name})) )}</select>
+        </label>
+        <label><span>Evidencia/Actividad</span><input name="assessment" placeholder="Parcial 1"/></label>
+        <label><span>Nota (0.0 – 5.0)</span><input type="number" step="0.1" min="0" max="5" required name="value" placeholder="4.5"/></label>
+        <div class="full" style="display:flex;gap:8px;justify-content:flex-end">
+          <input type="hidden" name="id" />
+          <button class="btn" type="submit">Guardar</button>
+          <button class="btn secondary" type="reset" id="resetGrade">Limpiar</button>
+        </div>
+      </form>
+    </div>
+    ${table(['Estudiante / Curso','Nota','Acciones'], rows)}
+  `;
+}
+
+// ---------- MESSAGES (Comunicación institucional) ----------
+function renderMessages(){
+  const rows = db.data.messages
+    .filter(x=> matchSearch([x.title,x.body, x.toRole]))
+    .slice(-100)
+    .reverse()
+    .map(m=>[
+      `<strong>${m.title}</strong><div class="sub" style="color:var(--sub);font-size:12px">Para: ${m.toRole} • ${new Date(m.createdAt).toLocaleString()}</div>`,
+      `<div style="max-width:520px">${escapeHtml(m.body)}</div>`,
+      `<div style="display:flex;gap:8px"><button class="btn ghost" data-del-msg="${m.id}">Eliminar</button></div>`
+    ]);
+
+  return `
+    <div class="panel">
+      <h2>Mensajes</h2>
+      <form id="formMessage">
+        <label><span>Título</span><input required name="title" placeholder="Reunión de padres"/></label>
+        <label><span>Para</span>
+          <select name="toRole">
+            <option value="Todos">Todos</option>
+            <option value="Docentes">Docentes</option>
+            <option value="Estudiantes">Estudiantes</option>
+            <option value="Familias">Familias</option>
+          </select>
+        </label>
+        <label class="full"><span>Mensaje</span><textarea name="body" rows="3" placeholder="Texto del comunicado…"></textarea></label>
+        <div class="full" style="display:flex;gap:8px;justify-content:flex-end">
+          <button class="btn" type="submit">Publicar</button>
+        </div>
+      </form>
+    </div>
+    ${table(['Mensaje','Contenido','Acciones'], rows)}
+  `;
+}
+
+// ---------- REPORTS ----------
+function renderReports(){
+  // Simple report: promedio por curso y asistencia por curso
+  const perCourse = db.data.courses.map(c=>{
+    const enrIds = db.data.enrollments.filter(e=>e.courseId===c.id).map(e=>e.studentId);
+    const g = db.data.grades.filter(x=>x.courseId===c.id && enrIds.includes(x.studentId));
+    const avg = g.length? (g.reduce((s,x)=>s+Number(x.value||0),0)/g.length) : NaN;
+    const at = db.data.attendance.filter(a=>a.courseId===c.id && enrIds.includes(a.studentId));
+    const rate = at.length? (at.filter(a=>a.present).length/at.length) : NaN;
+    return { course:c.name, teacher: teacherName(c.teacherId)||'—', avg, rate, count: enrIds.length };
+  });
+
+  const rows = perCourse.map(r=>[
+    `<strong>${r.course}</strong><div class="sub" style="color:var(--sub);font-size:12px">Docente: ${r.teacher}</div>`,
+    r.count,
+    isNaN(r.avg)?'—':Number(r.avg).toFixed(2),
+    isNaN(r.rate)?'—':(r.rate*100).toFixed(1)+'%'
+  ]);
+
+  const htmlTable = table(['Curso','Matrículas','Promedio','Asistencia'], rows);
+
+  return `
+    <div class="panel">
+      <h2>Reportes</h2>
+      <div class="pills">${pill('Descarga rápida de json desde la barra superior')}${pill('Tabla imprimible')}</div>
+      ${htmlTable}
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn secondary" id="btnPrint">Imprimir</button>
+      </div>
+    </div>
+  `;
+}
+
+// ---------- Utilities ----------
+function attachHandlersForCurrentView(){
+  const id = state.route;
+  if(id==='dashboard'){
+    $$('.panel .btn').forEach(b=> b.dataset.goto && (b.onclick = ()=> setRoute(b.dataset.goto)) );
+  }
+  if(id==='students') attachStudentHandlers();
+  if(id==='teachers') attachTeacherHandlers();
+  if(id==='courses') attachCourseHandlers();
+  if(id==='enrollments') attachEnrollmentHandlers();
+  if(id==='attendance') attachAttendanceHandlers();
+  if(id==='grades') attachGradeHandlers();
+  if(id==='messages') attachMessageHandlers();
+  if(id==='reports') $('#btnPrint')?.addEventListener('click', ()=> window.print());
+}
+
+function attachStudentHandlers(){
+  const f = $('#formStudent');
+  f.onsubmit = (e)=>{ e.preventDefault(); const fd = Object.fromEntries(new FormData(f));
+    if(fd.id){
+      const i = db.data.students.findIndex(x=>x.id===fd.id); if(i>-1) db.data.students[i] = {...db.data.students[i], ...fd};
+    }else{
+      db.data.students.push({ id: uid('stu'), firstName: fd.firstName, lastName: fd.lastName, document: fd.document, group: fd.group, status: fd.status||'Activo', createdAt: new Date().toISOString()});
+    }
+    f.reset(); db.save();
+  };
+  $('#resetStudent').onclick = ()=> f.reset();
+  $('#view').addEventListener('click', (e)=>{
+    const del = e.target.closest('[data-del-stu]');
+    const edit = e.target.closest('[data-edit-stu]');
+    if(del){ if(confirm('¿Eliminar estudiante?')){ db.data.students = db.data.students.filter(x=>x.id!==del.dataset.delStu); db.save(); } }
+    if(edit){ const s = db.data.students.find(x=>x.id===edit.dataset.editStu); if(s){ Object.entries(s).forEach(([k,v])=>{ if(f[k]!==undefined) f[k].value = v; }); } }
+  });
+}
+
+function attachTeacherHandlers(){
+  const f = $('#formTeacher');
+  f.onsubmit = (e)=>{ e.preventDefault(); const fd = Object.fromEntries(new FormData(f));
+    if(fd.id){ const i = db.data.teachers.findIndex(x=>x.id===fd.id); if(i>-1) db.data.teachers[i] = {...db.data.teachers[i], ...fd}; }
+    else{ db.data.teachers.push({ id: uid('tea'), firstName: fd.firstName, lastName: fd.lastName, document: fd.document, area: fd.area||'', email: fd.email||'', createdAt:new Date().toISOString() }); }
+    f.reset(); db.save();
+  };
+  $('#resetTeacher').onclick = ()=> f.reset();
+  $('#view').addEventListener('click', (e)=>{
+    const del = e.target.closest('[data-del-tea]');
+    const edit = e.target.closest('[data-edit-tea]');
+    if(del){ if(confirm('¿Eliminar docente?')){ db.data.teachers = db.data.teachers.filter(x=>x.id!==del.dataset.delTea); db.save(); } }
+    if(edit){ const t = db.data.teachers.find(x=>x.id===edit.dataset.editTea); if(t){ Object.entries(t).forEach(([k,v])=>{ if(f[k]!==undefined) f[k].value = v; }); } }
+  });
+}
+
+function attachCourseHandlers(){
+  const f = $('#formCourse');
+  f.onsubmit = (e)=>{ e.preventDefault(); const fd = Object.fromEntries(new FormData(f));
+    if(fd.id){ const i = db.data.courses.findIndex(x=>x.id===fd.id); if(i>-1) db.data.courses[i] = {...db.data.courses[i], ...fd}; }
+    else{ db.data.courses.push({ id: uid('cou'), name: fd.name, code: fd.code, grade: fd.grade||'', schedule: fd.schedule||'', teacherId: fd.teacherId||'', createdAt:new Date().toISOString() }); }
+    f.reset(); db.save();
+  };
+  $('#resetCourse').onclick = ()=> f.reset();
+  $('#view').addEventListener('click', (e)=>{
+    const del = e.target.closest('[data-del-course]');
+    const edit = e.target.closest('[data-edit-course]');
+    if(del){ if(confirm('¿Eliminar curso?')){ db.data.courses = db.data.courses.filter(x=>x.id!==del.dataset.delCourse); db.save(); } }
+    if(edit){ const c = db.data.courses.find(x=>x.id===edit.dataset.editCourse); if(c){ Object.entries(c).forEach(([k,v])=>{ if(f[k]!==undefined) f[k].value = v; }); } }
+  });
+}
+
+function attachEnrollmentHandlers(){
+  const f=$('#formEnroll');
+  f.onsubmit=(e)=>{ e.preventDefault(); const fd=Object.fromEntries(new FormData(f));
+    const exists = db.data.enrollments.find(x=> x.studentId===fd.studentId && x.courseId===fd.courseId);
+    if(exists) return alert('Ya existe esta matrícula');
+    db.data.enrollments.push({ id: uid('enr'), studentId: fd.studentId, courseId: fd.courseId, createdAt: new Date().toISOString() });
+    db.save(); f.reset();
+  };
+  $('#view').addEventListener('click', (e)=>{
+    const del = e.target.closest('[data-del-enr]'); if(del){ if(confirm('¿Eliminar matrícula?')){ db.data.enrollments = db.data.enrollments.filter(x=>x.id!==del.dataset.delEnr); db.save(); } }
+  });
+}
+
+function attachAttendanceHandlers(){
+  const f=$('#formAttendance');
+  f.onsubmit=(e)=>{ e.preventDefault(); const fd=Object.fromEntries(new FormData(f));
+    db.data.attendance.push({ id: uid('att'), studentId: fd.studentId, courseId: fd.courseId, date: fd.date, present: fd.present==='true', createdAt: new Date().toISOString() });
+    db.save(); f.reset(); f.date.value = nowDate();
+  };
+  $('#view').addEventListener('click', (e)=>{
+    const del=e.target.closest('[data-del-att]'); if(del){ if(confirm('¿Eliminar registro de asistencia?')){ db.data.attendance = db.data.attendance.filter(x=>x.id!==del.dataset.delAtt); db.save(); } }
+  });
+}
+
+function attachGradeHandlers(){
+  const f=$('#formGrade');
+  f.onsubmit=(e)=>{ e.preventDefault(); const fd=Object.fromEntries(new FormData(f));
+    if(fd.id){ const i = db.data.grades.findIndex(x=>x.id===fd.id); if(i>-1) db.data.grades[i] = {...db.data.grades[i], studentId:fd.studentId, courseId:fd.courseId, assessment:fd.assessment||'', value:Number(fd.value)}; }
+    else { db.data.grades.push({ id: uid('gra'), studentId:fd.studentId, courseId:fd.courseId, assessment:fd.assessment||'', value: Number(fd.value), createdAt:new Date().toISOString() }); }
+    db.save(); f.reset();
+  };
+  $('#resetGrade').onclick = ()=> f.reset();
+  $('#view').addEventListener('click', (e)=>{
+    const del=e.target.closest('[data-del-grade]');
+    const edit=e.target.closest('[data-edit-grade]');
+    if(del){ if(confirm('¿Eliminar calificación?')){ db.data.grades = db.data.grades.filter(x=>x.id!==del.dataset.delGrade); db.save(); } }
+    if(edit){ const g = db.data.grades.find(x=>x.id===edit.dataset.editGrade); const f=$('#formGrade'); if(g){ Object.entries(g).forEach(([k,v])=>{ if(f[k]!==undefined) f[k].value = v; }); f.value.value = Number(g.value).toFixed(1); } }
+  });
+}
+
+function attachMessageHandlers(){
+  const f=$('#formMessage');
+  f.onsubmit=(e)=>{ e.preventDefault(); const fd=Object.fromEntries(new FormData(f));
+    db.data.messages.push({ id: uid('msg'), title: fd.title, toRole: fd.toRole, body: fd.body||'', createdAt: new Date().toISOString() });
+    db.save(); f.reset();
+  };
+  $('#view').addEventListener('click', (e)=>{ const del = e.target.closest('[data-del-msg]'); if(del){ if(confirm('¿Eliminar mensaje?')){ db.data.messages = db.data.messages.filter(x=>x.id!==del.dataset.delMsg); db.save(); } } });
+}
+
+// Helpers
+function options(arr){ return arr.map(o=>`<option value="${o.id}">${escapeHtml(o.name)}</option>`).join(''); }
+function studentName(id){ const s = db.data.students.find(x=>x.id===id); return s? `${s.lastName}, ${s.firstName}` : '—'; }
+function teacherName(id){ const t = db.data.teachers.find(x=>x.id===id); return t? `${t.lastName}, ${t.firstName}` : null; }
+function courseName(id){ const c = db.data.courses.find(x=>x.id===id); return c? c.name : '—'; }
+function nowDate(){ return new Date().toISOString().slice(0,10); }
+function matchSearch(fields){ if(!state.search) return true; return fields.some(v=> (v||'').toString().toLowerCase().includes(state.search)); }
+function escapeHtml(s=''){ return s.replace(/[&<>"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]) ); }
+
+// Seed example data
+function seed(){
+  db.data = structuredClone(emptyDB);
+  const stus = [
+    ['Ana','Pérez','101','11-1'],
+    ['Luis','Gómez','102','11-1'],
+    ['María','Rodríguez','103','11-2'],
+    ['Juan','Martínez','104','10-3']
+  ].map(([fn,ln,doc,grp])=>({id:uid('stu'),firstName:fn,lastName:ln,document:doc,group:grp,status:'Activo',createdAt:new Date().toISOString()}));
+  const teas = [
+    ['Laura','Torres','900','Matemáticas','laura@colegio.edu'],
+    ['Carlos','Rivas','901','Lengua','carlos@colegio.edu']
+  ].map(([fn,ln,doc,area,email])=>({id:uid('tea'),firstName:fn,lastName:ln,document:doc,area,email,createdAt:new Date().toISOString()}));
+  const cours = [
+    ['Matemáticas 11','MAT-11','11','Lun-Mié 8:00', null],
+    ['Lengua 11','LEN-11','11','Mar-Jue 9:00', null]
+  ].map(([name,code,grade,schedule])=>({id:uid('cou'),name,code,grade,schedule,teacherId:'',createdAt:new Date().toISOString()}));
+  // assign teachers
+  cours[0].teacherId = teas[0].id; cours[1].teacherId = teas[1].id;
+
+  db.data.students.push(...stus);
+  db.data.teachers.push(...teas);
+  db.data.courses.push(...cours);
+
+  // Enroll first 3 students in course 0 and 1
+  [stus[0].id, stus[1].id, stus[2].id].forEach(sid=>{
+    db.data.enrollments.push({id:uid('enr'), studentId:sid, courseId:cours[0].id, createdAt:new Date().toISOString()});
+    db.data.enrollments.push({id:uid('enr'), studentId:sid, courseId:cours[1].id, createdAt:new Date().toISOString()});
+  });
+  // Attendance sample
+  db.data.enrollments.forEach(e=>{
+    for(let d=1; d<=5; d++){
+      db.data.attendance.push({ id:uid('att'), studentId:e.studentId, courseId:e.courseId, date:`2025-10-0${Math.min(d,9)}`, present: Math.random()>0.15, createdAt:new Date().toISOString() });
+    }
+  });
+  // Grades sample
+  const assessments=['Parcial 1','Taller','Quiz'];
+  db.data.enrollments.forEach(e=>{
+    assessments.forEach(a=> db.data.grades.push({ id:uid('gra'), studentId:e.studentId, courseId:e.courseId, assessment:a, value:(Math.random()*2)+3, createdAt:new Date().toISOString() }));
+  });
+  // Messages
+  db.data.messages.push({ id:uid('msg'), title:'Bienvenida a la plataforma', toRole:'Todos', body:'Recordatorio: mantener datos actualizados.', createdAt:new Date().toISOString() });
+}
+
+// Boot
+function boot(){
+  initNav();
+  state.route = (location.hash.replace('#','')) || 'dashboard';
+  highlightNav();
+  render();
+}
+window.addEventListener('hashchange', ()=>{ state.route = location.hash.replace('#','')||'dashboard'; highlightNav(); render(); });
+boot();
+</script>
 </body>
 </html>
