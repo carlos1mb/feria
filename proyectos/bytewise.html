@@ -3,610 +3,520 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>BYTEWISE S.A.S. – MVP Inventarios</title>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <title>BYTEWISE S.A.S. – MVP Inventarios Extendido</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <!-- Gráficos implementados en vanilla JS (sin dependencias externas) -->
   <style>
     :root{
-      --primary:#1ABC9C; /* verde azulado */
-      --dark:#4D4D4D;    /* gris oscuro */
-      --bg:#F7F9FB;      /* fondo suave */
-      --white:#fff;
-      --muted:#8C8C8C;
-      --danger:#E74C3C;
-      --warning:#F39C12;
-      --ok:#2ECC71;
-      --radius:16px;
-      --shadow:0 6px 24px rgba(0,0,0,.08);
+      --primary:#1ABC9C;--secondary:#2874A6;--dark:#334155;--bg:#F7F9FB;--white:#fff;--muted:#8C8C8C;--radius:16px;--shadow:0 6px 24px rgba(0,0,0,.08);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{margin:0;font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--dark);background:var(--bg)}
-    a{color:var(--primary);text-decoration:none}
-    .container{max-width:1200px;margin:0 auto;padding:24px}
-    .card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px}
-    .grid{display:grid;gap:18px}
-    .grid.cols-2{grid-template-columns:1fr 1fr}
-    .grid.cols-3{grid-template-columns:repeat(3,1fr)}
-    .grid.cols-4{grid-template-columns:repeat(4,1fr)}
-    @media(max-width:980px){.grid.cols-3,.grid.cols-4{grid-template-columns:1fr 1fr}}
-    @media(max-width:720px){.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr}}
-
-    .brand{display:flex;align-items:center;gap:12px;margin-bottom:24px}
-    .logo{width:42px;height:42px;border-radius:12px;background:conic-gradient(from 180deg,var(--primary),#2bd4bd 40%,#7eeadf 70%,var(--primary));display:grid;place-items:center;color:#004d40;font-weight:800}
-    h1{font-size:22px;margin:0;color:#223}
-    h2{font-size:18px;margin:0 0 8px}
-    h3{font-size:16px;margin:0 0 6px}
-    p{margin:0 0 12px;color:#333}
-
-    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-    .btn{border:0;border-radius:12px;padding:10px 14px;background:var(--primary);color:#fff;font-weight:600;cursor:pointer;box-shadow:var(--shadow)}
-    .btn.secondary{background:#2c3e50}
-    .btn.light{background:#ECF9F6;color:#0b6b58}
-    .btn.warn{background:var(--warning)}
-    .btn.danger{background:var(--danger)}
-    .btn.ghost{background:transparent;color:var(--primary);box-shadow:none}
-    .btn:disabled{opacity:.6;cursor:not-allowed}
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap}
-
-    .input{width:100%;padding:10px 12px;border:1px solid #E6ECF1;border-radius:10px;background:#fff}
-    label{font-size:12px;color:#667;margin-bottom:6px;display:block}
-    .field{margin-bottom:12px}
-
-    .kpi{display:flex;align-items:center;gap:12px}
-    .kpi .icon{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;background:#ECF9F6;color:#0b6b58;font-weight:800}
-    .kpi .val{font-size:22px;font-weight:700}
-    .kpi .lbl{font-size:12px;color:#667}
-
-    table{width:100%;border-collapse:collapse}
-    th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #EFF3F6}
-    th{font-size:12px;color:#667;font-weight:600}
-    tr:hover td{background:#FAFEFD}
-
-    .pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px}
-    .pill.out{background:#FFF1F0;color:#B83227}
-    .pill.in{background:#F4FFF7;color:#1B7A4A}
-
-    /* auth screen */
-    #auth{min-height:100vh;display:grid;place-items:center}
-    .auth-card{max-width:440px;width:100%}
-    .muted{color:var(--muted);font-size:12px}
-    .switch{text-align:center;margin-top:8px}
-
-    /* sections */
-    .hidden{display:none !important}
-    .section{margin-bottom:18px}
-
-    .footer{margin-top:18px;text-align:center;color:#9aa; font-size:12px}
-      .chart-box{height:260px}
-    body{overflow-x:hidden}
-    .card{overflow:hidden}
+    *{box-sizing:border-box;margin:0;padding:0;font-family:'Poppins',sans-serif}
+    body{background:var(--bg);color:var(--dark);}
+    .container{max-width:1200px;margin:auto;padding:20px}
+    .card{background:var(--white);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;margin-bottom:16px;overflow:hidden}
+    .grid{display:grid;gap:12px}
+    .grid.cols-2{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+    .grid.cols-3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+    h1{font-size:22px;margin-bottom:6px}
+    h2{font-size:18px;margin-bottom:8px}
+    h3{font-size:16px;margin:6px 0}
+    .muted{color:var(--muted)}
+    .btn{border:none;border-radius:10px;padding:10px 14px;background:var(--primary);color:#fff;cursor:pointer;font-weight:600;box-shadow:var(--shadow);transition:.2s}
+    .btn:hover{filter:brightness(.95);transform:translateY(-1px)}
+    .btn.light{background:#2c3e50}
+    .btn.ghost{background:#ECF9F6;color:#0b6b58}
+    .btn.danger{background:#ef4444}
+    .input,.select{width:100%;padding:9px 10px;border:1px solid #e5e7eb;border-radius:10px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:8px;border-bottom:1px solid #eee;text-align:left}
+    th{background:#f2f2f2}
+    .toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+    .kpis{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+    .kpi{padding:14px;border-radius:14px;background:#f0fdf9;border:1px solid #d1fae5}
+    .tabs{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,#ffffffdd,#ffffffaa);backdrop-filter:blur(6px);border-radius:16px;padding:8px;margin-bottom:12px;display:flex;gap:8px;flex-wrap:wrap}
+    .tab{padding:10px 12px;border-radius:10px;background:#eaf7f4;color:#0b6b58;cursor:pointer;font-weight:600;border:1px solid #c7efe4}
+    .tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .hidden{display:none}
+    .footer{text-align:center;margin-top:20px;color:#888;font-size:12px}
+    /* Mobile header */
+    .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .logo{display:flex;gap:8px;align-items:center}
+    .badge{background:#d1fae5;color:#065f46;padding:2px 8px;border-radius:999px;font-size:12px}
+    @media(max-width:640px){
+      .tabs{overflow:auto;white-space:nowrap}
+    }
   </style>
 </head>
 <body>
-  <div id="auth" class="container">
-    <div class="auth-card card">
-      <div class="brand">
-        <div class="logo">BW</div>
-        <div>
-          <h1>BYTEWISE S.A.S.</h1>
-          <span class="muted">MVP – Gestión de Inventarios (SaaS)</span>
-        </div>
-      </div>
-      <div id="auth-forms">
-        <div id="login-form">
-          <h2>Iniciar sesión</h2>
-          <div class="field">
-            <label>Correo</label>
-            <input id="loginEmail" class="input" type="email" placeholder="empresa@bytewise.co" />
-          </div>
-          <div class="field">
-            <label>Contraseña</label>
-            <input id="loginPass" class="input" type="password" placeholder="••••••••" />
-          </div>
-          <div class="toolbar">
-            <button class="btn" id="btnLogin">Entrar</button>
-            <button class="btn light" id="seedBtn" title="Carga datos de demostración">Cargar demo</button>
-          </div>
-          <div class="switch">
-            <span class="muted">¿No tienes cuenta?</span> <a href="#" id="toRegister">Crear cuenta</a>
-          </div>
-        </div>
-        <div id="register-form" class="hidden">
-          <h2>Crear cuenta</h2>
-          <div class="field">
-            <label>Nombre de empresa</label>
-            <input id="regName" class="input" type="text" placeholder="Mi PYME S.A.S." />
-          </div>
-          <div class="field">
-            <label>Correo</label>
-            <input id="regEmail" class="input" type="email" placeholder="admin@mipyme.com" />
-          </div>
-          <div class="field">
-            <label>Contraseña</label>
-            <input id="regPass" class="input" type="password" placeholder="Crea una contraseña" />
-          </div>
-          <div class="toolbar">
-            <button class="btn" id="btnRegister">Registrar</button>
-            <button class="btn ghost" id="toLogin">Volver a iniciar sesión</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="footer">© <span id="year"></span> Bytewise S.A.S. – MVP educativo</div>
-  </div>
-
-  <div id="app" class="container hidden">
+  <div class="container">
     <div class="topbar">
-      <div class="brand">
-        <div class="logo">BW</div>
-        <div>
-          <h1>Panel – Inventarios</h1>
-          <span class="muted" id="companyName"></span>
+      <div class="logo">
+        <h1>BYTEWISE S.A.S.</h1>
+        <span class="badge">MVP</span>
+      </div>
+      <small class="muted">Datos locales (LocalStorage) • Demo sin login</small>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs" id="tabs"></div>
+
+    <!-- DASHBOARD -->
+    <section id="view-dashboard" class="card">
+      <h2>Dashboard</h2>
+      <div class="kpis" id="kpis"></div>
+      <div class="grid cols-2" style="margin-top:10px">
+        <div class="card">
+          <h3>Ventas últimos 7 días</h3>
+          <canvas id="salesChart" height="120"></canvas>
         </div>
+        <div class="card">
+          <h3>Top productos por unidades</h3>
+          <canvas id="topChart" height="120"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- INVENTARIO -->
+    <section id="view-inventario" class="card hidden">
+      <h2>Inventario</h2>
+      <div class="grid cols-3">
+        <input id="pName" class="input" placeholder="Nombre del producto">
+        <input id="pCat" class="input" placeholder="Categoría">
+        <input id="pPrice" type="number" class="input" placeholder="Precio (COP)">
+        <input id="pQty" type="number" class="input" placeholder="Cantidad inicial">
+        <input id="pMin" type="number" class="input" placeholder="Stock mínimo (alerta)">
       </div>
       <div class="toolbar">
-        <button class="btn light" id="btnExportCSV" title="Exportar inventario a CSV">Exportar CSV</button>
-        <button class="btn secondary" id="btnLogout">Cerrar sesión</button>
+        <button class="btn" id="btnAddProduct">Agregar producto</button>
+        <button class="btn ghost" id="btnEntrada">Registrar entrada</button>
+        <button class="btn light" id="btnSalida">Registrar salida</button>
+        <button class="btn" id="btnExportInv">Exportar inventario CSV</button>
       </div>
-    </div>
+      <table id="tblInv">
+        <thead><tr><th>Nombre</th><th>Categoría</th><th>Precio</th><th>Cant.</th><th>Mín.</th><th>Valor</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <h3 style="margin-top:14px">Movimientos</h3>
+      <table id="tblMov">
+        <thead><tr><th>Fecha</th><th>Tipo</th><th>Producto</th><th>Cant.</th><th>Obs.</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
 
-    <div class="grid cols-3">
-      <div class="card kpi">
-        <div class="icon">Σ</div>
-        <div>
-          <div class="val" id="kpiItems">0</div>
-          <div class="lbl">Unidades en inventario</div>
-        </div>
+    <!-- VENTAS -->
+    <section id="view-ventas" class="card hidden">
+      <h2>Nueva venta</h2>
+      <div class="grid cols-3">
+        <select id="vCliente" class="select"></select>
+        <select id="vVendedor" class="select"></select>
+        <select id="vProducto" class="select"></select>
+        <input id="vCant" class="input" type="number" placeholder="Cantidad">
+        <input id="vObs" class="input" placeholder="Observaciones (opcional)">
       </div>
-      <div class="card kpi">
-        <div class="icon">$</div>
-        <div>
-          <div class="val" id="kpiValue">$0</div>
-          <div class="lbl">Valor total del inventario</div>
-        </div>
+      <div class="toolbar">
+        <button class="btn" id="btnAddVenta">Agregar a venta</button>
+        <button class="btn light" id="btnFacturar">Finalizar y facturar</button>
+        <button class="btn ghost" id="btnVaciarCarrito">Vaciar carrito</button>
       </div>
-      <div class="card kpi">
-        <div class="icon">#</div>
-        <div>
-          <div class="val" id="kpiProducts">0</div>
-          <div class="lbl">Productos registrados</div>
-        </div>
-      </div>
-    </div>
+      <table id="tblCarrito">
+        <thead><tr><th>Producto</th><th>Precio</th><th>Cant.</th><th>Subtotal</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <div style="text-align:right;margin-top:8px"><strong>Total: </strong><span id="vTotal">$0</span></div>
+    </section>
 
-    <div class="grid cols-2" style="margin-top:18px">
-      <div class="card">
-        <h2>Productos</h2>
-        <div class="grid cols-4">
-          <div class="field"><label>Nombre</label><input id="pName" class="input" placeholder="Ej. Cuaderno A5" /></div>
-          <div class="field"><label>Categoría</label><input id="pCat" class="input" placeholder="Papelería" /></div>
-          <div class="field"><label>Precio (COP)</label><input id="pPrice" class="input" type="number" min="0" step="100" placeholder="5000" /></div>
-          <div class="field"><label>Cantidad</label><input id="pQty" class="input" type="number" min="0" step="1" placeholder="10" /></div>
-        </div>
-        <div class="toolbar" style="margin-bottom:8px">
-          <button class="btn" id="btnAddProduct">Agregar / Actualizar</button>
-          <button class="btn ghost" id="btnClearForm">Limpiar</button>
-        </div>
-        <div class="field"><input id="search" class="input" placeholder="Buscar por nombre o categoría..."/></div>
-        <div class="table-wrap">
-          <table id="tblProducts">
-            <thead>
-              <tr>
-                <th>Nombre</th><th>Categoría</th><th>Precio</th><th>Cantidad</th><th>Total</th><th></th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
+    <!-- CLIENTES -->
+    <section id="view-clientes" class="card hidden">
+      <h2>Clientes</h2>
+      <div class="grid cols-3">
+        <input id="cNombre" class="input" placeholder="Nombre / Razón social">
+        <input id="cDoc" class="input" placeholder="Documento / NIT">
+        <input id="cTel" class="input" placeholder="Teléfono">
       </div>
+      <div class="toolbar"><button class="btn" id="btnAddCliente">Agregar cliente</button></div>
+      <table id="tblClientes"><thead><tr><th>Nombre</th><th>Doc</th><th>Teléfono</th><th></th></tr></thead><tbody></tbody></table>
+    </section>
 
-      <div class="card">
-        <h2>Movimientos</h2>
-        <div class="grid cols-4">
-          <div class="field">
-            <label>Producto</label>
-            <select id="mProduct" class="input"></select>
+    <!-- VENDEDORES -->
+    <section id="view-vendedores" class="card hidden">
+      <h2>Vendedores</h2>
+      <div class="grid cols-3">
+        <input id="sNombre" class="input" placeholder="Nombre del vendedor">
+        <input id="sDoc" class="input" placeholder="Documento">
+        <input id="sTel" class="input" placeholder="Teléfono">
+      </div>
+      <div class="toolbar"><button class="btn" id="btnAddVendedor">Agregar vendedor</button></div>
+      <table id="tblVendedores"><thead><tr><th>Nombre</th><th>Doc</th><th>Teléfono</th><th></th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- REPORTES -->
+    <section id="view-reportes" class="card hidden">
+      <h2>Reportes de ventas</h2>
+      <div class="grid cols-3">
+        <input id="rDesde" type="date" class="input">
+        <input id="rHasta" type="date" class="input">
+        <button class="btn" id="btnFiltrar">Filtrar</button>
+      </div>
+      <div class="toolbar">
+        <button class="btn" id="btnExportVentas">Exportar ventas CSV</button>
+      </div>
+      <table id="tblVentas"><thead><tr><th>Fecha</th><th>Cliente</th><th>Vendedor</th><th>Total</th><th>Items</th></tr></thead><tbody></tbody></table>
+    </section>
+
+    <!-- ADMIN -->
+    <section id="view-admin" class="card hidden">
+      <h2>Administración</h2>
+      <div class="grid cols-2">
+        <div class="card">
+          <h3>Datos de la empresa</h3>
+          <input id="aNombre" class="input" placeholder="Nombre comercial">
+          <input id="aNit" class="input" placeholder="NIT / Documento">
+          <input id="aTel" class="input" placeholder="Teléfono">
+          <button class="btn" id="btnGuardarEmpresa">Guardar</button>
+        </div>
+        <div class="card">
+          <h3>Herramientas</h3>
+          <div class="toolbar">
+            <button class="btn ghost" id="btnSeed">Cargar datos de ejemplo</button>
+            <button class="btn danger" id="btnReset">Borrar todo</button>
           </div>
-          <div class="field">
-            <label>Tipo</label>
-            <select id="mType" class="input">
-              <option value="out">Salida (venta)</option>
-              <option value="in">Entrada (compra)</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>Cantidad</label>
-            <input id="mQty" class="input" type="number" min="1" step="1" value="1"/>
-          </div>
-          <div class="field">
-            <label>Nota</label>
-            <input id="mNote" class="input" placeholder="Observaciones" />
-          </div>
-        </div>
-        <div class="toolbar">
-          <button class="btn" id="btnAddMove">Registrar movimiento</button>
-          <button class="btn warn" id="btnUndoLast">Deshacer último</button>
-        </div>
-
-        <div style="margin-top:14px">
-          <table id="tblMoves">
-            <thead>
-              <tr>
-                <th>Fecha</th><th>Producto</th><th>Tipo</th><th>Cant.</th><th>Nota</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
+          <small class="muted">Esto afecta solo el almacenamiento local del navegador.</small>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="grid cols-2" style="margin-top:18px">
-      <div class="card">
-        <h2>Actividad (últimos 6 meses)</h2>
-        <div class="chart-box"><canvas id="movChart"></canvas></div>
-      </div>
-      <div class="card">
-        <h2>Perfil</h2>
-        <div class="grid cols-2">
-          <div class="field"><label>Empresa</label><input id="cName" class="input" /></div>
-          <div class="field"><label>Plan</label>
-            <select id="cPlan" class="input">
-              <option>Básico</option>
-              <option>Estándar</option>
-              <option>Premium</option>
-            </select>
-          </div>
-        </div>
-        <div class="toolbar">
-          <button class="btn" id="btnSaveCompany">Guardar</button>
-          <button class="btn ghost" id="btnDeleteAccount">Eliminar cuenta (demo)</button>
-        </div>
-        <p class="muted">Este MVP usa almacenamiento local del navegador. No requiere servidor.</p>
-      </div>
-    </div>
-
-    <div class="footer">Hecho con ♥ para demostración de Bytewise – LocalStorage + JS puro</div>
+    <div class="footer">Hecho con ♥ para la feria empresarial – Bytewise S.A.S.</div>
   </div>
 
 <script>
-(function(){
-  const $ = sel => document.querySelector(sel);
-  const $$ = sel => Array.from(document.querySelectorAll(sel));
-  const LS = {
-    get(key, def){ try{ return JSON.parse(localStorage.getItem(key)) ?? def }catch{ return def } },
-    set(key, val){ localStorage.setItem(key, JSON.stringify(val)) },
-    del(key){ localStorage.removeItem(key) }
-  };
-  const YEAR_EL = $('#year'); YEAR_EL.textContent = new Date().getFullYear();
+// ====== Estado y utilidades ======
+const LS = {
+  key: 'bw_mvp_ext',
+  load(){
+    return JSON.parse(localStorage.getItem(this.key) || '{"empresa":{},"productos":[],"clientes":[],"vendedores":[],"ventas":[],"movs":[]}');
+  },
+  save(){ localStorage.setItem(this.key, JSON.stringify(state)); }
+};
+let state = LS.load();
 
-  // ---------------- AUTH -----------------
-  const authView = $('#auth');
-  const appView = $('#app');
-  const loginForm = $('#login-form');
-  const regForm = $('#register-form');
-  $('#toRegister').onclick = () => { loginForm.classList.add('hidden'); regForm.classList.remove('hidden'); };
-  $('#toLogin').onclick = () => { regForm.classList.add('hidden'); loginForm.classList.remove('hidden'); };
+const $ = sel => document.querySelector(sel);
+const $$ = sel => document.querySelectorAll(sel);
+const money = n => new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n||0);
+const todayISO = () => new Date().toISOString().slice(0,10);
+function uid(){return Math.random().toString(36).slice(2,9)}
 
-  const USERS_KEY = 'bw_users';
-  const CURRENT_KEY = 'bw_current_user';
-  const DATA_PREFIX = 'bw_data_'; // per-user data key
+// helper seguro para asignar eventos sólo si el selector existe
+function safeOn(sel, evt, handler){ const el = $(sel); if(el) el.addEventListener(evt, handler); }
 
-  function getUsers(){ return LS.get(USERS_KEY, []) }
-  function saveUsers(list){ LS.set(USERS_KEY, list) }
+// ====== Navegación por pestañas ======
+const VIEWS = [
+  {id:'dashboard',label:'Dashboard'},
+  {id:'inventario',label:'Inventario'},
+  {id:'ventas',label:'Ventas'},
+  {id:'clientes',label:'Clientes'},
+  {id:'vendedores',label:'Vendedores'},
+  {id:'reportes',label:'Reportes'},
+  {id:'admin',label:'Admin'},
+];
+const tabs = $('#tabs');
+if(tabs){
+  VIEWS.forEach(v=>{
+    const b = document.createElement('button');
+    b.className='tab'; b.textContent=v.label; b.dataset.view=v.id;
+    b.addEventListener('click',()=>showView(v.id));
+    tabs.appendChild(b);
+  });
+}
+function showView(id){
+  $$('.tab').forEach(t=>t.classList.toggle('active', t.dataset.view===id));
+  VIEWS.forEach(v=>$('#view-'+v.id).classList.toggle('hidden', v.id!==id));
+  if(id==='dashboard') drawCharts();
+  if(id==='ventas') refreshVentaSelectors();
+}
+showView('dashboard');
 
-  function register(name,email,pass){
-    email = (email||'').trim().toLowerCase();
-    if(!name || !email || !pass) return {ok:false,msg:'Completa todos los campos'};
-    const users = getUsers();
-    if(users.find(u=>u.email===email)) return {ok:false,msg:'El correo ya está registrado'};
-    users.push({name,email,pass,plan:'Básico'});
-    saveUsers(users);
-    // init user dataset
-    LS.set(DATA_PREFIX+email, {company:{name,plan:'Básico'}, products:[], moves:[]});
-    return {ok:true}
-  }
+// ====== Inventario ======
+function renderInventario(){
+  const tbody = $('#tblInv tbody');
+  tbody.innerHTML = state.productos.map((p,i)=>{
+    const valor = (p.precio||0) * (p.cant||0);
+    const low = p.min && p.cant<=p.min ? 'style="color:#b91c1c;font-weight:700"' : '';
+    return `<tr>
+      <td>${p.nombre}</td>
+      <td>${p.cat||''}</td>
+      <td>${money(p.precio)}</td>
+      <td ${low}>${p.cant||0}</td>
+      <td>${p.min||0}</td>
+      <td>${money(valor)}</td>
+      <td><button class='btn light' onclick='delProd(${i})'>Eliminar</button></td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="7">Sin productos</td></tr>';
 
-  function login(email,pass){
-    email = (email||'').trim().toLowerCase();
-    const u = getUsers().find(u=>u.email===email && u.pass===pass);
-    if(!u) return {ok:false,msg:'Credenciales inválidas'};
-    LS.set(CURRENT_KEY, {email});
-    return {ok:true}
-  }
+  // Movimientos
+  const tm = $('#tblMov tbody');
+  tm.innerHTML = state.movs.slice().reverse().map(m=>`<tr><td>${m.fecha}</td><td>${m.tipo}</td><td>${m.prodNombre}</td><td>${m.cant}</td><td>${m.obs||''}</td></tr>`).join('') || '<tr><td colspan="5">Sin movimientos</td></tr>';
+}
 
-  function logout(){ LS.del(CURRENT_KEY); }
-  function current(){ return LS.get(CURRENT_KEY,null) }
-
-  // Seed demo account
-  $('#seedBtn').onclick = () => {
-    const demoEmail = 'demo@bytewise.co';
-    const exists = getUsers().some(u=>u.email===demoEmail);
-    if(!exists){
-      register('Demo Bytewise', demoEmail, 'demo123');
-      const data = LS.get(DATA_PREFIX+demoEmail);
-      data.products = [
-        {id:id(), name:'Cuaderno A5', cat:'Papelería', price:5000, qty:40},
-        {id:id(), name:'Tóner HP 12A', cat:'Impresión', price:220000, qty:5},
-        {id:id(), name:'Memoria USB 32GB', cat:'Accesorios', price:35000, qty:18}
-      ];
-      const now = new Date();
-      data.moves = [
-        {id:id(), date:addMonths(now,-1), type:'out', productId:data.products[0].id, qty:5, note:'Venta colegio'},
-        {id:id(), date:addMonths(now,-2), type:'in',  productId:data.products[1].id, qty:3, note:'Compra proveedor'},
-        {id:id(), date:addMonths(now,-3), type:'out', productId:data.products[2].id, qty:7, note:'Venta feria'}
-      ];
-      LS.set(DATA_PREFIX+demoEmail, data);
+function addProducto(){
+  try{
+    const nombre = ($('#pName') && $('#pName').value || '').trim();
+    const cat = ($('#pCat') && $('#pCat').value || '').trim();
+    const precio = parseFloat($('#pPrice')?.value || 0);
+    const cant = parseInt($('#pQty')?.value || 0,10);
+    const min = parseInt($('#pMin')?.value || 0,10) || 0;
+    console.log('addProducto inputs', {nombre,cat,precio,cant,min});
+    if(!nombre || !cat || !(precio>0) || !(cant>0)){
+      return alert('Completa nombre, categoría, precio (mayor que 0) y cantidad (mayor que 0)');
     }
-    $('#loginEmail').value = demoEmail; $('#loginPass').value = 'demo123';
+    state.productos.push({id:uid(),nombre,cat,precio,cant,min});
+    LS.save();
+    // limpiar solo los inputs dentro de inventario
+    $$('#view-inventario .input').forEach(i=>i.value='');
+    renderInventario();
+    refreshVentaSelectors();
+    console.log('Producto agregado', nombre);
+  }catch(err){
+    console.error('Error en addProducto', err);
+    alert('Ocurrió un error al agregar el producto. Revisa la consola para más detalles.');
+  }
+}
+function delProd(i){ if(confirm('¿Eliminar producto?')){ state.productos.splice(i,1); LS.save(); renderInventario(); refreshVentaSelectors(); } }
+
+function registrarMovimiento(tipo){
+  // Entrada o salida
+  const prodId = prompt('ID o nombre del producto para '+tipo+':');
+  if(!prodId) return;
+  const prod = state.productos.find(p=>p.id===prodId || p.nombre.toLowerCase()===prodId.toLowerCase());
+  if(!prod) return alert('Producto no encontrado');
+  const cant = +prompt('Cantidad a '+tipo+':');
+  if(!cant || cant<=0) return;
+  if(tipo==='Salida' && prod.cant<cant) return alert('Stock insuficiente');
+  prod.cant += (tipo==='Entrada'? cant : -cant);
+  state.movs.push({id:uid(),fecha:todayISO(),tipo,prod:prod.id,prodNombre:prod.nombre,cant,obs:''});
+  LS.save();
+  renderInventario(); drawCharts();
+}
+
+function exportInv(){
+  const rows=[["Nombre","Categoria","Precio","Cant","Min","Valor"]].concat(
+    state.productos.map(p=>[p.nombre,p.cat,p.precio,p.cant,p.min,(p.precio*p.cant)])
+  );
+  toCSV(rows,'inventario.csv');
+}
+
+// ====== Clientes y Vendedores ======
+function renderClientes(){
+  const tb=$('#tblClientes tbody');
+  tb.innerHTML=state.clientes.map((c,i)=>`<tr><td>${c.nombre}</td><td>${c.doc||''}</td><td>${c.tel||''}</td><td><button class='btn light' onclick='delCliente(${i})'>Eliminar</button></td></tr>`).join('') || '<tr><td colspan="4">Sin clientes</td></tr>';
+}
+function addCliente(){
+  const nombre=$('#cNombre').value.trim(); if(!nombre) return alert('Nombre requerido');
+  state.clientes.push({id:uid(),nombre,doc:$('#cDoc').value.trim(),tel:$('#cTel').value.trim()});
+  $$('#view-clientes .input').forEach(i=>i.value=''); LS.save(); renderClientes(); refreshVentaSelectors();
+}
+function delCliente(i){ if(confirm('¿Eliminar cliente?')){ state.clientes.splice(i,1); LS.save(); renderClientes(); refreshVentaSelectors(); } }
+
+function renderVendedores(){
+  const tb=$('#tblVendedores tbody');
+  tb.innerHTML=state.vendedores.map((c,i)=>`<tr><td>${c.nombre}</td><td>${c.doc||''}</td><td>${c.tel||''}</td><td><button class='btn light' onclick='delVendedor(${i})'>Eliminar</button></td></tr>`).join('') || '<tr><td colspan="4">Sin vendedores</td></tr>';
+}
+function addVendedor(){
+  const nombre=$('#sNombre').value.trim(); if(!nombre) return alert('Nombre requerido');
+  state.vendedores.push({id:uid(),nombre,doc:$('#sDoc').value.trim(),tel:$('#sTel').value.trim()});
+  $$('#view-vendedores .input').forEach(i=>i.value=''); LS.save(); renderVendedores(); refreshVentaSelectors();
+}
+function delVendedor(i){ if(confirm('¿Eliminar vendedor?')){ state.vendedores.splice(i,1); LS.save(); renderVendedores(); refreshVentaSelectors(); } }
+
+// ====== Ventas ======
+let carrito=[];
+function refreshVentaSelectors(){
+  const pc = $('#vProducto'); pc.innerHTML = `<option value="">Producto…</option>` + state.productos.map(p=>`<option value="${p.id}">${p.nombre} (${money(p.precio)})</option>`).join('');
+  const cc = $('#vCliente'); cc.innerHTML = `<option value="">Cliente…</option>` + state.clientes.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
+  const sc = $('#vVendedor'); sc.innerHTML = `<option value="">Vendedor…</option>` + state.vendedores.map(c=>`<option value="${c.id}">${c.nombre}</option>`).join('');
+}
+function renderCarrito(){
+  const tb=$('#tblCarrito tbody');
+  tb.innerHTML = carrito.map((it,i)=>`<tr><td>${it.prod.nombre}</td><td>${money(it.prod.precio)}</td><td>${it.cant}</td><td>${money(it.prod.precio*it.cant)}</td><td><button class='btn light' onclick='delItem(${i})'>Quitar</button></td></tr>`).join('') || '<tr><td colspan="5">Sin items</td></tr>';
+  $('#vTotal').textContent = money(carrito.reduce((a,b)=>a+b.prod.precio*b.cant,0));
+}
+function addVentaItem(){
+  const pid=$('#vProducto').value; const cant=+$('#vCant').value; if(!pid||!cant) return alert('Selecciona producto y cantidad');
+  const prod=state.productos.find(p=>p.id===pid);
+  if(!prod||prod.cant<cant) return alert('Stock insuficiente');
+  carrito.push({prod,cant}); $('#vCant').value=''; renderCarrito();
+}
+function delItem(i){ carrito.splice(i,1); renderCarrito(); }
+function vaciarCarrito(){ carrito=[]; renderCarrito(); }
+
+function facturar(){
+  if(carrito.length===0) return alert('Carrito vacío');
+  const clienteId=$('#vCliente').value; const vendedorId=$('#vVendedor').value;
+  if(!clienteId || !vendedorId) return alert('Selecciona cliente y vendedor');
+  const total = carrito.reduce((a,b)=>a+b.prod.precio*b.cant,0);
+  const venta = {id:uid(),fecha:todayISO(),clienteId,vendedorId,total,items:carrito.map(i=>({prodId:i.prod.id,nombre:i.prod.nombre,precio:i.prod.precio,cant:i.cant}))};
+  // Actualizar stock y registrar salidas
+  carrito.forEach(i=>{
+    const p=state.productos.find(pp=>pp.id===i.prod.id);
+    p.cant -= i.cant;
+    state.movs.push({id:uid(),fecha:todayISO(),tipo:'Salida',prod:p.id,prodNombre:p.nombre,cant:i.cant,obs:'Venta'});
+  });
+  state.ventas.push(venta);
+  vaciarCarrito();
+  LS.save();
+  alert('Venta registrada');
+  renderInventario(); drawCharts(); renderReportes();
+}
+
+// ====== Reportes ======
+function renderReportes(){
+  const desde = $('#rDesde').value || '0000-01-01';
+  const hasta = $('#rHasta').value || '9999-12-31';
+  const rows = state.ventas.filter(v=>v.fecha>=desde && v.fecha<=hasta);
+  const tb=$('#tblVentas tbody');
+  tb.innerHTML = rows.map(v=>{
+    const cliente = state.clientes.find(c=>c.id===v.clienteId)?.nombre || '—';
+    const vendedor = state.vendedores.find(c=>c.id===v.vendedorId)?.nombre || '—';
+    const items = v.items.map(i=>`${i.nombre} x${i.cant}`).join(', ');
+    return `<tr><td>${v.fecha}</td><td>${cliente}</td><td>${vendedor}</td><td>${money(v.total)}</td><td>${items}</td></tr>`
+  }).join('') || '<tr><td colspan="5">Sin ventas</td></tr>';
+}
+
+function exportVentas(){
+  const header=["Fecha","Cliente","Vendedor","Total","Items"];
+  const rows = state.ventas.map(v=>[
+    v.fecha,
+    state.clientes.find(c=>c.id===v.clienteId)?.nombre||'',
+    state.vendedores.find(c=>c.id===v.vendedorId)?.nombre||'',
+    v.total,
+    v.items.map(i=>`${i.nombre} x${i.cant}`).join('; ')
+  ]);
+  toCSV([header,...rows],'ventas.csv');
+}
+
+// ====== Dashboard y KPIs ======
+let salesChart, topChart;
+function kpi(label, value){return `<div class="kpi"><div class="muted" style="font-size:12px">${label}</div><div style="font-size:20px;font-weight:700">${value}</div></div>`}
+function renderKPIs(){
+  const invValor = state.productos.reduce((a,p)=>a+(p.precio||0)*(p.cant||0),0);
+  const bajo = state.productos.filter(p=>p.min && p.cant<=p.min).length;
+  const hoy = todayISO();
+  const ventasHoy = state.ventas.filter(v=>v.fecha===hoy).reduce((a,v)=>a+v.total,0);
+  const totalProductos = state.productos.length;
+  $('#kpis').innerHTML = [
+    kpi('Valor inventario', money(invValor)),
+    kpi('Ventas hoy', money(ventasHoy)),
+    kpi('Productos en alerta', bajo),
+    kpi('SKU activos', totalProductos)
+  ].join('');
+}
+function clearCanvas(c){ if(!c) return; const ctx=c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); }
+
+function drawLineCanvas(c, labels, data){
+  if(!c) return; const ctx=c.getContext('2d'); const w=c.width, h=c.height; clearCanvas(c);
+  // padding
+  const pad = 30; const x0=pad, y0=pad, x1=w-pad, y1=h-pad;
+  const max = Math.max(1, ...data);
+  // grid and y labels
+  ctx.strokeStyle='#e6e6e6'; ctx.fillStyle='#334155'; ctx.lineWidth=1; ctx.font='12px Poppins';
+  for(let i=0;i<=4;i++){ const y = y0 + (y1-y0)*(i/4); ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke(); const val = Math.round(max*(1 - i/4)); ctx.fillText(money(val), 4, y+4); }
+  // x labels
+  const stepX = (x1-x0)/(labels.length-1 || 1);
+  ctx.fillStyle='#334155'; labels.forEach((lab,i)=>{ const x = x0 + stepX*i; ctx.fillText(lab.slice(5), x-12, y1+16); });
+  // line
+  ctx.strokeStyle='#1ABC9C'; ctx.lineWidth=2; ctx.beginPath(); data.forEach((v,i)=>{ const x = x0 + stepX*i; const y = y1 - (v/max)*(y1-y0); if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y); }); ctx.stroke();
+  // points
+  ctx.fillStyle='#fff'; ctx.strokeStyle='#1ABC9C'; data.forEach((v,i)=>{ const x = x0 + stepX*i; const y = y1 - (v/max)*(y1-y0); ctx.beginPath(); ctx.arc(x,y,4,0,Math.PI*2); ctx.fill(); ctx.stroke(); });
+}
+
+function drawBarCanvas(c, labels, data){
+  if(!c) return; const ctx=c.getContext('2d'); const w=c.width, h=c.height; clearCanvas(c);
+  const pad = 30; const x0=pad, y0=pad, x1=w-pad, y1=h-pad;
+  const max = Math.max(1, ...data);
+  const barW = (x1-x0)/ (labels.length || 1) * 0.6;
+  const step = (x1-x0)/ (labels.length || 1);
+  ctx.font='12px Poppins'; ctx.fillStyle='#334155';
+  // y grid
+  ctx.strokeStyle='#e6e6e6'; for(let i=0;i<=4;i++){ const y = y0 + (y1-y0)*(i/4); ctx.beginPath(); ctx.moveTo(x0,y); ctx.lineTo(x1,y); ctx.stroke(); }
+  // bars
+  data.forEach((v,i)=>{ const x = x0 + step*i + (step-barW)/2; const hgt = (v/max)*(y1-y0); const y = y1 - hgt; ctx.fillStyle='#2874A6'; ctx.fillRect(x,y,barW,hgt); ctx.fillStyle='#334155'; ctx.fillText(labels[i]||'', x, y1+14); });
+}
+
+function drawCharts(){
+  renderKPIs();
+  // Ventas últimos 7 días
+  const days=[...Array(7)].map((_,i)=>{const d=new Date(); d.setDate(d.getDate()-6+i); return d.toISOString().slice(0,10)});
+  const sums = days.map(d=>state.ventas.filter(v=>v.fecha===d).reduce((a,v)=>a+v.total,0));
+  // preparar canvas dimensiones (retina-aware)
+  const sc = $('#salesChart'); if(sc){ sc.width = Math.max(300, sc.clientWidth*2); sc.height = Math.max(120, sc.clientHeight*2); drawLineCanvas(sc, days, sums); }
+
+  // Top productos por unidades vendidas
+  const counter={};
+  state.ventas.forEach(v=>v.items.forEach(i=>{counter[i.nombre]=(counter[i.nombre]||0)+i.cant}));
+  const entries=Object.entries(counter).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const labels = entries.map(e=>e[0]); const values = entries.map(e=>e[1]);
+  const tc = $('#topChart'); if(tc){ tc.width = Math.max(300, tc.clientWidth*2); tc.height = Math.max(120, tc.clientHeight*2); drawBarCanvas(tc, labels, values); }
+}
+
+// ====== Admin ======
+function renderEmpresa(){
+  $('#aNombre').value = state.empresa.nombre||'';
+  $('#aNit').value = state.empresa.nit||'';
+  $('#aTel').value = state.empresa.tel||'';
+}
+function saveEmpresa(){
+  state.empresa = {nombre:$('#aNombre').value, nit:$('#aNit').value, tel:$('#aTel').value};
+  LS.save(); alert('Datos de empresa guardados');
+}
+function resetAll(){ if(confirm('Esto borrará todo el demo. ¿Continuar?')){ localStorage.removeItem(LS.key); state=LS.load(); initRender(); } }
+function seed(){
+  state = {empresa:{nombre:'Bytewise S.A.S.',nit:'900.000.000-1',tel:'(5) 0000000'},
+    productos:[
+      {id:uid(),nombre:'Teclado mecánico',cat:'Periféricos',precio:120000,cant:10,min:2},
+      {id:uid(),nombre:'Mouse óptico',cat:'Periféricos',precio:60000,cant:25,min:5},
+      {id:uid(),nombre:'USB 64GB',cat:'Almacenamiento',precio:40000,cant:40,min:10}
+    ],
+    clientes:[{id:uid(),nombre:'Colegio Corozal'},{id:uid(),nombre:'SENA Centro'},{id:uid(),nombre:'Público General'}],
+    vendedores:[{id:uid(),nombre:'Ana'},{id:uid(),nombre:'Luis'}],
+    ventas:[], movs:[]
   };
+  LS.save(); initRender(); alert('Datos de ejemplo cargados');
+}
 
-  $('#btnRegister').onclick = () => {
-    const r = register($('#regName').value, $('#regEmail').value, $('#regPass').value);
-    if(!r.ok) return alert(r.msg);
-    alert('Cuenta creada. Ahora inicia sesión.');
-    $('#toLogin').click();
-  };
+// ====== Helpers ======
+function toCSV(rows, filename){
+  // replaceAll may not exist en navegadores antiguos; usar replace con regex
+  const csv = rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob(["\uFEFF"+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();
+}
 
-  $('#btnLogin').onclick = () => {
-    const r = login($('#loginEmail').value, $('#loginPass').value);
-    if(!r.ok) return alert(r.msg);
-    showApp();
-  };
+// ====== Eventos ======
+// asignar eventos de forma segura (evita TypeError si un id falta)
+safeOn('#btnAddProduct','click',addProducto);
+safeOn('#btnEntrada','click',()=>registrarMovimiento('Entrada'));
+safeOn('#btnSalida','click',()=>registrarMovimiento('Salida'));
+safeOn('#btnExportInv','click',exportInv);
 
-  // Auto-login if already authenticated
-  if(current()){ showApp(true) }
+safeOn('#btnAddCliente','click',addCliente);
+safeOn('#btnAddVendedor','click',addVendedor);
 
-  // ---------------- APP STATE -----------------
-  let userEmail = null; // current user email
-  let db = null;        // {company, products[], moves[]}
+safeOn('#btnAddVenta','click',addVentaItem);
+safeOn('#btnFacturar','click',facturar);
+safeOn('#btnVaciarCarrito','click',vaciarCarrito);
 
-  function loadDB(){ db = LS.get(DATA_PREFIX+userEmail,{company:{name:'',plan:'Básico'},products:[],moves:[]}) }
-  function saveDB(){ LS.set(DATA_PREFIX+userEmail, db) }
+safeOn('#btnFiltrar','click',renderReportes);
+safeOn('#btnExportVentas','click',exportVentas);
 
-  // ---------------- UI BINDINGS -----------------
-  const kpiItems = $('#kpiItems');
-  const kpiValue = $('#kpiValue');
-  const kpiProducts = $('#kpiProducts');
-  const companyName = $('#companyName');
+safeOn('#btnGuardarEmpresa','click',saveEmpresa);
+safeOn('#btnReset','click',resetAll);
+safeOn('#btnSeed','click',seed);
 
-  const pName = $('#pName');
-  const pCat = $('#pCat');
-  const pPrice = $('#pPrice');
-  const pQty = $('#pQty');
-  const search = $('#search');
-  const tblProducts = $('#tblProducts tbody');
+// ====== Inicializar ======
+function initRender(){
+  renderInventario(); renderClientes(); renderVendedores(); renderEmpresa(); renderReportes(); refreshVentaSelectors(); drawCharts();
+}
+initRender();
 
-  const mProduct = $('#mProduct');
-  const mType = $('#mType');
-  const mQty = $('#mQty');
-  const mNote = $('#mNote');
-  const tblMoves = $('#tblMoves tbody');
-
-  const cName = $('#cName');
-  const cPlan = $('#cPlan');
-
-  let editingId = null; // product id when editing
-  let movChart = null;
-
-  function showApp(skipReload){
-    const c = current();
-    if(!c) return;
-    userEmail = c.email;
-    loadDB();
-    authView.classList.add('hidden');
-    appView.classList.remove('hidden');
-    renderCompany();
-    renderProducts();
-    renderMoves();
-    renderKPIs();
-    renderProductsOptions();
-    renderChart();
-  }
-
-  function renderCompany(){
-    companyName.textContent = `${db.company.name || '(Sin nombre)'} — Plan ${db.company.plan || 'Básico'}`;
-    cName.value = db.company.name || '';
-    cPlan.value = db.company.plan || 'Básico';
-  }
-
-  function renderProducts(){
-    const term = (search.value||'').toLowerCase();
-    const rows = db.products
-      .filter(p => p.name.toLowerCase().includes(term) || p.cat.toLowerCase().includes(term))
-      .map(p => {
-        const total = p.price * p.qty;
-        return `<tr>
-          <td>${escapeHtml(p.name)}</td>
-          <td>${escapeHtml(p.cat)}</td>
-          <td>$${fmt(p.price)}</td>
-          <td>${p.qty}</td>
-          <td>$${fmt(total)}</td>
-          <td>
-            <button class="btn light" data-edit="${p.id}">Editar</button>
-            <button class="btn danger" data-del="${p.id}">Eliminar</button>
-          </td>
-        </tr>`
-      }).join('');
-    tblProducts.innerHTML = rows || `<tr><td colspan="6">Sin productos</td></tr>`;
-
-    // Bind row buttons
-    $$("[data-edit]").forEach(b=> b.onclick = () => startEdit(b.dataset.edit));
-    $$("[data-del]").forEach(b=> b.onclick = () => delProduct(b.dataset.del));
-  }
-
-  function renderProductsOptions(){
-    mProduct.innerHTML = db.products.map(p=>`<option value="${p.id}">${escapeHtml(p.name)}</option>`).join('');
-  }
-
-  function renderMoves(){
-    const rows = db.moves.slice().sort((a,b)=> new Date(b.date)-new Date(a.date)).map(m=>{
-      const p = db.products.find(x=>x.id===m.productId);
-      return `<tr>
-        <td>${fmtDate(m.date)}</td>
-        <td>${escapeHtml(p? p.name : '—')}</td>
-        <td>${m.type==='out'?'<span class="pill out">Salida</span>':'<span class="pill in">Entrada</span>'}</td>
-        <td>${m.qty}</td>
-        <td>${escapeHtml(m.note||'')}</td>
-      </tr>`
-    }).join('');
-    tblMoves.innerHTML = rows || `<tr><td colspan="5">Sin movimientos</td></tr>`;
-  }
-
-  function renderKPIs(){
-    const totalItems = db.products.reduce((s,p)=>s+(+p.qty||0),0);
-    const invValue = db.products.reduce((s,p)=>s+((+p.qty||0)*(+p.price||0)),0);
-    kpiItems.textContent = fmt(totalItems);
-    kpiValue.textContent = `$${fmt(invValue)}`;
-    kpiProducts.textContent = fmt(db.products.length);
-  }
-
-  function renderChart(){
-    const {labels, inData, outData} = lastMonthsMovs(6);
-    const ctx = document.getElementById('movChart');
-    if(movChart){ movChart.destroy(); }
-    movChart = new Chart(ctx, {
-      type:'line',
-      data:{
-        labels,
-        datasets:[
-          {label:'Entradas', data:inData},
-          {label:'Salidas', data:outData}
-        ]
-      },
-      options:{ responsive:true, maintainAspectRatio:false }
-    });
-  }
-
-  // ---------- Product CRUD ----------
-  $('#btnAddProduct').onclick = () => {
-    const name = (pName.value||'').trim();
-    const cat  = (pCat.value||'').trim();
-    const price = +pPrice.value; const qty = +pQty.value;
-    if(!name || !cat || isNaN(price) || isNaN(qty)) return alert('Completa todos los campos del producto.');
-
-    if(editingId){
-      const p = db.products.find(x=>x.id===editingId);
-      if(!p) return;
-      p.name = name; p.cat = cat; p.price = price; p.qty = qty;
-      editingId = null;
-    } else {
-      db.products.push({id:id(), name, cat, price, qty});
-    }
-    saveDB();
-    clearForm();
-    renderProducts();
-    renderProductsOptions();
-    renderKPIs();
-  };
-  $('#btnClearForm').onclick = clearForm;
-  search.oninput = renderProducts;
-
-  function startEdit(pid){
-    const p = db.products.find(x=>x.id===pid); if(!p) return;
-    editingId = pid;
-    pName.value = p.name; pCat.value = p.cat; pPrice.value = p.price; pQty.value = p.qty;
-    pName.focus();
-  }
-  function delProduct(pid){
-    if(!confirm('¿Eliminar producto?')) return;
-    db.products = db.products.filter(p=>p.id!==pid);
-    // también limpiar movimientos asociados
-    db.moves = db.moves.filter(m=>m.productId!==pid);
-    saveDB();
-    renderProducts(); renderProductsOptions(); renderMoves(); renderKPIs(); renderChart();
-  }
-  function clearForm(){ editingId=null; pName.value=''; pCat.value=''; pPrice.value=''; pQty.value=''; }
-
-  // ---------- Movements ----------
-  $('#btnAddMove').onclick = () => {
-    const pid = mProduct.value; if(!pid) return alert('Registra productos primero.');
-    const qty = +mQty.value; if(isNaN(qty)||qty<=0) return alert('Cantidad inválida');
-    const type = mType.value; const note = mNote.value;
-    const p = db.products.find(x=>x.id===pid); if(!p) return;
-
-    if(type==='out' && p.qty<qty) return alert('Inventario insuficiente para salida.');
-
-    // apply
-    p.qty += (type==='in'? qty : -qty);
-    db.moves.push({id:id(), date:new Date().toISOString(), type, productId:pid, qty, note});
-    saveDB();
-    mQty.value = 1; mNote.value='';
-    renderProducts(); renderMoves(); renderKPIs(); renderChart();
-  };
-
-  $('#btnUndoLast').onclick = () => {
-    if(!db.moves.length) return alert('No hay movimientos.');
-    const last = db.moves.pop();
-    const p = db.products.find(x=>x.id===last.productId);
-    if(p){ p.qty += (last.type==='out'? last.qty : -last.qty); }
-    saveDB();
-    renderProducts(); renderMoves(); renderKPIs(); renderChart();
-  };
-
-  // ---------- Company/profile ----------
-  $('#btnSaveCompany').onclick = () => {
-    db.company.name = cName.value.trim();
-    db.company.plan = cPlan.value;
-    saveDB();
-    renderCompany();
-  };
-
-  $('#btnDeleteAccount').onclick = () => {
-    if(!confirm('Esto eliminará TODOS los datos locales de esta cuenta (solo demo). ¿Continuar?')) return;
-    LS.del(DATA_PREFIX+userEmail);
-    logout();
-    location.reload();
-  };
-
-  // ---------- Export CSV ----------
-  $('#btnExportCSV').onclick = () => {
-    if(!db.products.length){ alert('Sin productos'); return; }
-    const header = ['Nombre','Categoría','Precio','Cantidad','Total'];
-    const rows = db.products.map(p=>[p.name,p.cat,p.price,p.qty,(p.price*p.qty)]);
-    const csv = [header].concat(rows).map(r=>r.map(csvCell).join(',')).join('\n');
-    const blob = new Blob(["\uFEFF"+csv],{type:'text/csv;charset=utf-8;'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `inventario_${(db.company.name||'empresa').replace(/\s+/g,'_')}.csv`;
-    document.body.appendChild(a); a.click(); a.remove();
-  };
-
-  // ---------- Logout ----------
-  $('#btnLogout').onclick = () => { logout(); location.reload(); };
-
-  // ---------- Helpers ----------
-  function id(){ return Math.random().toString(36).slice(2,10) }
-  function fmt(n){ return Number(n).toLocaleString('es-CO') }
-  function fmtDate(d){ const dt = new Date(d); return dt.toLocaleDateString('es-CO',{year:'2-digit',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit'}) }
-  function csvCell(v){
-    if(v==null) return '';
-    const s = String(v).replaceAll('"','""');
-    return /[",\n]/.test(s) ? `"${s}"` : s;
-  }
-  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m])) }
-  function addMonths(date, m){ const d = new Date(date); d.setMonth(d.getMonth()+m); return d.toISOString() }
-
-  function lastMonthsMovs(n){
-    const labels=[]; const inData=[]; const outData=[];
-    const now=new Date();
-    for(let i=n-1;i>=0;i--){
-      const d=new Date(now.getFullYear(), now.getMonth()-i, 1);
-      const label = d.toLocaleDateString('es-CO',{month:'short'});
-      labels.push(label);
-      const mFirst = new Date(d.getFullYear(), d.getMonth(), 1);
-      const mLast  = new Date(d.getFullYear(), d.getMonth()+1, 0);
-      const ms = db.moves.filter(x=>{
-        const xd=new Date(x.date); return xd>=mFirst && xd<=mLast;
-      });
-      inData.push(ms.filter(x=>x.type==='in').length);
-      outData.push(ms.filter(x=>x.type==='out').length);
-    }
-    return {labels,inData,outData};
-  }
-})();
 </script>
 </body>
 </html>
