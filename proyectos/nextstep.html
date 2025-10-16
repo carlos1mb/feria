@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXTSTEP S.A.S — MVP (Vanilla JS)</title>
+  <style>
+    :root{
+      --bg:#0f172a;          /* slate-900 */
+      --panel:#111827ee;     /* gray-900 */
+      --muted:#1f2937;       /* gray-800 */
+      --card:#0b1226;        /* dark blue */
+      --primary:#22d3ee;     /* cyan-400 */
+      --accent:#10b981;      /* emerald-500 */
+      --warning:#f59e0b;     /* amber-500 */
+      --danger:#ef4444;      /* red-500 */
+      --text:#e5e7eb;        /* gray-200 */
+      --text-dim:#9ca3af;    /* gray-400 */
+      --ring: 0 0 0 2px var(--primary);
+      --radius: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(1200px 800px at 90% -10%,rgba(34,211,238,.15),transparent 60%),radial-gradient(900px 700px at -10% 20%,rgba(16,185,129,.12),transparent 65%),var(--bg);color:var(--text)}
+    header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,rgba(2,6,23,.9),rgba(2,6,23,.6));backdrop-filter: blur(8px);border-bottom:1px solid #1f2937}
+    .topbar{display:flex;align-items:center;gap:12px;padding:14px 18px;}
+    .logo{width:36px;height:36px;border-radius:12px;background: conic-gradient(from 220deg at 50% 50%, var(--primary), var(--accent));box-shadow:0 4px 14px rgba(34,211,238,.35)}
+    h1{font-size:18px;margin:0;font-weight:700;letter-spacing:.3px}
+    .slogan{color:var(--text-dim);font-size:12px}
+    .toolbar{margin-left:auto;display:flex;gap:8px}
+    .btn{border:none;border-radius:12px;padding:10px 14px;background:#0b1226;color:var(--text);cursor:pointer;box-shadow: inset 0 0 0 1px #1f2937;transition:all .2s}
+    .btn:hover{transform:translateY(-1px);box-shadow: inset 0 0 0 1px var(--primary),0 10px 20px rgba(34,211,238,.08)}
+    .btn.primary{background:linear-gradient(135deg,#0ea5e9 0%,#22d3ee 40%,#14b8a6 100%);color:#05202a}
+    .container{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 66px)}
+    nav{border-right:1px solid #1f2937;background:linear-gradient(180deg,rgba(3,7,18,.7),rgba(3,7,18,.3));padding:16px;}
+    .tabs{display:flex;flex-direction:column;gap:8px}
+    .tab{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;color:var(--text-dim);cursor:pointer;border:1px solid #111827;background:#0b1226}
+    .tab.active{color:var(--text);border-color:#1f2937;box-shadow:inset 0 0 0 1px #1f2937, 0 10px 20px rgba(0,0,0,.25)}
+    .icon{font-size:18px;width:22px;text-align:center}
+    main{padding:20px;}
+    .page{display:none}
+    .page.active{display:block}
+    .grid{display:grid;gap:16px}
+    .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    @media(max-width:1100px){.grid.cols-3{grid-template-columns:repeat(2,1fr)}.container{grid-template-columns:200px 1fr}}
+    @media(max-width:800px){.grid.cols-3,.grid.cols-2{grid-template-columns:1fr}.container{grid-template-columns:1fr}.hide-mobile{display:none}}
+    .card{background:linear-gradient(180deg,rgba(17,24,39,.6),rgba(17,24,39,.35));border:1px solid #1f2937;border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
+    .card h2{margin:.2rem 0 1rem;font-size:16px}
+    .metrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+    .metric{border-radius:14px;padding:14px;background:linear-gradient(180deg,#0b1226 0%, #0b1226cc 100%);border:1px solid #1f2937}
+    .metric .kpi{font-size:28px;font-weight:800}
+    .metric .label{color:var(--text-dim);font-size:12px}
+    .stack{display:flex;flex-direction:column;gap:10px}
+    .row{display:flex;gap:10px}
+    input,select,textarea{width:100%;background:#0b1226;border:1px solid #1f2937;color:var(--text);padding:10px;border-radius:12px;outline:none}
+    input:focus,select:focus,textarea:focus{box-shadow:var(--ring);border-color:transparent}
+    .table{width:100%;border-collapse:collapse}
+    .table th,.table td{border-bottom:1px solid #1f2937;padding:10px;text-align:left}
+    .table th{color:var(--text-dim);font-weight:600}
+    .pill{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid #1f2937;background:#0b1226}
+    .pill.good{border-color:#064e3b;color:#34d399;background:rgba(16,185,129,.08)}
+    .pill.warn{border-color:#4b3a05;color:#fbbf24;background:rgba(251,191,36,.08)}
+    .pill.bad{border-color:#4c0a0a;color:#f87171;background:rgba(248,113,113,.08)}
+    .actions{display:flex;gap:6px}
+    .btn.icon{padding:8px;border-radius:10px}
+    .footer-note{color:var(--text-dim);font-size:12px;margin-top:4px}
+    .inline{display:flex;gap:10px;align-items:center}
+    .right{margin-left:auto}
+    canvas{width:100%;height:220px;background:#0b1226;border:1px solid #1f2937;border-radius:14px}
+    .tag{font-size:11px;background:#0b1226;border:1px solid #1f2937;color:var(--text-dim);padding:2px 8px;border-radius:999px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="topbar">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>NEXTSTEP S.A.S — Plataforma de Gestión y Bienestar</h1>
+        <div class="slogan">“Cuidamos tu bienestar, fortalecemos tu futuro”. MVP para feria empresarial (sin servidor, datos en LocalStorage).</div>
+      </div>
+      <div class="toolbar">
+        <button class="btn" id="exportJson">Exportar JSON</button>
+        <label class="btn" for="importFile">Importar JSON</label>
+        <input id="importFile" type="file" accept="application/json" hidden />
+        <button class="btn primary" id="seedDemo">Cargar datos demo</button>
+        <button class="btn" id="wipeAll">Borrar todo</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="container">
+    <nav>
+      <div class="tabs" id="tabs">
+        <div class="tab active" data-page="dashboard"><span class="icon">📊</span>Dashboard</div>
+        <div class="tab" data-page="academico"><span class="icon">🎓</span>Académico</div>
+        <div class="tab" data-page="bienestar"><span class="icon">💚</span>Bienestar</div>
+        <div class="tab" data-page="reportes"><span class="icon">📈</span>Reportes</div>
+        <div class="tab" data-page="comunicacion"><span class="icon">💬</span>Comunicación</div>
+        <div class="tab" data-page="config"><span class="icon">⚙️</span>Configuración</div>
+      </div>
+    </nav>
+
+    <main>
+      <!-- DASHBOARD -->
+      <section class="page active" id="page-dashboard">
+        <div class="grid cols-3">
+          <div class="card">
+            <h2>Indicadores clave</h2>
+            <div class="metrics">
+              <div class="metric"><div class="kpi" id="kpiEstudiantes">0</div><div class="label">Estudiantes</div></div>
+              <div class="metric"><div class="kpi" id="kpiCasos">0</div><div class="label">Casos de Bienestar</div></div>
+              <div class="metric"><div class="kpi" id="kpiMensajes">0</div><div class="label">Mensajes internos</div></div>
+              <div class="metric"><div class="kpi" id="kpiAsistencia">0%</div><div class="label">Asistencia promedio</div></div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Distribución de casos (by estado)</h2>
+            <canvas id="chartCasos" height="220"></canvas>
+          </div>
+          <div class="card">
+            <h2>Rendimiento por área (promedios)</h2>
+            <canvas id="chartRendimiento" height="220"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ACADEMICO -->
+      <section class="page" id="page-academico">
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Registrar / Editar estudiante</h2>
+            <div class="stack">
+              <input type="hidden" id="alumnoId" />
+              <div class="row">
+                <input id="alumnoNombre" placeholder="Nombre y Apellido" />
+                <input id="alumnoGrado" placeholder="Grado / Curso" />
+              </div>
+              <div class="row">
+                <input id="alumnoArea" placeholder="Área (ej. Matemáticas)" />
+                <input id="alumnoPromedio" type="number" step="0.01" placeholder="Promedio (0-5)" />
+              </div>
+              <div class="row">
+                <input id="alumnoAsistencia" type="number" step="1" placeholder="Asistencia %" />
+                <select id="alumnoEstado">
+                  <option value="Activo">Activo</option>
+                  <option value="En riesgo">En riesgo</option>
+                  <option value="Egresado">Egresado</option>
+                </select>
+              </div>
+              <div class="row">
+                <button class="btn primary" id="guardarAlumno">Guardar</button>
+                <button class="btn" id="limpiarAlumno">Limpiar</button>
+              </div>
+              <div class="footer-note">Módulo Académico: calificaciones, asistencia y estado general.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="inline">
+              <h2>Estudiantes</h2>
+              <input class="right" id="filtroAlumnos" placeholder="Buscar por nombre, grado o área..." />
+            </div>
+            <table class="table" id="tablaAlumnos">
+              <thead>
+                <tr>
+                  <th>Nombre</th><th>Grado</th><th>Área</th><th>Prom</th><th>Asist</th><th>Estado</th><th></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- BIENESTAR -->
+      <section class="page" id="page-bienestar">
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Registrar / Editar caso</h2>
+            <div class="stack">
+              <input type="hidden" id="casoId" />
+              <div class="row">
+                <input id="casoEstudiante" placeholder="Estudiante" />
+                <select id="casoTipo">
+                  <option>Académico</option>
+                  <option>Convivencia</option>
+                  <option>Emocional</option>
+                </select>
+              </div>
+              <div class="row">
+                <select id="casoEstado">
+                  <option value="Abierto">Abierto</option>
+                  <option value="En seguimiento">En seguimiento</option>
+                  <option value="Cerrado">Cerrado</option>
+                </select>
+                <input id="casoFecha" type="date" />
+              </div>
+              <textarea id="casoNotas" rows="4" placeholder="Notas de orientación / acciones"></textarea>
+              <div class="row">
+                <button class="btn primary" id="guardarCaso">Guardar</button>
+                <button class="btn" id="limpiarCaso">Limpiar</button>
+              </div>
+              <div class="footer-note">Módulo de Bienestar: seguimiento a casos y alertas tempranas.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="inline">
+              <h2>Casos</h2>
+              <select id="filtroEstado" class="right" style="max-width:200px">
+                <option value="">Todos los estados</option>
+                <option>Abierto</option>
+                <option>En seguimiento</option>
+                <option>Cerrado</option>
+              </select>
+            </div>
+            <table class="table" id="tablaCasos">
+              <thead>
+                <tr>
+                  <th>Fecha</th><th>Estudiante</th><th>Tipo</th><th>Estado</th><th>Notas</th><th></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- REPORTES -->
+      <section class="page" id="page-reportes">
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Generar indicadores rápidos</h2>
+            <div class="stack">
+              <div class="row">
+                <select id="reporteTipo">
+                  <option value="rendimiento">Promedio por área</option>
+                  <option value="riesgo">Estudiantes en riesgo</option>
+                  <option value="asistencia">Asistencia por grado</option>
+                </select>
+                <button class="btn primary" id="generarReporte">Generar</button>
+              </div>
+              <canvas id="chartReporte" height="260"></canvas>
+              <div class="footer-note">Reportes automáticos para decisiones pedagógicas.</div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Resumen</h2>
+            <div id="reporteResumen" class="stack"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- COMUNICACIÓN -->
+      <section class="page" id="page-comunicacion">
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Nuevo mensaje interno</h2>
+            <div class="stack">
+              <div class="row">
+                <select id="rolEmisor">
+                  <option>Docente</option>
+                  <option>Orientador</option>
+                  <option>Coordinador</option>
+                </select>
+                <select id="rolReceptor">
+                  <option>Orientador</option>
+                  <option>Docente</option>
+                  <option>Coordinador</option>
+                </select>
+              </div>
+              <input id="mensajeAsunto" placeholder="Asunto" />
+              <textarea id="mensajeTexto" rows="4" placeholder="Mensaje"></textarea>
+              <div class="row">
+                <button class="btn primary" id="enviarMensaje">Enviar</button>
+                <button class="btn" id="limpiarMensaje">Limpiar</button>
+              </div>
+              <div class="footer-note">Módulo de Comunicación: intercambio interno Docente–Orientación–Coordinación.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="inline">
+              <h2>Bandeja de mensajes</h2>
+              <span class="tag">demo local</span>
+            </div>
+            <table class="table" id="tablaMensajes">
+              <thead>
+                <tr>
+                  <th>De</th><th>Para</th><th>Asunto</th><th>Fecha</th><th></th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONFIGURACIÓN -->
+      <section class="page" id="page-config">
+        <div class="grid cols-2">
+          <div class="card">
+            <h2>Identidad institucional</h2>
+            <div class="stack">
+              <input id="cfgNombre" placeholder="Nombre de la institución" />
+              <input id="cfgSlogan" placeholder="Slogan" />
+              <div class="row">
+                <input id="cfgColor1" type="color" value="#22d3ee" />
+                <input id="cfgColor2" type="color" value="#10b981" />
+                <button class="btn" id="aplicarTema">Aplicar colores</button>
+              </div>
+              <div class="footer-note">Personaliza el encabezado para tu colegio (solo en este navegador).</div>
+            </div>
+          </div>
+          <div class="card">
+            <h2>Acerca del MVP</h2>
+            <p>Este MVP refleja el enfoque de <strong>gestión académica</strong> y <strong>bienestar estudiantil</strong> (SaaS) descrito en el documento del proyecto. Incluye módulos de Académico, Bienestar, Reportes y Comunicación; panel con KPIs; CRUD básico; y persistencia en <em>localStorage</em>.</p>
+            <ul>
+              <li>Sin backend ni login: ideal para ferias y demostraciones offline.</li>
+              <li>Exporta/Importa JSON para mover datos entre equipos.</li>
+              <li>Diseño responsive y accesible con teclado.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // --- Utilidades de almacenamiento ---
+    const DB = {
+      get(key, def){
+        try{ return JSON.parse(localStorage.getItem(key)) ?? def }catch{ return def }
+      },
+      set(key, val){ localStorage.setItem(key, JSON.stringify(val)) }
+    }
+
+    // --- Estado ---
+    let alumnos = DB.get('ns_alumnos', []);
+    let casos = DB.get('ns_casos', []);
+    let mensajes = DB.get('ns_mensajes', []);
+    let cfg = DB.get('ns_cfg', {nombre:"NEXTSTEP S.A.S", slogan:"Cuidamos tu bienestar, fortalecemos tu futuro", c1:"#22d3ee", c2:"#10b981"});
+
+    // --- Tabs ---
+    const tabs = document.querySelectorAll('.tab');
+    const pages = document.querySelectorAll('.page');
+    tabs.forEach(t=>t.addEventListener('click',()=>{
+      tabs.forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      const id = 'page-'+t.dataset.page;
+      pages.forEach(p=>p.classList.toggle('active', p.id===id));
+      if(id==='page-dashboard') renderDashboard();
+    }));
+
+    // --- Dashboard ---
+    const kpiEst = document.getElementById('kpiEstudiantes');
+    const kpiCas = document.getElementById('kpiCasos');
+    const kpiMsg = document.getElementById('kpiMensajes');
+    const kpiAsi = document.getElementById('kpiAsistencia');
+
+    function avg(arr){return arr.length? (arr.reduce((a,b)=>a+Number(b||0),0)/arr.length):0}
+
+    function renderDashboard(){
+      kpiEst.textContent = alumnos.length;
+      kpiCas.textContent = casos.length;
+      kpiMsg.textContent = mensajes.length;
+      const asistenciaProm = Math.round(avg(alumnos.map(a=>Number(a.asistencia||0))));
+      kpiAsi.textContent = isNaN(asistenciaProm)? '0%' : asistenciaProm+"%";
+      drawCasosChart();
+      drawRendimientoChart();
+    }
+
+    // --- Charts básicos (Canvas) ---
+    function barChart(canvasId, labels, values){
+      const c = document.getElementById(canvasId);
+      const ctx = c.getContext('2d');
+      const W = c.width = c.clientWidth*2;  // HiDPI
+      const H = c.height = c.clientHeight*2;
+      ctx.clearRect(0,0,W,H);
+
+      const max = Math.max(1, ...values);
+      const pad = 40; const barW = (W - pad*2)/values.length * .7;
+      ctx.font = '24px system-ui'; ctx.fillStyle = '#9ca3af';
+      labels.forEach((lab,i)=>{
+        const x = pad + i*((W-pad*2)/values.length) + ((W-pad*2)/values.length - barW)/2;
+        const h = (H - pad*2) * (values[i]/max);
+        const y = H - pad - h;
+        // bar gradient
+        const g = ctx.createLinearGradient(0,y,0,y+h);
+        g.addColorStop(0, getComputedStyle(document.documentElement).getPropertyValue('--primary').trim());
+        g.addColorStop(1, getComputedStyle(document.documentElement).getPropertyValue('--accent').trim());
+        ctx.fillStyle = g;
+        roundRect(ctx, x, y, barW, h, 12); ctx.fill();
+        // label
+        ctx.fillStyle = '#9ca3af';
+        ctx.textAlign = 'center';
+        ctx.fillText(lab, x+barW/2, H - pad + 26);
+        ctx.fillText(values[i], x+barW/2, y - 8);
+      });
+      // axes
+      ctx.strokeStyle = '#1f2937'; ctx.lineWidth = 2; ctx.beginPath();
+      ctx.moveTo(pad, pad/2); ctx.lineTo(pad, H-pad); ctx.lineTo(W-pad, H-pad); ctx.stroke();
+    }
+    function roundRect(ctx, x, y, w, h, r){
+      ctx.beginPath();
+      ctx.moveTo(x+r, y);
+      ctx.arcTo(x+w, y, x+w, y+h, r);
+      ctx.arcTo(x+w, y+h, x, y+h, r);
+      ctx.arcTo(x, y+h, x, y, r);
+      ctx.arcTo(x, y, x+w, y, r);
+      ctx.closePath();
+    }
+    function drawCasosChart(){
+      const estados = ['Abierto','En seguimiento','Cerrado'];
+      const vals = estados.map(e => casos.filter(c=>c.estado===e).length);
+      barChart('chartCasos', estados, vals);
+    }
+    function drawRendimientoChart(){
+      // promedio por área
+      const areas = [...new Set(alumnos.map(a=>a.area||'General'))];
+      const vals = areas.map(ar=>{
+        const arr = alumnos.filter(a=> (a.area||'General')===ar).map(a=>Number(a.promedio||0));
+        return Number((avg(arr)).toFixed(2));
+      });
+      barChart('chartRendimiento', areas, vals);
+    }
+
+    // --- Académico (CRUD) ---
+    const alumnoId = document.getElementById('alumnoId');
+    const alumnoNombre = document.getElementById('alumnoNombre');
+    const alumnoGrado = document.getElementById('alumnoGrado');
+    const alumnoArea = document.getElementById('alumnoArea');
+    const alumnoPromedio = document.getElementById('alumnoPromedio');
+    const alumnoAsistencia = document.getElementById('alumnoAsistencia');
+    const alumnoEstado = document.getElementById('alumnoEstado');
+    const tablaAlumnos = document.querySelector('#tablaAlumnos tbody');
+
+    function limpiarAlumnoForm(){ alumnoId.value=''; alumnoNombre.value=''; alumnoGrado.value=''; alumnoArea.value=''; alumnoPromedio.value=''; alumnoAsistencia.value=''; alumnoEstado.value='Activo'; }
+
+    function renderAlumnos(filter=''){
+      const q = filter.toLowerCase();
+      const data = alumnos.filter(a=> (a.nombre+a.grado+(a.area||'')).toLowerCase().includes(q));
+      tablaAlumnos.innerHTML = data.map(a=>`<tr>
+        <td>${a.nombre}</td>
+        <td>${a.grado}</td>
+        <td>${a.area||'-'}</td>
+        <td>${Number(a.promedio||0).toFixed(2)}</td>
+        <td>${a.asistencia||0}%</td>
+        <td>
+          <span class="pill ${a.estado==='Activo'?'good': a.estado==='En riesgo'?'bad':'warn'}">${a.estado}</span>
+        </td>
+        <td class="actions">
+          <button class="btn icon" title="Editar" onclick='editAlumno("${a.id}")'>✏️</button>
+          <button class="btn icon" title="Eliminar" onclick='delAlumno("${a.id}")'>🗑️</button>
+        </td>
+      </tr>`).join('');
+      renderDashboard();
+    }
+
+    document.getElementById('guardarAlumno').onclick = ()=>{
+      const id = alumnoId.value || crypto.randomUUID();
+      const obj = {
+        id,
+        nombre: alumnoNombre.value.trim(),
+        grado: alumnoGrado.value.trim(),
+        area: alumnoArea.value.trim(),
+        promedio: Number(alumnoPromedio.value||0),
+        asistencia: Number(alumnoAsistencia.value||0),
+        estado: alumnoEstado.value
+      };
+      if(!obj.nombre) return alert('Debe ingresar un nombre.');
+      const ix = alumnos.findIndex(x=>x.id===id);
+      if(ix>=0) alumnos[ix]=obj; else alumnos.push(obj);
+      DB.set('ns_alumnos', alumnos);
+      limpiarAlumnoForm();
+      renderAlumnos(document.getElementById('filtroAlumnos').value);
+    }
+    document.getElementById('limpiarAlumno').onclick = limpiarAlumnoForm;
+    document.getElementById('filtroAlumnos').oninput = (e)=> renderAlumnos(e.target.value);
+
+    window.editAlumno = (id)=>{
+      const a = alumnos.find(x=>x.id===id); if(!a) return;
+      alumnoId.value = a.id; alumnoNombre.value=a.nombre; alumnoGrado.value=a.grado; alumnoArea.value=a.area||''; alumnoPromedio.value=a.promedio; alumnoAsistencia.value=a.asistencia; alumnoEstado.value=a.estado;
+      document.querySelector('[data-page="academico"]').click();
+    }
+    window.delAlumno = (id)=>{
+      if(!confirm('¿Eliminar este estudiante?')) return;
+      alumnos = alumnos.filter(x=>x.id!==id); DB.set('ns_alumnos', alumnos); renderAlumnos(document.getElementById('filtroAlumnos').value);
+    }
+
+    // --- Bienestar (CRUD) ---
+    const casoId = document.getElementById('casoId');
+    const casoEstudiante = document.getElementById('casoEstudiante');
+    const casoTipo = document.getElementById('casoTipo');
+    const casoEstado = document.getElementById('casoEstado');
+    const casoFecha = document.getElementById('casoFecha');
+    const casoNotas = document.getElementById('casoNotas');
+    const tablaCasos = document.querySelector('#tablaCasos tbody');
+
+    function limpiarCasoForm(){ casoId.value=''; casoEstudiante.value=''; casoTipo.value='Académico'; casoEstado.value='Abierto'; casoFecha.value=''; casoNotas.value=''; }
+
+    function renderCasos(){
+      const estado = document.getElementById('filtroEstado').value;
+      const data = estado? casos.filter(c=>c.estado===estado): casos;
+      tablaCasos.innerHTML = data.sort((a,b)=> (a.fecha||'').localeCompare(b.fecha||'')).map(c=>`<tr>
+        <td>${c.fecha||'-'}</td>
+        <td>${c.estudiante}</td>
+        <td>${c.tipo}</td>
+        <td><span class="pill ${c.estado==='Cerrado'?'good': c.estado==='En seguimiento'?'warn':'bad'}">${c.estado}</span></td>
+        <td>${(c.notas||'').slice(0,60)}${(c.notas||'').length>60?'…':''}</td>
+        <td class="actions">
+          <button class="btn icon" onclick='editCaso("${c.id}")'>✏️</button>
+          <button class="btn icon" onclick='delCaso("${c.id}")'>🗑️</button>
+        </td>
+      </tr>`).join('');
+      renderDashboard();
+    }
+
+    document.getElementById('guardarCaso').onclick = ()=>{
+      const id = casoId.value || crypto.randomUUID();
+      const obj = {
+        id,
+        estudiante: casoEstudiante.value.trim(),
+        tipo: casoTipo.value,
+        estado: casoEstado.value,
+        fecha: casoFecha.value,
+        notas: casoNotas.value.trim()
+      };
+      if(!obj.estudiante) return alert('Debe ingresar el nombre del estudiante.');
+      const ix = casos.findIndex(x=>x.id===id);
+      if(ix>=0) casos[ix]=obj; else casos.push(obj);
+      DB.set('ns_casos', casos);
+      limpiarCasoForm();
+      renderCasos();
+    }
+    document.getElementById('limpiarCaso').onclick = limpiarCasoForm;
+    document.getElementById('filtroEstado').onchange = renderCasos;
+
+    window.editCaso = (id)=>{
+      const c = casos.find(x=>x.id===id); if(!c) return;
+      casoId.value=c.id; casoEstudiante.value=c.estudiante; casoTipo.value=c.tipo; casoEstado.value=c.estado; casoFecha.value=c.fecha; casoNotas.value=c.notas;
+      document.querySelector('[data-page="bienestar"]').click();
+    }
+    window.delCaso = (id)=>{
+      if(!confirm('¿Eliminar este caso?')) return;
+      casos = casos.filter(x=>x.id!==id); DB.set('ns_casos', casos); renderCasos();
+    }
+
+    // --- Comunicación (CRUD) ---
+    const rolEmisor = document.getElementById('rolEmisor');
+    const rolReceptor = document.getElementById('rolReceptor');
+    const mensajeAsunto = document.getElementById('mensajeAsunto');
+    const mensajeTexto = document.getElementById('mensajeTexto');
+    const tablaMensajes = document.querySelector('#tablaMensajes tbody');
+
+    function limpiarMensajeForm(){ rolEmisor.value='Docente'; rolReceptor.value='Orientador'; mensajeAsunto.value=''; mensajeTexto.value=''; }
+
+    function renderMensajes(){
+      tablaMensajes.innerHTML = mensajes.slice().reverse().map(m=>`<tr>
+        <td>${m.de}</td><td>${m.para}</td><td>${m.asunto}</td><td>${new Date(m.fecha).toLocaleString()}</td>
+        <td class="actions"><button class="btn icon" onclick='delMsg("${m.id}")'>🗑️</button></td>
+      </tr>`).join('');
+      renderDashboard();
+    }
+
+    document.getElementById('enviarMensaje').onclick = ()=>{
+      const obj = {id:crypto.randomUUID(), de:rolEmisor.value, para:rolReceptor.value, asunto:mensajeAsunto.value.trim()||'(sin asunto)', texto:mensajeTexto.value.trim(), fecha:Date.now()};
+      mensajes.push(obj); DB.set('ns_mensajes', mensajes); limpiarMensajeForm(); renderMensajes();
+    }
+    document.getElementById('limpiarMensaje').onclick = limpiarMensajeForm;
+    window.delMsg = (id)=>{ mensajes = mensajes.filter(x=>x.id!==id); DB.set('ns_mensajes', mensajes); renderMensajes(); }
+
+    // --- Reportes ---
+    document.getElementById('generarReporte').onclick = ()=>{
+      const tipo = document.getElementById('reporteTipo').value;
+      const canvas = 'chartReporte';
+      const resumen = document.getElementById('reporteResumen');
+      resumen.innerHTML='';
+      if(tipo==='rendimiento'){
+        const areas = [...new Set(alumnos.map(a=>a.area||'General'))];
+        const vals = areas.map(ar=>{
+          const arr = alumnos.filter(a=> (a.area||'General')===ar).map(a=>Number(a.promedio||0));
+          return Number((avg(arr)).toFixed(2));
+        });
+        barChart(canvas, areas, vals);
+        resumen.innerHTML = areas.map((ar,i)=>`<div class="inline"><span class="tag">${ar}</span><span class="right">Prom: <strong>${vals[i]}</strong></span></div>`).join('');
+      }
+      if(tipo==='riesgo'){
+        const enRiesgo = alumnos.filter(a=>a.estado==='En riesgo');
+        barChart(canvas, enRiesgo.map(a=>a.nombre.split(' ')[0]), enRiesgo.map(a=>Number(a.promedio||0)));
+        resumen.innerHTML = enRiesgo.map(a=>`<div class="inline"><span>${a.nombre} — ${a.grado}</span><span class="right pill bad">Riesgo</span></div>`).join('') || '<em>No hay estudiantes en riesgo.</em>';
+      }
+      if(tipo==='asistencia'){
+        const grados = [...new Set(alumnos.map(a=>a.grado||'—'))];
+        const vals = grados.map(g=>{
+          const arr = alumnos.filter(a=> (a.grado||'—')===g).map(a=>Number(a.asistencia||0));
+          return Math.round(avg(arr));
+        });
+        barChart(canvas, grados, vals);
+        resumen.innerHTML = grados.map((g,i)=>`<div class="inline"><span class="tag">${g}</span><span class="right">Asistencia: <strong>${vals[i]}%</strong></span></div>`).join('');
+      }
+    }
+
+    // --- Configuración ---
+    const cfgNombre = document.getElementById('cfgNombre');
+    const cfgSlogan = document.getElementById('cfgSlogan');
+    const cfgColor1 = document.getElementById('cfgColor1');
+    const cfgColor2 = document.getElementById('cfgColor2');
+    function applyHeader(){
+      document.querySelector('h1').textContent = (cfg.nombre||'NEXTSTEP S.A.S') + ' — Plataforma de Gestión y Bienestar';
+      document.querySelector('.slogan').textContent = cfg.slogan||'';
+      document.documentElement.style.setProperty('--primary', cfg.c1||'#22d3ee');
+      document.documentElement.style.setProperty('--accent', cfg.c2||'#10b981');
+    }
+    cfgNombre.value = cfg.nombre; cfgSlogan.value = cfg.slogan; cfgColor1.value = cfg.c1; cfgColor2.value = cfg.c2; applyHeader();
+    document.getElementById('aplicarTema').onclick = ()=>{
+      cfg = {nombre: cfgNombre.value.trim()||'NEXTSTEP S.A.S', slogan: cfgSlogan.value.trim(), c1: cfgColor1.value, c2: cfgColor2.value};
+      DB.set('ns_cfg', cfg); applyHeader();
+    }
+
+    // --- Import / Export ---
+    document.getElementById('exportJson').onclick = ()=>{
+      const data = {alumnos, casos, mensajes, cfg};
+      const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'nextstep_mvp.json'; a.click(); URL.revokeObjectURL(a.href);
+    }
+    document.getElementById('importFile').addEventListener('change', (e)=>{
+      const file = e.target.files[0]; if(!file) return;
+      const r = new FileReader(); r.onload = ()=>{
+        try{
+          const data = JSON.parse(r.result);
+          alumnos = data.alumnos||[]; casos = data.casos||[]; mensajes = data.mensajes||[]; cfg = data.cfg||cfg; 
+          DB.set('ns_alumnos', alumnos); DB.set('ns_casos', casos); DB.set('ns_mensajes', mensajes); DB.set('ns_cfg', cfg);
+          applyHeader(); renderAlumnos(); renderCasos(); renderMensajes(); renderDashboard();
+          alert('Datos importados correctamente.');
+        }catch(err){ alert('Archivo inválido.'); }
+      }; r.readAsText(file);
+      e.target.value = '';
+    });
+
+    // --- Semilla demo ---
+    document.getElementById('seedDemo').onclick = ()=>{
+      alumnos = [
+        {id:crypto.randomUUID(), nombre:'Ana Pérez', grado:'10-1', area:'Matemáticas', promedio:4.2, asistencia:95, estado:'Activo'},
+        {id:crypto.randomUUID(), nombre:'Luis Gómez', grado:'10-1', area:'Lengua', promedio:3.4, asistencia:88, estado:'En riesgo'},
+        {id:crypto.randomUUID(), nombre:'María Ruiz', grado:'11-2', area:'Ciencias', promedio:4.6, asistencia:97, estado:'Activo'},
+        {id:crypto.randomUUID(), nombre:'Jorge Díaz', grado:'11-1', area:'Sociales', promedio:3.9, asistencia:90, estado:'Activo'}
+      ];
+      casos = [
+        {id:crypto.randomUUID(), estudiante:'Luis Gómez', tipo:'Convivencia', estado:'En seguimiento', fecha:new Date().toISOString().slice(0,10), notas:'Acompañamiento y plan de mejora; reunión con acudiente.'},
+        {id:crypto.randomUUID(), estudiante:'Ana Pérez', tipo:'Emocional', estado:'Abierto', fecha:new Date().toISOString().slice(0,10), notas:'Reporte de estrés por carga académica, se sugiere tutoría.'}
+      ];
+      mensajes = [
+        {id:crypto.randomUUID(), de:'Docente', para:'Orientador', asunto:'Seguimiento Luis G.', texto:'Adjunto observaciones de la última clase.', fecha:Date.now()-3600_000},
+        {id:crypto.randomUUID(), de:'Coordinador', para:'Docente', asunto:'Boletines', texto:'Recordar cargar calificaciones antes del viernes.', fecha:Date.now()-7200_000}
+      ];
+      DB.set('ns_alumnos', alumnos); DB.set('ns_casos', casos); DB.set('ns_mensajes', mensajes);
+      renderAlumnos(); renderCasos(); renderMensajes(); renderDashboard();
+    }
+
+    // --- Borrar todo ---
+    document.getElementById('wipeAll').onclick = ()=>{
+      if(!confirm('Esto eliminará todos los datos locales del MVP. ¿Continuar?')) return;
+      alumnos=[]; casos=[]; mensajes=[]; DB.set('ns_alumnos',[]); DB.set('ns_casos',[]); DB.set('ns_mensajes',[]);
+      renderAlumnos(); renderCasos(); renderMensajes(); renderDashboard();
+    }
+
+    // --- Inicialización ---
+    renderAlumnos(); renderCasos(); renderMensajes(); renderDashboard();
+  </script>
+</body>
+</html>
