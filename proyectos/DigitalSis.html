@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MIDigital Systems - MVP Avanzado</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #007bff; /* Azul vibrante */
+            --secondary-color: #6c757d; /* Gris para textos */
+            --bg-light: #f8f9fa; /* Fondo claro */
+            --bg-dark: #343a40; /* Fondo oscuro (para nav/footer) */
+        }
+        body {
+            background-color: var(--bg-light);
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            margin-bottom: 70px; /* Espacio para el footer fijo */
+        }
+        .navbar {
+            background-color: var(--bg-dark);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            color: white !important;
+        }
+        .kpi-card {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .kpi-card h2 {
+            font-size: 2.5rem;
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        .footer {
+            background-color: var(--bg-dark);
+            color: white;
+            padding: 1rem 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .chart-bar {
+            background-color: #28a745; /* Verde para éxito */
+            height: 20px;
+            border-radius: 3px;
+            margin-bottom: 5px;
+        }
+        .menu-card {
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-align: center;
+        }
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="#" onclick="showScreen('login')">MIDigital Systems</a>
+            <span class="text-white small ms-auto" id="user-display">MVP Demo Empresarial</span>
+        </div>
+    </nav>
+
+    <main class="container py-4">
+        
+        <section id="login-screen" class="screen-visible">
+            <div class="login-container mx-auto">
+                <h3 class="text-center mb-4">Iniciar Sesión</h3>
+                <div class="alert alert-info text-center">
+                    **Cuentas de prueba para la demo:**
+                    <br>
+                    Admin: `admin` / `1234`
+                    <br>
+                    Docente: `docente` / `1234`
+                </div>
+                <form id="login-form">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Usuario</label>
+                        <input type="text" class="form-control" id="username" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Contraseña</label>
+                        <input type="password" class="form-control" id="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Acceder</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="admin-dashboard" class="d-none">
+            <h1 class="mb-4 text-primary">Dashboard de Administración 📈</h1>
+            <p class="lead">Visión general y gestión institucional en tiempo real.</p>
+            
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="kpi-card"><h2>1,250</h2><p>Estudiantes Activos</p></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card" id="asistencia-kpi"><h2>89.4%</h2><p>Asistencia General Semanal</p></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card"><h2>55</h2><p>Docentes Registrados</p></div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card menu-card h-100 bg-success text-white" onclick="showScreen('course-creation')">
+                        <div class="card-body">
+                            <h5 class="card-title">➕ Crear Cursos</h5>
+                            <p class="card-text small">Administrar la oferta académica.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header bg-white">
+                    <h5>Rendimiento Académico por Grado</h5>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1">Programación: 92% Promedio</p><div class="chart-bar" style="width: 92%;"></div>
+                    <p class="mb-1">Matemáticas: 85% Promedio</p><div class="chart-bar" style="width: 85%;"></div>
+                    <p class="mb-1">Literatura: 78% Promedio</p><div class="chart-bar" style="width: 78%;"></div>
+                </div>
+            </div>
+            
+            <button class="btn btn-secondary mt-4" onclick="showScreen('login')">Cerrar Sesión</button>
+        </section>
+
+        <section id="course-creation" class="d-none">
+            <h1 class="mb-4 text-success">Crear Nuevo Curso 📋</h1>
+            <p class="lead">Ingrese los detalles para registrar un nuevo curso en el sistema.</p>
+
+            <div class="card p-4">
+                <form id="course-form">
+                    <div class="mb-3">
+                        <label for="course-name" class="form-label">Nombre del Curso</label>
+                        <input type="text" class="form-control" id="course-name" placeholder="Ej: Programación de Software 2026" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="course-teacher" class="form-label">Docente Asignado</label>
+                            <select class="form-select" id="course-teacher" required>
+                                <option value="" disabled selected>Seleccione un docente</option>
+                                <option>Carlos Martinez Balasnoa</option>
+                                <option>Ana Rodriguez P.</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="course-quota" class="form-label">Cupo Máximo</label>
+                            <input type="number" class="form-control" id="course-quota" value="30" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="course-desc" class="form-label">Descripción Breve</label>
+                        <textarea class="form-control" id="course-desc" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Registrar Curso</button>
+                </form>
+            </div>
+
+            <button class="btn btn-secondary mt-4" onclick="showScreen('admin-dashboard')">Volver al Dashboard</button>
+        </section>
+
+
+        <section id="teacher-menu" class="d-none">
+            <h1 class="mb-4 text-primary">Menú de Docente 🧑‍💻</h1>
+            <p class="lead">Bienvenido(a), Docente Carlos Martinez Balasnoa. Seleccione una acción:</p>
+
+            <div class="row mt-4">
+                <div class="col-md-6">
+                    <div class="card menu-card p-3 bg-info text-white" onclick="showScreen('teacher-attendance')">
+                        <div class="card-body">
+                            <h5 class="card-title">✅ Tomar Asistencia</h5>
+                            <p class="card-text">Registrar la presencia de estudiantes por sesión.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card menu-card p-3 bg-warning text-dark" onclick="showScreen('teacher-grading')">
+                        <div class="card-body">
+                            <h5 class="card-title">⭐ Calificar Curso</h5>
+                            <p class="card-text">Ingresar y actualizar las calificaciones del período.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary mt-4" onclick="showScreen('login')">Cerrar Sesión</button>
+        </section>
+
+
+        <section id="teacher-attendance" class="d-none">
+            <h1 class="mb-4 text-info">Módulo de Asistencia 📝</h1>
+            <p class="lead">Curso: **Programación de Software** (Grupo A - 2025)</p>
+
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Estudiante</th>
+                                <th class="text-center">Asistencia Hoy</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>1</td><td>Arrieta Suarez, Matias</td><td class="text-center"><button class="btn btn-sm btn-success" data-asistencia="1">Presente</button></td></tr>
+                            <tr><td>2</td><td>Mercado Rincon, Gabriel</td><td class="text-center"><button class="btn btn-sm btn-success" data-asistencia="1">Presente</button></td></tr>
+                            <tr><td>3</td><td>Ruiz Martinez, Marian</td><td class="text-center"><button class="btn btn-sm btn-success" data-asistencia="1">Presente</button></td></tr>
+                            <tr><td>4</td><td>Ortega Padilla, Maria Jose</td><td class="text-center"><button class="btn btn-sm btn-danger" data-asistencia="0">Ausente</button></td></tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-primary w-100" onclick="saveAttendance()">Guardar Asistencia</button>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary mt-4" onclick="showScreen('teacher-menu')">Volver al Menú</button>
+        </section>
+
+
+        <section id="teacher-grading" class="d-none">
+            <h1 class="mb-4 text-warning">Calificación de Curso ⭐</h1>
+            <p class="lead">Curso: **Programación de Software** (Grupo A - 2025). **Escala 1.0 - 5.0**</p>
+
+            <div class="card">
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Estudiante</th>
+                                <th class="text-center">Corte 1 (30%)</th>
+                                <th class="text-center">Corte 2 (30%)</th>
+                                <th class="text-center">Final (40%)</th>
+                                <th class="text-center">Nota Final</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Arrieta Suarez, Matias</td>
+                                <td><input type="number" class="form-control form-control-sm" value="4.2" min="1.0" max="5.0" step="0.1"></td>
+                                <td><input type="number" class="form-control form-control-sm" value="3.8" min="1.0" max="5.0" step="0.1"></td>
+                                <td><input type="number" class="form-control form-control-sm" value="4.5" min="1.0" max="5.0" step="0.1"></td>
+                                <td class="text-center fw-bold text-success">4.21</td>
+                            </tr>
+                            <tr>
+                                <td>Mercado Rincon, Gabriel</td>
+                                <td><input type="number" class="form-control form-control-sm" value="3.5" min="1.0" max="5.0" step="0.1"></td>
+                                <td><input type="number" class="form-control form-control-sm" value="4.0" min="1.0" max="5.0" step="0.1"></td>
+                                <td><input type="number" class="form-control form-control-sm" value="3.2" min="1.0" max="5.0" step="0.1"></td>
+                                <td class="text-center fw-bold text-warning">3.58</td>
+                            </tr>
+                            <tr>
+                                <td>Ruiz Martinez, Marian</td>
+                                <td><input type="number" class="form-control form-control-sm" value="2.8" min="1.0" max="5.0" step="0.1"></td>
+                                <td><input type="number" class="form-control form-control-sm" value="3.1" min="1.0" max="5.0" step="0.1"></td>
+                                <td><input type="number" class="form-control form-control-sm" value="2.5" min="1.0" max="5.0" step="0.1"></td>
+                                <td class="text-center fw-bold text-danger">2.77</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button class="btn btn-warning w-100" onclick="saveGrades()">Guardar Calificaciones</button>
+                </div>
+            </div>
+
+            <button class="btn btn-secondary mt-4" onclick="showScreen('teacher-menu')">Volver al Menú</button>
+        </section>
+
+
+    </main>
+    
+    <footer class="footer text-center">
+        &copy; 2025 **MIDigital Systems** S.A.S. | Transformación Digital Educativa
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        const screens = ['login-screen', 'admin-dashboard', 'course-creation', 'teacher-menu', 'teacher-attendance', 'teacher-grading'];
+        const loginForm = document.getElementById('login-form');
+        const courseForm = document.getElementById('course-form');
+        const userDisplay = document.getElementById('user-display');
+        const asistenciaKPI = document.getElementById('asistencia-kpi');
+
+        // Función general para mostrar/ocultar pantallas
+        window.showScreen = function(screenId) {
+            screens.forEach(id => {
+                const screen = document.getElementById(id);
+                if (screen) {
+                    screen.classList.add('d-none');
+                }
+            });
+
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.remove('d-none');
+            }
+            
+            // Limpiar formulario de login al volver
+            if(screenId === 'login') {
+                loginForm.reset();
+                userDisplay.textContent = 'MVP Demo Empresarial';
+            }
+        }
+
+        // 1. Lógica del Login
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (password === '1234') {
+                if (username === 'admin') {
+                    userDisplay.textContent = 'Administrador - Gestión Total';
+                    showScreen('admin-dashboard');
+                } else if (username === 'docente') {
+                    userDisplay.textContent = 'Docente - Carlos M.B.';
+                    showScreen('teacher-menu');
+                } else {
+                    alert('Usuario no reconocido. Use "admin" o "docente".');
+                }
+            } else {
+                alert('Contraseña incorrecta. Use "1234".');
+            }
+        });
+
+        // 2. Lógica del Administrador: Crear Curso (Simulación)
+        courseForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const courseName = document.getElementById('course-name').value;
+            alert(`✅ Curso "${courseName}" creado con éxito. Asignado al docente: ${document.getElementById('course-teacher').value}.`);
+            courseForm.reset();
+            showScreen('admin-dashboard');
+        });
+
+        // 3. Lógica del Docente: Guardar Asistencia (Simulación)
+        // Se mantiene la lógica del toggle para marcar Presente/Ausente
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('#teacher-attendance button[data-asistencia]')) {
+                const button = e.target;
+                let isPresent = button.getAttribute('data-asistencia') === '1';
+                
+                if (isPresent) {
+                    // Cambiar a Ausente
+                    button.textContent = 'Ausente';
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-danger');
+                    button.setAttribute('data-asistencia', '0');
+                } else {
+                    // Cambiar a Presente
+                    button.textContent = 'Presente';
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-success');
+                    button.setAttribute('data-asistencia', '1');
+                }
+            }
+        });
+
+        window.saveAttendance = function() {
+            // Simulación de envío de datos
+            alert('✅ Asistencia guardada con éxito. ¡Se ha notificado al Administrador!');
+            
+            // Simular el cambio en el Dashboard del Admin al guardar la asistencia
+            asistenciaKPI.querySelector('h2').textContent = '90.5%';
+            
+            showScreen('teacher-menu');
+        }
+
+        // 4. Lógica del Docente: Guardar Calificaciones (Simulación)
+        window.saveGrades = function() {
+            // Simulación de recolección y validación de datos
+            const table = document.querySelector('#teacher-grading tbody');
+            const students = table.querySelectorAll('tr');
+            
+            let allValid = true;
+            students.forEach(row => {
+                row.querySelectorAll('input').forEach(input => {
+                    const value = parseFloat(input.value);
+                    if (value < 1.0 || value > 5.0) {
+                        allValid = false;
+                    }
+                });
+            });
+
+            if (!allValid) {
+                alert('⚠️ Error: Asegúrese de que todas las calificaciones estén entre 1.0 y 5.0.');
+                return;
+            }
+
+            // Simulación de éxito
+            alert('⭐ Calificaciones guardadas y promedios calculados. ¡Estudiantes notificados!');
+            
+            showScreen('teacher-menu');
+        }
+        
+        // Inicializar mostrando la pantalla de login
+        showScreen('login-screen');
+    </script>
+
+</body>
+</html>

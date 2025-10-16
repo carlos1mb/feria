@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechNova Solutions S.A.S. | El Código que da Vida a tu Visión</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /*
+        * PALETA DE COLORES
+        */
+        :root {
+            --color-bg: #000000;
+            --color-text: #FFFFFF;
+            --color-primary: #336BFF; /* Azul para CTA */
+            --color-secondary: #FF5733; /* Naranja para énfasis */
+            --color-accent: linear-gradient(90deg, #FF5733, #33FFC4, #FF33A1, #336BFF);
+            --font-primary: 'Montserrat', sans-serif;
+        }
+        
+        /* Base Global */
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            margin: 0;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Headings */
+        h1, h2, h3 {
+            font-weight: 700;
+            text-align: center;
+        }
+        .section-title {
+            font-size: 2.5em;
+            margin-bottom: 0.5em;
+            /* Degradado de colores para el título */
+            background: var(--color-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Sección HERO */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 5%;
+            background-color: #000; 
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 4em;
+            font-weight: 900;
+            margin-bottom: 0.2em;
+        }
+
+        .hero-slogan {
+            font-size: 1.5em;
+            font-weight: 400;
+            margin-bottom: 1em;
+            color: #33FFC4; /* Resalta el Slogan */
+        }
+        
+        /* Botones CTA */
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            margin-top: 1.5em;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+        }
+
+        .primary-cta {
+            background-color: var(--color-primary);
+            color: var(--color-text);
+            box-shadow: 0 4px 15px rgba(51, 107, 255, 0.4);
+        }
+
+        .primary-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(51, 107, 255, 0.6);
+        }
+
+        .secondary-cta {
+            background-color: var(--color-secondary);
+            color: var(--color-bg);
+            box-shadow: 0 4px 15px rgba(255, 87, 51, 0.4);
+        }
+
+        .secondary-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 87, 51, 0.6);
+        }
+
+        /* Secciones Generales */
+        .section {
+            padding: 80px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Sección Info Proyecto */
+        .info-container {
+            display: flex;
+            gap: 40px;
+            text-align: justify;
+            margin-top: 40px;
+        }
+        .section-text {
+            flex: 1;
+            font-size: 1.1em;
+        }
+
+        /* Sección Soluciones (Cards) */
+        .solutions {
+            background-color: #0d0d0d;
+        }
+
+        .cards-container {
+            display: flex;
+            gap: 30px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .solution-card {
+            flex: 1;
+            min-width: 250px;
+            background-color: #1a1a1a;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+            border-top: 5px solid var(--color-primary);
+            transition: all 0.3s ease;
+        }
+
+        .solution-card:hover {
+            transform: translateY(-10px);
+            border-top-color: #33FFC4;
+        }
+
+        .solution-card h3 {
+            color: #33FFC4; 
+            margin-top: 0;
+            text-align: left;
+            font-size: 1.5em;
+        }
+
+        /* Sección Ventajas */
+        .advantages {
+            padding: 60px 5%;
+        }
+
+        .advantage-list p {
+            background-color: #1a1a1a;
+            padding: 20px;
+            border-left: 5px solid var(--color-secondary);
+            margin: 20px 0;
+            border-radius: 8px;
+            transition: background-color 0.3s;
+        }
+
+        .advantage-list p:hover {
+            background-color: #262626;
+        }
+
+        .advantage-list strong {
+            color: var(--color-secondary);
+        }
+
+        /* Sección Contacto */
+        .contact {
+            text-align: center;
+            background-color: #0d0d0d;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 40px auto 0;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .contact-form input[type="text"],
+        .contact-form input[type="email"],
+        .contact-form textarea {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background-color: #262626;
+            color: var(--color-text);
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-message {
+            margin-top: 20px;
+            font-weight: 700;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px 5%;
+            background-color: #000;
+            border-top: 1px solid #1a1a1a;
+            font-size: 0.9em;
+            color: #999;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero {
+                height: auto;
+                padding-top: 150px;
+                padding-bottom: 80px;
+            }
+            .hero-title {
+                font-size: 2.5em;
+            }
+            .hero-slogan {
+                font-size: 1.2em;
+            }
+            .section-title {
+                font-size: 1.8em;
+            }
+            .info-container, .cards-container {
+                flex-direction: column;
+            }
+            .solution-card {
+                min-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero" id="inicio">
+        <div class="hero-content">
+            <h1 class="hero-title">TechNova Solutions S.A.S.</h1>
+            <p class="hero-slogan">El código que da vida a tu visión</p>
+            <p class="hero-value">Soluciones Tecnológicas Innovadoras y Personalizadas para la Transformación Digital de tu Empresa.</p>
+            <a href="#contacto" class="cta-button primary-cta">Solicita una Consultoría Gratuita</a>
+        </div>
+    </header>
+
+    <section class="section project-info" id="proyecto">
+        <h2 class="section-title">¿Qué es TechNova Solutions? 💡</h2>
+        <div class="info-container">
+            <p class="section-text">
+                Somos una empresa de base tecnológica dedicada al desarrollo de software personalizado, nacida del programa Técnico en Programación de Software del SENA. Nuestra misión es impulsar la digitalización de empresas en la región Caribe, resolviendo desafíos operativos con tecnología a medida.
+            </p>
+            <p class="section-text">
+                Abordamos la brecha tecnológica que limita la productividad de las MiPymes, que a menudo carecen de herramientas adaptadas a sus necesidades específicas. Transformamos ideas ambiciosas en código de vanguardia, forjando el futuro.
+            </p>
+        </div>
+    </section>
+
+    <section class="section solutions" id="soluciones">
+        <h2 class="section-title">Nuestras Soluciones Clave ✅</h2>
+        <div class="cards-container">
+            <div class="solution-card">
+                <h3>Software a la Medida</h3>
+                <p>Diseñamos y desarrollamos aplicaciones web y móviles 100% personalizadas que se alinean perfectamente con tus flujos de trabajo únicos.</p>
+            </div>
+            <div class="solution-card">
+                <h3>Inteligencia Artificial (IA)</h3>
+                <p>Implementación de soluciones basadas en IA para el análisis de datos y la automatización de procesos, optimizando tu productividad y rentabilidad.</p>
+            </div>
+            <div class="solution-card">
+                <h3>Soporte y Escalabilidad</h3>
+                <p>Ofrecemos mantenimiento, soporte técnico y actualizaciones permanentes. Nuestros productos son confiables y escalables para garantizar valor a largo plazo.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section advantages" id="ventajas">
+        <h2 class="section-title">Nuestra Ventaja Competitiva 🚀</h2>
+        <div class="advantage-list">
+            <p><strong>1. Personalización vs. Genérico:</strong> Desarrollo de software 100% personalizado según requerimientos del cliente, a diferencia de las soluciones genéricas de la competencia.</p>
+            <p><strong>2. Metodologías Ágiles:</strong> Aplicamos Scrum y Kanban para garantizar entregas rápidas, mejora continua y adaptabilidad en la ejecución de proyectos.</p>
+            <p><strong>3. Enfoque en IA e Innovación:</strong> Nuestro equipo está constantemente actualizado en tecnologías de vanguardia como la Inteligencia Artificial, impulsando tu competitividad.</p>
+            <p><strong>4. Acompañamiento Estratégico:</strong> Ofrecemos un trato directo, humano y acompañamiento técnico permanente, actuando como socios estratégicos.</p>
+            <p><strong>5. Accesibilidad Regional:</strong> Brindamos costos más accesibles y una capacidad de adaptación superior a las pequeñas y medianas empresas de la región Caribe.</p>
+        </div>
+    </section>
+
+    <section class="section contact" id="contacto">
+        <h2 class="section-title">Transforma tu Negocio Hoy</h2>
+        <p class="section-text">¿Listo para optimizar tus procesos y alcanzar tu máximo potencial? Contáctanos.</p>
+        
+        <form id="contactForm" class="contact-form">
+            <div class="form-group">
+                <input type="text" id="nombre" placeholder="Nombre Completo" required>
+            </div>
+            <div class="form-group">
+                <input type="email" id="email" placeholder="Correo Electrónico Empresarial" required>
+            </div>
+            <div class="form-group">
+                <textarea id="mensaje" placeholder="Describe tu reto digital o proyecto" required></textarea>
+            </div>
+            <button type="submit" class="cta-button secondary-cta">Enviar Propuesta Digital</button>
+            <p id="formMessage" class="form-message"></p>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 TechNova Solutions S.A.S. | Desarrollado con el apoyo del SENA.</p>
+        <p>Corozal, Sucre, Colombia. Programación de Software.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('contactForm');
+            const formMessage = document.getElementById('formMessage');
+
+            // Función para Smooth Scroll (scroll suave)
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+
+            // Lógica de Validación de Formulario (JavaScript Vanilla)
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // Detiene el envío normal del formulario
+
+                // 1. Obtener valores de los campos
+                const nombre = document.getElementById('nombre').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const mensaje = document.getElementById('mensaje').value.trim();
+
+                // 2. Validación Básica de campos vacíos
+                if (nombre === '' || email === '' || mensaje === '') {
+                    formMessage.textContent = 'Por favor, completa todos los campos.';
+                    formMessage.style.color = '#FF5733'; // Naranja (error)
+                    return;
+                }
+
+                // 3. Validación de Email (Regex simple)
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    formMessage.textContent = 'Ingresa un formato de correo electrónico válido.';
+                    formMessage.style.color = '#FF5733';
+                    return;
+                }
+
+                // 4. Simulación de Envío Exitoso
+                
+                // Desactivar el botón para prevenir múltiples envíos
+                const submitButton = form.querySelector('button[type="submit"]');
+                submitButton.disabled = true;
+                submitButton.textContent = 'Enviando...';
+                
+                // Simular el tiempo de respuesta del servidor (2 segundos)
+                setTimeout(() => {
+                    // Mostrar mensaje de éxito
+                    formMessage.textContent = '¡Gracias! Hemos recibido tu solicitud. Pronto nos pondremos en contacto.';
+                    formMessage.style.color = '#33FFC4'; // Cian (éxito)
+                    
+                    // Restablecer el formulario y botón
+                    form.reset();
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Enviar Propuesta Digital';
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>

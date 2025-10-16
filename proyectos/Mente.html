@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mente Equilibrada — MVP Feria</title>
+<style>
+  :root{
+    --mint:#1ABC9C; --mint-700:#148f77;
+    --blue:#64B5F6; --blue-700:#1e88e5;
+    --gray-900:#2E2E2E; --gray-700:#4D4D4D;
+    --card: rgba(255,255,255,.75);
+    --shadow: 0 10px 30px rgba(0,0,0,.12);
+    --radius: 18px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+    color:#0e1a1a;
+    background:
+      radial-gradient(1200px 600px at 85% -10%, rgba(26,188,156,.25), transparent 60%),
+      radial-gradient(1400px 900px at -10% 20%, rgba(100,181,246,.25), transparent 60%),
+      linear-gradient(180deg, #f5fbff, #eefaf7 30%, #f8fffd);
+    min-height:100%;
+    display:flex; flex-direction:column;
+  }
+
+  /* ======= NAVBAR ======= */
+  .navbar{
+    position:sticky; top:0; z-index:100;
+    background:linear-gradient(90deg, rgba(26,188,156,.95), rgba(100,181,246,.95));
+    color:#fff; box-shadow:var(--shadow); backdrop-filter: saturate(140%) blur(8px);
+  }
+  .nav-wrap{
+    max-width:1100px; margin:0 auto; padding:10px 14px;
+    display:flex; align-items:center; gap:12px;
+  }
+  .brand{display:flex; align-items:center; gap:10px}
+  .logo{
+    width:38px; height:38px; border-radius:50%;
+    background:
+      radial-gradient(circle at 32% 35%, #fff 0 8px, transparent 9px),
+      radial-gradient(circle at 66% 66%, #fff 0 10px, transparent 11px),
+      conic-gradient(from 210deg at 50% 50%, rgba(255,255,255,.6), rgba(255,255,255,0) 35%);
+    border:2px solid rgba(255,255,255,.8);
+  }
+  .title{margin:0; font-size:18px; letter-spacing:.2px}
+  .subtitle{font-size:12px; opacity:.9; margin-top:-4px}
+
+  .spacer{flex:1}
+  .chip{background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.45);
+        padding:6px 10px; border-radius:999px; font-size:12px}
+  .burger{
+    display:none; appearance:none; border:1px solid rgba(255,255,255,.5);
+    background:transparent; color:#fff; border-radius:10px; padding:8px 10px; cursor:pointer;
+  }
+  .burger:focus{outline:2px solid rgba(255,255,255,.6)}
+  .tabs{display:flex; gap:8px; flex-wrap:wrap}
+  .tab{
+    appearance:none; border:1px solid rgba(0,0,0,.06); background:var(--card);
+    padding:10px 14px; border-radius:999px; cursor:pointer; font-weight:800;
+    box-shadow:0 6px 20px rgba(0,0,0,.05);
+    transition:.2s transform, .2s box-shadow, .2s background;
+    white-space:nowrap;
+  }
+  .tab:hover{transform:translateY(-1px); box-shadow:0 10px 26px rgba(0,0,0,.08)}
+  .tab.active{background:linear-gradient(90deg, #ffffff, #f7fffd); border-color: rgba(0,0,0,.08)}
+  .tab a{all:unset; cursor:pointer}
+
+  /* Navbar responsive */
+  @media (max-width:880px){
+    .chip{display:none}
+    .burger{display:block}
+    .tabs{
+      width:100%;
+      display:none; flex-direction:column; gap:10px; padding:10px 0;
+    }
+    .tabs.open{display:flex}
+    .tab{width:100%; text-align:left}
+  }
+
+  /* ======= LAYOUT ======= */
+  main{width:100%; max-width:1100px; margin:16px auto; padding:0 14px 88px}
+  .grid{display:grid; gap:16px}
+  @media (min-width:900px){ .grid.cols-2{grid-template-columns: 1fr 1fr} }
+
+  .view{display:none}          /* cada pantalla separada */
+  .view.active{display:block}
+
+  .card{
+    background: var(--card);
+    border:1px solid rgba(0,0,0,.06);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding:16px;
+    backdrop-filter: blur(6px);
+  }
+  h2{margin:0 0 10px; font-size:20px}
+  .muted{color:var(--gray-700); font-size:13px}
+  .row{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+  input[type="text"], input[type="number"], textarea, select{
+    width:100%; padding:10px 12px; border-radius:12px; border:1px solid rgba(0,0,0,.12); background:white; font:inherit;
+  }
+  textarea{min-height:72px; resize:vertical}
+  .btn{
+    appearance:none; border:none; padding:10px 14px; border-radius:12px; cursor:pointer; font-weight:800;
+    box-shadow:0 6px 16px rgba(0,0,0,.08);
+  }
+  .btn.primary{background:linear-gradient(90deg, var(--mint), var(--blue)); color:white}
+  .btn.ghost{background:white; border:1px solid rgba(0,0,0,.12)}
+  .btn.icon{padding:8px 10px; border-radius:10px}
+  .list{display:grid; gap:10px; margin-top:10px}
+  .item{display:flex; align-items:center; gap:10px; justify-content:space-between; background:white; border:1px solid rgba(0,0,0,.08); border-radius:12px; padding:10px 12px}
+  .item .title{font-weight:800}
+  .pill{padding:4px 8px; border-radius:999px; font-size:12px; border:1px solid rgba(0,0,0,.12); background:linear-gradient(180deg, #fff, #f9fffe)}
+  .progress{position:relative; height:10px; background:rgba(0,0,0,.07); border-radius:999px; overflow:hidden}
+  .progress > i{display:block; height:100%; width:0%; background:linear-gradient(90deg, var(--mint), var(--blue))}
+  .kpi{font-size:28px; font-weight:900}
+  .mood-emoji{font-size:22px; cursor:pointer; transition:transform .05s}
+  .mood-emoji:active{transform:scale(.95)}
+  .mood-bar{display:flex; gap:6px; align-items:flex-end; height:80px}
+  .mood-bar div{flex:1; background:linear-gradient(180deg, var(--blue), var(--mint)); border-radius:6px 6px 0 0}
+
+  /* ======= FOOTER FIJO ======= */
+  footer{
+    position:fixed; bottom:0; left:0; right:0;
+    background:#ffffffd9; border-top:1px solid rgba(0,0,0,.08);
+    padding:10px 14px; display:flex; gap:10px; align-items:center; justify-content:center;
+    backdrop-filter: blur(6px);
+    font-size:12px; color:var(--gray-700)
+  }
+  .feria-logo{
+    width:22px; height:22px;
+    background: conic-gradient(from 0deg, #1ABC9C, #64B5F6, #1ABC9C);
+    border-radius:50%; border:1px solid rgba(0,0,0,.1);
+  }
+
+  /* ======= KIOSKO ======= */
+  .kiosk .navbar, .kiosk footer{ display:none !important; }
+  .kiosk main{ padding-bottom: 16px; margin-top: 0 }
+  .kiosk-btn{
+    position:fixed; top:12px; right:12px; z-index:9999;
+    background:#fff; border:1px solid rgba(0,0,0,.15); border-radius:12px; padding:10px 12px; box-shadow:var(--shadow);
+  }
+  .kiosk .kiosk-btn{ display:block }
+  .kiosk-exit{ display:none }
+  .kiosk .kiosk-exit{ display:inline }
+</style>
+</head>
+<body>
+  <!-- NAVBAR -->
+  <div class="navbar" role="navigation" aria-label="Navegación principal" id="navbar">
+    <div class="nav-wrap">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1 class="title">Mente Equilibrada — MVP</h1>
+          <div class="subtitle">Feria Empresarial</div>
+        </div>
+      </div>
+      <div class="spacer"></div>
+      <div class="chip">Tu bienestar, un hábito a la vez</div>
+      <button class="burger" id="burger" aria-expanded="false" aria-controls="tabs">☰</button>
+    </div>
+    <div class="nav-wrap" style="padding-top:0">
+      <div class="tabs" id="tabs" role="tablist">
+        <button class="tab" data-route="#/dashboard"><a href="#/dashboard">Dashboard</a></button>
+        <button class="tab" data-route="#/habitos"><a href="#/habitos">Hábitos</a></button>
+        <button class="tab" data-route="#/afirmaciones"><a href="#/afirmaciones">Afirmaciones</a></button>
+        <button class="tab" data-route="#/animo"><a href="#/animo">Estado de ánimo</a></button>
+        <button class="tab" data-route="#/tiempo"><a href="#/tiempo">Tiempo</a></button>
+        <button class="tab" data-route="#/ayuda"><a href="#/ayuda">Ayuda</a></button>
+        <button class="tab" id="btn-kiosk"><span class="kiosk-enter">Presentar</span><span class="kiosk-exit">Salir</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÓN FLOTANTE (visible solo en kiosko) -->
+  <button class="kiosk-btn kiosk-exit" id="btn-kiosk-exit" title="Salir de presentación">Salir de presentación ✖</button>
+
+  <main id="app">
+    <!-- ========== VISTAS SEPARADAS ========== -->
+
+    <!-- DASHBOARD -->
+    <section class="view" id="view-dashboard" role="tabpanel" aria-label="Dashboard">
+      <div class="card">
+        <h2>Resumen de hoy</h2>
+        <div class="progress"><i id="bar-progress"></i></div>
+        <p class="muted" id="kpi-habitos"><span class="kpi">0</span> hábitos completados</p>
+      </div>
+      <div class="grid cols-2" style="margin-top:16px">
+        <div class="card">
+          <h2>Afirmación del día</h2>
+          <blockquote id="quote" style="margin:0; font-size:18px; font-weight:800"></blockquote>
+          <p class="muted" id="quote-time"></p>
+          <div class="row">
+            <button class="btn ghost" id="btn-new-quote">Nueva</button>
+            <button class="btn primary" id="btn-say-quote">Escuchar</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Estado de ánimo (últimos 7)</h2>
+          <div class="mood-bar" id="mood-chart" style="margin-top:10px"></div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn ghost" onclick="location.hash='#/animo'">Registrar ahora →</button>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h2>Hábitos de hoy</h2>
+        <div class="list" id="today-habits"></div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn ghost" onclick="location.hash='#/habitos'">Administrar hábitos →</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- HÁBITOS -->
+    <section class="view" id="view-habitos" role="tabpanel" aria-label="Hábitos">
+      <div class="grid cols-2">
+        <div class="card">
+          <h2>Nuevo hábito</h2>
+          <div class="row">
+            <input id="h-name" type="text" placeholder="Nombre del hábito (p. ej., Meditar 5 min)" />
+            <select id="h-priority" title="Prioridad">
+              <option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option>
+            </select>
+          </div>
+          <div class="row">
+            <button class="btn primary" id="h-add">Agregar</button>
+            <button class="btn ghost" id="h-clear">Limpiar</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Progreso de hoy</h2>
+          <div class="progress"><i id="bar-progress-h"></i></div>
+          <p class="muted" id="kpi-habitos-h"><span class="kpi">0</span> completados</p>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h2>Mis hábitos</h2>
+        <div class="list" id="h-list"></div>
+      </div>
+    </section>
+
+    <!-- AFIRMACIONES -->
+    <section class="view" id="view-afirmaciones" role="tabpanel" aria-label="Afirmaciones">
+      <div class="grid cols-2">
+        <div class="card">
+          <h2>Nueva afirmación</h2>
+          <textarea id="a-text" placeholder="Escribe una afirmación breve y positiva"></textarea>
+          <div class="row">
+            <button class="btn primary" id="a-add">Guardar</button>
+            <button class="btn ghost" id="a-clear">Limpiar</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Usar en Dashboard</h2>
+          <p class="muted">Selecciona una afirmación para establecerla como “del día”.</p>
+          <div class="row">
+            <button class="btn ghost" id="btn-new-quote-2">Afirmación aleatoria</button>
+          </div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px">
+        <h2>Lista de afirmaciones</h2>
+        <div class="list" id="a-list"></div>
+      </div>
+    </section>
+
+    <!-- ESTADO DE ÁNIMO -->
+    <section class="view" id="view-animo" role="tabpanel" aria-label="Estado de ánimo">
+      <div class="card">
+        <h2>Registrar estado</h2>
+        <div class="row" style="margin-bottom:8px">
+          <div class="mood-emoji" role="button" aria-label="Muy bien" data-mood="😄">😄</div>
+          <div class="mood-emoji" role="button" aria-label="Bien" data-mood="🙂">🙂</div>
+          <div class="mood-emoji" role="button" aria-label="Normal" data-mood="😐">😐</div>
+          <div class="mood-emoji" role="button" aria-label="Bajo" data-mood="😕">😕</div>
+          <div class="mood-emoji" role="button" aria-label="Triste" data-mood="😢">😢</div>
+        </div>
+        <textarea id="m-notes" placeholder="Notas opcionales..."></textarea>
+        <div class="row"><button class="btn primary" id="m-add">Guardar registro</button></div>
+      </div>
+      <div class="grid cols-2" style="margin-top:16px">
+        <div class="card">
+          <h2>Gráfico (últimos 7)</h2>
+          <div class="mood-bar" id="mood-chart2" style="margin-top:10px"></div>
+        </div>
+        <div class="card">
+          <h2>Histórico (últimos 10)</h2>
+          <div class="list" id="m-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TIEMPO -->
+    <section class="view" id="view-tiempo" role="tabpanel" aria-label="Tiempo">
+      <div class="grid cols-2">
+        <div class="card">
+          <h2>Pomodoro</h2>
+          <div class="row">
+            <label>Trabajo (min) <input id="p-work" type="number" min="1" value="25"></label>
+            <label>Descanso (min) <input id="p-break" type="number" min="1" value="5"></label>
+            <label>Sesiones <input id="p-sessions" type="number" min="1" value="4"></label>
+          </div>
+          <div class="row" style="align-items:baseline; gap:16px; margin-top:6px">
+            <div class="kpi" id="p-display">25:00</div>
+            <span class="pill" id="p-phase">Preparado</span>
+          </div>
+          <div class="progress"><i id="p-bar"></i></div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn primary" id="p-start">Iniciar</button>
+            <button class="btn ghost" id="p-stop">Detener</button>
+            <button class="btn ghost" id="p-reset">Reiniciar</button>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Agenda de hoy</h2>
+          <div class="row">
+            <input id="t-title" type="text" placeholder="Tarea / actividad" />
+            <select id="t-priority">
+              <option value="alta">Alta</option><option value="media" selected>Media</option><option value="baja">Baja</option>
+            </select>
+            <button class="btn primary" id="t-add">Agregar</button>
+          </div>
+          <div class="list" id="t-list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- AYUDA -->
+    <section class="view" id="view-ayuda" role="tabpanel" aria-label="Ayuda">
+      <div class="card">
+        <h2>Tips rápidos</h2>
+        <ul>
+          <li>Funciona sin internet (persiste en <b>localStorage</b>).</li>
+          <li>“Escuchar” usa TTS del navegador. El Pomodoro tiene beeps.</li>
+          <li>Usa el botón <b>Presentar</b> para modo kiosko en la feria.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER FIJO -->
+  <footer>
+    <div class="feria-logo" aria-hidden="true"></div>
+    <span>Feria Empresarial — Programa SENATIC · ENSC</span>
+  </footer>
+
+<script>
+/* ========= UTILIDADES ========= */
+const store = {
+  get(k, fallback){ try{ return JSON.parse(localStorage.getItem(k)) ?? fallback }catch{ return fallback } },
+  set(k, v){ localStorage.setItem(k, JSON.stringify(v)) },
+  now(){ return new Date().toISOString() },
+  todayKey(){ const d=new Date(); return d.toISOString().slice(0,10) }
+};
+const S = { habits:'me_habits', affirm:'me_affirmations', moods:'me_moods', tasks:'me_tasks' };
+
+/* ========= SONIDOS ========= */
+function tone(freq=880, duration=0.1){
+  try{
+    const ctx=new (window.AudioContext||window.webkitAudioContext)();
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='sine'; o.frequency.value=freq; o.connect(g); g.connect(ctx.destination);
+    g.gain.setValueAtTime(.001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.2, ctx.currentTime+0.01);
+    g.gain.exponentialRampToValueAtTime(.0001, ctx.currentTime+duration);
+    o.start(); o.stop(ctx.currentTime+duration+0.02);
+  }catch{}
+}
+const beep = { click(){tone(880,.05)}, start(){tone(880,.12);setTimeout(()=>tone(1320,.12),120)}, end(){tone(440,.18)} };
+
+/* ========= NAVBAR + BURGER ========= */
+const tabsEl = document.getElementById('tabs');
+const burger = document.getElementById('burger');
+burger.addEventListener('click', ()=>{
+  const open = tabsEl.classList.toggle('open');
+  burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+
+/* ========= ROUTER (hash) ========= */
+const routes = {
+  '#/dashboard': 'view-dashboard',
+  '#/habitos': 'view-habitos',
+  '#/afirmaciones': 'view-afirmaciones',
+  '#/animo': 'view-animo',
+  '#/tiempo': 'view-tiempo',
+  '#/ayuda': 'view-ayuda'
+};
+function setActiveTab(route){
+  [...tabsEl.children].forEach(btn=>{
+    if(!btn.dataset) return;
+    const match = btn.dataset.route === route;
+    btn.classList.toggle('active', match);
+  });
+}
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const el = document.getElementById(id);
+  if(el){ el.classList.add('active'); }
+}
+function navigate(route){
+  const id = routes[route] || routes['#/dashboard'];
+  showView(id);
+  setActiveTab(route);
+  // cerrar menú en móvil
+  if(getComputedStyle(burger).display!=='none'){ tabsEl.classList.remove('open'); burger.setAttribute('aria-expanded','false'); }
+  // actualizar vistas
+  if(id==='view-dashboard') { updateDashboard(); renderMoodChart(); }
+  if(id==='view-habitos')   { renderHabits(); updateHabitsProgressInView(); }
+  if(id==='view-afirmaciones'){ renderAffirmations(); }
+  if(id==='view-animo')     { renderMoodList(); renderMoodChart2(); }
+  if(id==='view-tiempo')    { renderTasks(); pomUpdateUI(); }
+}
+window.addEventListener('hashchange', ()=>navigate(location.hash));
+if(!location.hash){ location.hash = '#/dashboard'; } // ruta por defecto
+navigate(location.hash);
+
+/* ========= MODO KIOSKO ========= */
+const btnKiosk = document.getElementById('btn-kiosk');
+const btnKioskExit = document.getElementById('btn-kiosk-exit');
+let kiosk=false;
+
+async function enterFullscreen(){
+  const el=document.documentElement;
+  if(el.requestFullscreen){ await el.requestFullscreen(); }
+  else if(el.webkitRequestFullscreen){ el.webkitRequestFullscreen(); }
+}
+async function exitFullscreen(){
+  if(document.exitFullscreen){ await document.exitFullscreen(); }
+  else if(document.webkitExitFullscreen){ document.webkitExitFullscreen(); }
+}
+function setKiosk(on){
+  kiosk=on;
+  document.body.classList.toggle('kiosk', on);
+  btnKiosk.querySelector('.kiosk-enter').style.display = on ? 'none' : 'inline';
+  btnKiosk.querySelector('.kiosk-exit').style.display  = on ? 'inline' : 'none';
+  btnKioskExit.style.display = on ? 'inline' : 'none';
+}
+btnKiosk.addEventListener('click', async ()=>{
+  if(!kiosk){ await enterFullscreen(); setKiosk(true); }
+  else{ await exitFullscreen(); setKiosk(false); }
+});
+btnKioskExit.addEventListener('click', async ()=>{ await exitFullscreen(); setKiosk(false); });
+document.addEventListener('fullscreenchange', ()=>{ if(!document.fullscreenElement){ setKiosk(false); }});
+
+/* ========= HÁBITOS ========= */
+function renderHabits(){
+  const list = document.getElementById('h-list');
+  const habits = store.get(S.habits, []);
+  list.innerHTML='';
+  habits.forEach((h, idx)=>{
+    const el=document.createElement('div'); el.className='item';
+    el.innerHTML=`
+      <div>
+        <div class="title">${h.name}</div>
+        <div class="muted">Prioridad: <b>${h.priority}</b></div>
+      </div>
+      <div class="row">
+        <button class="btn icon" data-act="done" title="Marcar completado">✅</button>
+        <button class="btn icon" data-act="edit" title="Editar">✏️</button>
+        <button class="btn icon" data-act="del" title="Eliminar">🗑️</button>
+      </div>`;
+    el.querySelector('[data-act="del"]').onclick=()=>{ habits.splice(idx,1); store.set(S.habits, habits); renderHabits(); updateDashboard(); updateHabitsProgressInView(); };
+    el.querySelector('[data-act="edit"]').onclick=()=>{
+      const name=prompt('Editar nombre', h.name)||h.name;
+      const pr=prompt('Prioridad (alta|media|baja)', h.priority)||h.priority;
+      habits[idx]={...h, name, priority: pr}; store.set(S.habits, habits); renderHabits();
+    };
+    el.querySelector('[data-act="done"]').onclick=()=>{
+      const key='me_done_'+store.todayKey();
+      const done=store.get(key,[]);
+      if(!done.includes(h.name)){ done.push(h.name); store.set(key,done); }
+      updateDashboard(); updateHabitsProgressInView(); beep.click();
+    };
+    list.appendChild(el);
+  });
+}
+document.getElementById('h-add').onclick=()=>{
+  const name=document.getElementById('h-name').value.trim();
+  const priority=document.getElementById('h-priority').value;
+  if(!name) return alert('Escribe el nombre del hábito');
+  const habits=store.get(S.habits, []);
+  habits.push({ id:crypto.randomUUID(), name, priority, created: store.now() });
+  store.set(S.habits, habits);
+  document.getElementById('h-name').value='';
+  renderHabits(); updateDashboard(); updateHabitsProgressInView(); beep.click();
+}
+document.getElementById('h-clear').onclick=()=>{ document.getElementById('h-name').value=''; }
+function updateHabitsProgressInView(){
+  const all=store.get(S.habits, []);
+  const done=store.get('me_done_'+store.todayKey(), []);
+  const ratio = all.length? (done.length/all.length)*100 : 0;
+  const b = document.getElementById('bar-progress-h');
+  if(b) b.style.width = ratio + '%';
+  const k = document.getElementById('kpi-habitos-h');
+  if(k) k.innerHTML = `<span class="kpi">${done.length}</span> completados de ${all.length}`;
+}
+
+/* ========= AFIRMACIONES ========= */
+function renderAffirmations(){
+  const list = document.getElementById('a-list');
+  const items = store.get(S.affirm, []);
+  list.innerHTML='';
+  items.forEach((a, idx)=>{
+    const el=document.createElement('div'); el.className='item';
+    el.innerHTML=`
+      <div class="title" style="max-width:560px">${a.text}</div>
+      <div class="row">
+        <button class="btn icon" data-act="use" title="Usar en dashboard">✨</button>
+        <button class="btn icon" data-act="edit" title="Editar">✏️</button>
+        <button class="btn icon" data-act="del" title="Eliminar">🗑️</button>
+      </div>`;
+    el.querySelector('[data-act="del"]').onclick=()=>{ items.splice(idx,1); store.set(S.affirm, items); renderAffirmations(); };
+    el.querySelector('[data-act="edit"]').onclick=()=>{
+      const text=prompt('Editar afirmación', a.text)||a.text;
+      items[idx]={...a, text}; store.set(S.affirm, items); renderAffirmations();
+    };
+    el.querySelector('[data-act="use"]').onclick=()=>{ setQuote(a.text); beep.click(); };
+    list.appendChild(el);
+  });
+}
+document.getElementById('a-add').onclick=()=>{
+  const t=document.getElementById('a-text').value.trim();
+  if(!t) return alert('Escribe una afirmación');
+  const arr=store.get(S.affirm, []);
+  arr.push({ id:crypto.randomUUID(), text:t, created: store.now() });
+  store.set(S.affirm, arr);
+  document.getElementById('a-text').value='';
+  renderAffirmations(); beep.click();
+}
+document.getElementById('a-clear').onclick=()=>{ document.getElementById('a-text').value=''; }
+const btnNewQuote2 = document.getElementById('btn-new-quote-2');
+
+/* ========= DASHBOARD ========= */
+function updateDashboard(){
+  // today list
+  const all=store.get(S.habits, []);
+  const done=store.get('me_done_'+store.todayKey(), []);
+  const wrap=document.getElementById('today-habits'); if(wrap){ wrap.innerHTML='';
+    all.forEach(h=>{
+      const el=document.createElement('div'); el.className='item';
+      const isDone=done.includes(h.name);
+      el.innerHTML=`
+        <div class="title">${isDone?'✅ ':''}${h.name}</div>
+        <button class="btn icon" title="${isDone?'Desmarcar':'Marcar'}">${isDone?'↩️':'✅'}</button>`;
+      el.querySelector('button').onclick=()=>{
+        const d=store.get('me_done_'+store.todayKey(), []);
+        const i=d.indexOf(h.name);
+        if(i>-1) d.splice(i,1); else d.push(h.name);
+        store.set('me_done_'+store.todayKey(), d);
+        updateDashboard(); updateHabitsProgressInView(); beep.click();
+      }
+      wrap.appendChild(el);
+    });
+  }
+  // progress
+  const ratio = all.length? (done.length/all.length)*100 : 0;
+  const bar = document.getElementById('bar-progress'); if(bar) bar.style.width=ratio+'%';
+  const kpi = document.getElementById('kpi-habitos'); if(kpi) kpi.innerHTML = `<span class="kpi">${done.length}</span> hábitos completados de ${all.length}`;
+}
+function setQuote(text){
+  const q = document.getElementById('quote');
+  const t = document.getElementById('quote-time');
+  if(q) q.textContent = text;
+  if(t) t.textContent = new Date().toLocaleString();
+}
+function randomQuote(){
+  const arr=store.get(S.affirm, []);
+  if(arr.length===0){ setQuote('Respiro, me enfoco y doy el primer paso.'); return; }
+  const pick = arr[Math.floor(Math.random()*arr.length)];
+  setQuote(pick.text);
+}
+document.getElementById('btn-new-quote')?.addEventListener('click',()=>{ randomQuote(); beep.click(); });
+document.getElementById('btn-say-quote')?.addEventListener('click',()=>{
+  const q=document.getElementById('quote'); const text=q?q.textContent:'';
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='es-ES'; u.rate=1; u.pitch=1.05;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
+  beep.click();
+});
+btnNewQuote2?.addEventListener('click',()=>{ randomQuote(); beep.click(); });
+
+/* ========= ÁNIMO ========= */
+function renderMoodChartGeneric(targetId){
+  const chart=document.getElementById(targetId); if(!chart) return;
+  chart.innerHTML='';
+  const recent = (store.get(S.moods, [])).slice(-7);
+  const counts = { '😄':0,'🙂':0,'😐':0,'😕':0,'😢':0 };
+  recent.forEach(m=>counts[m.mood]=(counts[m.mood]||0)+1);
+  Object.values(counts).forEach(v=>{
+    const bar=document.createElement('div');
+    const h = (recent.length? (v/recent.length)*100 : 0);
+    bar.style.height = (8 + h*0.9) + 'px';
+    chart.appendChild(bar);
+  });
+}
+function renderMoodChart(){ renderMoodChartGeneric('mood-chart'); }
+function renderMoodChart2(){ renderMoodChartGeneric('mood-chart2'); }
+function renderMoodList(){
+  const list=document.getElementById('m-list'); if(!list) return;
+  list.innerHTML='';
+  const arr=store.get(S.moods, []).slice(-10).reverse();
+  arr.forEach((m)=>{
+    const el=document.createElement('div'); el.className='item';
+    el.innerHTML=`
+      <div>
+        <div class="title">${m.mood} — ${new Date(m.at).toLocaleString()}</div>
+        <div class="muted">${m.notes?('“'+m.notes+'”'):'—'}</div>
+      </div>
+      <button class="btn icon" title="Eliminar">🗑️</button>`;
+    el.querySelector('button').onclick=()=>{
+      const all=store.get(S.moods, []);
+      const i = all.findIndex(x=>x.at===m.at);
+      if(i>-1){ all.splice(i,1); store.set(S.moods, all); renderMoodList(); renderMoodChart(); renderMoodChart2(); }
+    }
+    list.appendChild(el);
+  });
+}
+document.querySelectorAll('.mood-emoji').forEach(e=>{
+  e.addEventListener('click', ()=>{ window._lastMoodPick = e.dataset.mood; document.querySelectorAll('.mood-emoji').forEach(n=>n.style.outline='none'); e.style.outline='2px solid var(--blue-700)'; beep.click(); });
+});
+document.getElementById('m-add')?.addEventListener('click',()=>{
+  const lastPicked = window._lastMoodPick || '🙂';
+  const notes = document.getElementById('m-notes').value.trim();
+  const arr = store.get(S.moods, []);
+  arr.push({ mood: lastPicked, notes, at: store.now() });
+  store.set(S.moods, arr);
+  document.getElementById('m-notes').value='';
+  renderMoodList(); renderMoodChart(); renderMoodChart2(); beep.click();
+});
+
+/* ========= TIEMPO ========= */
+let pom = { timer:null, phase:'idle', left:0, total:0, sessionsLeft:0 };
+function fmt(s){ s=Math.max(0, s|0); const m=String(Math.floor(s/60)).padStart(2,'0'), ss=String(s%60).padStart(2,'0'); return `${m}:${ss}` }
+function pomUpdateUI(){
+  document.getElementById('p-display')?.replaceChildren(document.createTextNode(fmt(pom.left)));
+  const pct = pom.total? 100*(1-(pom.left/pom.total)) : 0;
+  const bar=document.getElementById('p-bar'); if(bar) bar.style.width = pct+'%';
+  const ph=document.getElementById('p-phase'); if(ph) ph.textContent = pom.phase==='work' ? `Trabajo · Sesiones restantes: ${pom.sessionsLeft}` :
+                                                   pom.phase==='break'? 'Descanso' : 'Preparado';
+}
+function pomStartPhase(kind){
+  const work = +document.getElementById('p-work').value*60;
+  const brk  = +document.getElementById('p-break').value*60;
+  if(kind==='work'){ pom.phase='work'; pom.left=work; pom.total=work; }
+  else{ pom.phase='break'; pom.left=brk; pom.total=brk; }
+  if(pom.timer) clearInterval(pom.timer);
+  pom.timer=setInterval(tick, 1000);
+  beep.start(); pomUpdateUI();
+}
+function tick(){
+  pom.left--; pomUpdateUI();
+  if(pom.left<=0){
+    clearInterval(pom.timer); pom.timer=null; beep.end();
+    if(pom.phase==='work'){ pom.sessionsLeft--; if(pom.sessionsLeft>0) pomStartPhase('break'); else { pom.phase='idle'; pomUpdateUI(); } }
+    else{ pomStartPhase('work'); }
+  }
+}
+document.getElementById('p-start')?.addEventListener('click',()=>{
+  if(pom.timer) return;
+  pom.sessionsLeft = +document.getElementById('p-sessions').value;
+  pomStartPhase('work');
+});
+document.getElementById('p-stop')?.addEventListener('click',()=>{ if(pom.timer){ clearInterval(pom.timer); pom.timer=null; pom.phase='idle'; pomUpdateUI(); beep.click(); } });
+document.getElementById('p-reset')?.addEventListener('click',()=>{ if(pom.timer){ clearInterval(pom.timer); } pom={timer:null, phase:'idle', left:0, total:0, sessionsLeft:0}; pomUpdateUI(); beep.click(); });
+
+/* Agenda */
+function renderTasks(){
+  const list=document.getElementById('t-list'); if(!list) return;
+  list.innerHTML='';
+  const arr=store.get(S.tasks, []).filter(t=>t.date===store.todayKey());
+  arr.forEach((t)=>{
+    const el=document.createElement('div'); el.className='item';
+    el.innerHTML=`
+     <div>
+       <div class="title">${t.done?'✅ ':''}${t.title}</div>
+       <div class="muted">Prioridad: <b>${t.priority}</b> · ${new Date(t.at).toLocaleTimeString()}</div>
+     </div>
+     <div class="row">
+       <button class="btn icon" data-act="toggle">${t.done?'↩️':'✅'}</button>
+       <button class="btn icon" data-act="edit">✏️</button>
+       <button class="btn icon" data-act="del">🗑️</button>
+     </div>`;
+    el.querySelector('[data-act="toggle"]').onclick=()=>{ const all=store.get(S.tasks, []); const i=all.findIndex(x=>x.id===t.id); all[i].done=!all[i].done; store.set(S.tasks, all); renderTasks(); updateDashboard(); beep.click(); }
+    el.querySelector('[data-act="edit"]').onclick=()=>{ const title=prompt('Editar tarea', t.title)||t.title; const pr=prompt('Prioridad (alta|media|baja)', t.priority)||t.priority; const all=store.get(S.tasks, []); const i=all.findIndex(x=>x.id===t.id); all[i]={...all[i], title, priority:pr}; store.set(S.tasks, all); renderTasks(); }
+    el.querySelector('[data-act="del"]').onclick=()=>{ const all=store.get(S.tasks, []); const i=all.findIndex(x=>x.id===t.id); all.splice(i,1); store.set(S.tasks, all); renderTasks(); }
+    list.appendChild(el);
+  });
+}
+document.getElementById('t-add')?.addEventListener('click',()=>{
+  const title=document.getElementById('t-title').value.trim();
+  const pr=document.getElementById('t-priority').value;
+  if(!title) return alert('Escribe la tarea');
+  const all=store.get(S.tasks, []);
+  all.push({ id:crypto.randomUUID(), title, priority:pr, at:store.now(), date:store.todayKey(), done:false });
+  store.set(S.tasks, all);
+  document.getElementById('t-title').value='';
+  renderTasks(); beep.click();
+});
+
+/* ========= SEED + ARRANQUE ========= */
+function seed(){
+  if(!localStorage.getItem(S.habits)){
+    store.set(S.habits, [
+      {id:crypto.randomUUID(), name:'Meditar 5 minutos', priority:'alta', created:store.now()},
+      {id:crypto.randomUUID(), name:'Leer 10 minutos', priority:'media', created:store.now()},
+      {id:crypto.randomUUID(), name:'Tomar agua', priority:'baja', created:store.now()}
+    ]);
+  }
+  if(!localStorage.getItem(S.affirm)){
+    store.set(S.affirm, [
+      {id:crypto.randomUUID(), text:'Respiro profundo, me enfoco y avanzo un paso.', created:store.now()},
+      {id:crypto.randomUUID(), text:'Mi bienestar es prioridad; hoy me cuido con intención.', created:store.now()},
+      {id:crypto.randomUUID(), text:'Pequeños hábitos crean grandes cambios.', created:store.now()}
+    ]);
+  }
+}
+seed();
+updateDashboard(); renderHabits(); renderAffirmations(); renderMoodChart(); renderMoodList(); renderTasks(); pomUpdateUI();
+randomQuote();
+</script>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MVP – VÉRTICE URBAM S.A.S.</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#E84393; /* rosa coral */
+    --dark:#1C1C1C;    /* negro elegante */
+    --muted:#B2BABB;   /* gris metálico */
+    --bg:#f7f7fb;
+    --card:#ffffff;
+    --ok:#09a66d;
+    --warn:#ffb300;
+    --bad:#e53935;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:#222;font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  .app{max-width:1200px;margin:24px auto;padding:0 16px}
+  header{
+    background:linear-gradient(135deg,var(--dark),#2b2b2b);
+    color:#fff;border-radius:20px;padding:18px 20px;display:flex;gap:16px;align-items:center;justify-content:space-between;
+    box-shadow:0 10px 30px rgba(0,0,0,.12)
+  }
+  .brand{display:flex;gap:14px;align-items:center}
+  .logo{width:56px;height:56px;border-radius:14px;background:
+    conic-gradient(from 210deg,var(--primary),var(--muted));
+    position:relative;box-shadow:0 6px 16px rgba(232,67,147,.35)}
+  .logo:before{content:"";position:absolute;inset:12px;border-radius:10px;border:3px solid #fff20}
+  h1{margin:0;font-size:clamp(18px,3.2vw,28px);font-weight:700;letter-spacing:.4px}
+  .tag{font-weight:500;color:#ffe3f0}
+  .actions{display:flex;gap:10px;flex-wrap:wrap}
+  button{background:var(--primary);color:#fff;border:none;border-radius:12px;padding:10px 14px;font-weight:600;cursor:pointer;
+    box-shadow:0 6px 16px rgba(232,67,147,.25);transition:.25s transform,.25s box-shadow}
+  button.secondary{background:#2e2e2e;color:#fff;box-shadow:none}
+  button.ghost{background:#fff;color:#333;border:1px solid #e8e8ef}
+  button:hover{transform:translateY(-1px);box-shadow:0 10px 20px rgba(232,67,147,.35)}
+  button.small{padding:6px 10px;border-radius:10px;font-size:12px}
+  
+  .tabs{margin:16px 0 0;display:flex;gap:8px;flex-wrap:wrap}
+  .tab{background:#fff;border:1px solid #ececf3;border-bottom:3px solid transparent;color:#444;padding:10px 14px;border-radius:12px;cursor:pointer}
+  .tab.active{border-bottom-color:var(--primary);color:#000;font-weight:600}
+
+  .grid{display:grid;gap:14px;margin:14px 0}
+  @media(min-width:900px){.grid{grid-template-columns:2.2fr 1fr}}
+
+  .card{background:var(--card);border-radius:18px;padding:14px;border:1px solid #eceff3;box-shadow:0 4px 16px rgba(0,0,0,.05)}
+  .card h2{margin:0 0 6px;font-size:18px}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0 10px}
+  .toolbar input, .toolbar select{padding:10px;border:1px solid #e7e7ef;border-radius:12px;background:#fff}
+  .toolbar .spacer{flex:1}
+
+  table{width:100%;border-collapse:collapse}
+  th,td{padding:10px 10px;border-bottom:1px solid #f0f2f6;text-align:left}
+  thead th{font-size:12px;letter-spacing:.4px;text-transform:uppercase;color:#666}
+  tbody tr:hover{background:#fafafd}
+  .qty{background:#f2f3f8;border:1px solid #e7e7ef;border-radius:10px;padding:6px 8px;font-size:12px}
+
+  .status{display:inline-flex;gap:6px;align-items:center;font-size:12px}
+  .dot{width:8px;height:8px;border-radius:50%}
+  .dot.ok{background:var(--ok)}
+  .dot.warn{background:var(--warn)}
+  .dot.bad{background:var(--bad)}
+
+  .catalog{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+  .product{background:#fff;border:1px solid #eceff3;border-radius:16px;padding:10px;text-align:center}
+  .product img{width:100%;aspect-ratio:1/1.05;object-fit:cover;border-radius:12px;background:linear-gradient(135deg,#2b2b2b,#444)}
+  .product h4{margin:8px 0 4px;font-size:14px}
+  .product .price{font-weight:700}
+
+  .cart{position:sticky;top:14px}
+  .list{display:flex;flex-direction:column;gap:8px;max-height:420px;overflow:auto;padding-right:4px}
+  .item{display:flex;justify-content:space-between;gap:8px;border:1px solid #eceff3;border-radius:12px;padding:8px}
+  .item small{color:#666}
+  .total{display:flex;justify-content:space-between;margin-top:10px;font-weight:700}
+
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .pill{display:inline-flex;gap:6px;align-items:center;background:#f2f3f8;border:1px solid #e7e7ef;border-radius:999px;padding:6px 10px;font-size:12px}
+
+  dialog{border:none;border-radius:16px;padding:0;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  dialog::backdrop{background:rgba(28,28,28,.5)}
+  .modal{padding:16px}
+  .modal h3{margin:0 0 8px}
+  .modal .row{display:grid;gap:8px;margin:8px 0}
+  .modal input,.modal select,.modal textarea{padding:10px;border:1px solid #e7e7ef;border-radius:12px;width:100%}
+
+  .muted{color:#777}
+  .right{float:right}
+  .center{text-align:center}
+
+  .footer{margin:18px 0;color:#666;font-size:12px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>VÉRTICE URBAM – MVP</h1>
+        <div class="tag">“Donde la moda se encuentra con la tecnología.”</div>
+      </div>
+    </div>
+    <div class="actions">
+      <button id="btnExport">⬇️ Exportar JSON</button>
+      <button class="ghost" id="btnReset">♻️ Restablecer demo</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="inventario">Inventario</button>
+    <button class="tab" data-tab="catalogo">Catálogo</button>
+    <button class="tab" data-tab="ventas">Ventas</button>
+    <button class="tab" data-tab="reportes">Reportes</button>
+  </nav>
+
+  <!-- Inventario -->
+  <section class="card" id="inventario">
+    <div class="toolbar">
+      <input id="invSearch" placeholder="Buscar por nombre o categoría…" />
+      <select id="invCategory">
+        <option value="">Todas las categorías</option>
+      </select>
+      <div class="spacer"></div>
+      <button id="btnAdd">＋ Nuevo producto</button>
+    </div>
+    <div class="two">
+      <div class="card" style="padding:0">
+        <div style="padding:12px 12px 0"><h2>Listado de productos</h2></div>
+        <table>
+          <thead>
+            <tr><th>Foto</th><th>Producto</th><th>Categoría</th><th>Precio</th><th>Stock</th><th></th></tr>
+          </thead>
+          <tbody id="invTable"></tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h2>Acciones rápidas</h2>
+        <div class="pill"><span class="dot ok"></span> Stock bueno (≥ 10)</div>
+        <div class="pill"><span class="dot warn"></span> Stock bajo (5–9)</div>
+        <div class="pill"><span class="dot bad"></span> Sin stock (&lt; 5)</div>
+        <p class="muted">Consejo: usa el botón **Editar** en la tabla para ajustar precios y cantidades. Todo se guarda en <strong>localStorage</strong> (sin base de datos).</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Catálogo / Ventas rápidas -->
+  <section class="grid card" id="catalogo" hidden>
+    <div>
+      <div class="toolbar">
+        <input id="catSearch" placeholder="Buscar en catálogo…" />
+        <select id="catCategory"><option value="">Todas</option></select>
+        <div class="spacer"></div>
+      </div>
+      <div class="catalog" id="catalogGrid"></div>
+    </div>
+    <aside class="card cart">
+      <h2>🛒 Carrito</h2>
+      <div class="list" id="cartList"></div>
+      <div class="total"><span>Total</span><span id="cartTotal">$0</span></div>
+      <button id="btnCheckout" style="width:100%;margin-top:10px">✅ Confirmar venta</button>
+    </aside>
+  </section>
+
+  <!-- Ventas -->
+  <section class="card" id="ventas" hidden>
+    <div class="toolbar">
+      <input id="salesSearch" placeholder="Buscar venta por cliente o referencia…" />
+      <div class="spacer"></div>
+      <button id="btnExportCSV" class="ghost">⬇️ Exportar CSV</button>
+    </div>
+    <table>
+      <thead><tr><th>Fecha</th><th>Cliente</th><th>Items</th><th>Total</th></tr></thead>
+      <tbody id="salesTable"></tbody>
+    </table>
+  </section>
+
+  <!-- Reportes -->
+  <section class="card" id="reportes" hidden>
+    <h2>Indicadores</h2>
+    <div class="two">
+      <div class="card">
+        <h3>Resumen</h3>
+        <ul>
+          <li>Total de productos: <strong id="kpiProducts">0</strong></li>
+          <li>Unidades en inventario: <strong id="kpiUnits">0</strong></li>
+          <li>Ventas registradas: <strong id="kpiSales">0</strong></li>
+          <li>Ingresos acumulados: <strong id="kpiRevenue">$0</strong></li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>Top vendidos</h3>
+        <ol id="kpiTop"></ol>
+      </div>
+    </div>
+    <p class="muted">Este MVP usa datos locales (localStorage) y manipulación del DOM para simular <em>inventarios, catálogo, carrito</em> y <em>ventas</em> sin conexión a base de datos.</p>
+  </section>
+
+  <div class="footer">
+    <div>Colores corporativos: <strong style="color:var(--primary)">Rosa coral</strong> · <strong>Negro</strong> · <span style="color:var(--muted)">Gris metálico</span></div>
+    <div>MVP educativo – VÉRTICE URBAM · 100% HTML/CSS/JS</div>
+  </div>
+</div>
+
+<!-- Modal Producto -->
+<dialog id="dlgProduct">
+  <form method="dialog" class="modal" id="productForm">
+    <h3 id="dlgTitle">Nuevo producto</h3>
+    <div class="row">
+      <input id="pName" placeholder="Nombre del producto" required>
+      <input id="pCategory" placeholder="Categoría (p. ej. Camisetas, Calzado)" required>
+    </div>
+    <div class="row">
+      <input id="pPrice" type="number" step="0.01" min="0" placeholder="Precio" required>
+      <input id="pStock" type="number" min="0" placeholder="Stock" required>
+    </div>
+    <div class="row">
+      <input id="pImage" placeholder="URL de imagen (opcional)" />
+    </div>
+    <menu style="display:flex;gap:8px;justify-content:flex-end;margin-top:10px">
+      <button class="ghost" value="cancel">Cancelar</button>
+      <button value="ok">Guardar</button>
+    </menu>
+  </form>
+</dialog>
+
+<script>
+(() => {
+  // --- Estado y utilidades ---
+  const $ = (sel, ctx=document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+  const money = n => n.toLocaleString('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0});
+  const uid = () => Math.random().toString(36).slice(2,9);
+
+  const LS_KEYS = { PRODUCTS:'vu_products', SALES:'vu_sales' };
+  const demoProducts = [
+    {id:uid(), name:'Camiseta Oversize “Neón”', category:'Camisetas', price:65000, stock:18, image:''},
+    {id:uid(), name:'Gorra Snapback Urbana', category:'Accesorios', price:42000, stock:12, image:''},
+    {id:uid(), name:'Tenis Street Wave', category:'Calzado', price:189000, stock:6, image:''},
+    {id:uid(), name:'Hoodie Minimal Coral', category:'Buzos', price:129000, stock:9, image:''},
+    {id:uid(), name:'Riñonera Tech', category:'Accesorios', price:59000, stock:4, image:''}
+  ];
+
+  const state = {
+    products: JSON.parse(localStorage.getItem(LS_KEYS.PRODUCTS) || 'null') || demoProducts,
+    sales: JSON.parse(localStorage.getItem(LS_KEYS.SALES) || '[]'),
+    cart: [],
+    editing: null
+  };
+  const save = () => {
+    localStorage.setItem(LS_KEYS.PRODUCTS, JSON.stringify(state.products));
+    localStorage.setItem(LS_KEYS.SALES, JSON.stringify(state.sales));
+    renderAll();
+  };
+
+  // --- Tabs ---
+  $('#tabs').addEventListener('click', e=>{
+    const btn = e.target.closest('.tab'); if(!btn) return;
+    $$('.tab').forEach(t=>t.classList.remove('active'));
+    btn.classList.add('active');
+    ['inventario','catalogo','ventas','reportes'].forEach(id=>{
+      $('#'+id).hidden = id !== btn.dataset.tab;
+    });
+  });
+
+  // --- Inventario ---
+  const invTable = $('#invTable');
+  const invSearch = $('#invSearch');
+  const invCategory = $('#invCategory');
+  const dlg = $('#dlgProduct');
+  const form = $('#productForm');
+  let currentEditId = null;
+
+  function stockBadge(stock){
+    const cls = stock>=10? 'ok' : stock>=5? 'warn' : 'bad';
+    const txt = stock>=10? 'OK' : stock>=5? 'Bajo' : 'Sin stock';
+    return `<span class="status"><span class="dot ${cls}"></span>${txt}</span>`
+  }
+
+  function fillCategories(){
+    const cats = [...new Set(state.products.map(p=>p.category))];
+    invCategory.innerHTML = '<option value="">Todas las categorías</option>' + cats.map(c=>`<option>${c}</option>`).join('');
+    $('#catCategory').innerHTML = '<option value="">Todas</option>' + cats.map(c=>`<option>${c}</option>`).join('');
+  }
+
+  function renderInventory(){
+    const q = invSearch.value.toLowerCase();
+    const cat = invCategory.value;
+    const rows = state.products.filter(p=>{
+      const matchQ = !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+      const matchC = !cat || p.category === cat;
+      return matchQ && matchC;
+    }).map(p=>{
+      const img = p.image? `<img src="${p.image}" alt="${p.name}" style="width:48px;height:48px;border-radius:10px;object-fit:cover">` :
+        `<div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(135deg,#2b2b2b,#444);"></div>`;
+      return `<tr>
+        <td>${img}</td>
+        <td>
+          <div style="font-weight:600">${p.name}</div>
+          <small class="muted">${p.id}</small>
+        </td>
+        <td>${p.category}</td>
+        <td>${money(p.price)}</td>
+        <td>${p.stock} ${stockBadge(p.stock)}</td>
+        <td style="text-align:right">
+          <button class="small ghost" data-edit="${p.id}">Editar</button>
+          <button class="small" data-addcart="${p.id}">Vender</button>
+          <button class="small secondary" data-del="${p.id}">Eliminar</button>
+        </td>
+      </tr>`
+    }).join('');
+    invTable.innerHTML = rows || `<tr><td colspan="6" class="center muted">Sin resultados</td></tr>`;
+  }
+
+  $('#btnAdd').addEventListener('click', ()=>{
+    currentEditId = null;
+    $('#dlgTitle').textContent = 'Nuevo producto';
+    form.reset();
+    dlg.showModal();
+  });
+
+  invTable.addEventListener('click', e=>{
+    const id = e.target.dataset.edit || e.target.dataset.del || e.target.dataset.addcart;
+    const p = state.products.find(x=>x.id===id);
+    if(!id || !p) return;
+    if(e.target.dataset.edit){
+      currentEditId = id;
+      $('#dlgTitle').textContent = 'Editar producto';
+      $('#pName').value = p.name; $('#pCategory').value = p.category; $('#pPrice').value = p.price; $('#pStock').value = p.stock; $('#pImage').value = p.image||'';
+      dlg.showModal();
+    } else if(e.target.dataset.del){
+      if(confirm('¿Eliminar producto?')){ state.products = state.products.filter(x=>x.id!==id); save(); }
+    } else if(e.target.dataset.addcart){
+      addToCart(p.id);
+      // cambia a pestaña catálogo para ver carrito
+      $$('.tab').forEach(t=>t.classList.remove('active')); $('[data-tab="catalogo"]').classList.add('active');
+      ['inventario','catalogo','ventas','reportes'].forEach(id2=> $('#'+id2).hidden = id2!=='catalogo');
+    }
+  });
+
+  form.addEventListener('close', ()=>{});
+  form.addEventListener('submit', e=> e.preventDefault());
+  dlg.addEventListener('close', ()=>{
+    if(dlg.returnValue!=="ok") return;
+    const data = {
+      name: $('#pName').value.trim(),
+      category: $('#pCategory').value.trim(),
+      price: Number($('#pPrice').value||0),
+      stock: parseInt($('#pStock').value||0,10),
+      image: $('#pImage').value.trim()
+    };
+    if(!data.name) return;
+    if(currentEditId){
+      const i = state.products.findIndex(p=>p.id===currentEditId);
+      state.products[i] = {...state.products[i], ...data};
+    } else {
+      state.products.unshift({id:uid(), ...data});
+    }
+    currentEditId = null; save(); fillCategories();
+  });
+
+  invSearch.addEventListener('input', renderInventory);
+  invCategory.addEventListener('change', renderInventory);
+
+  // --- Catálogo / Carrito ---
+  const catSearch = $('#catSearch');
+  const catCategory = $('#catCategory');
+  const grid = $('#catalogGrid');
+  const cartList = $('#cartList');
+  const cartTotal = $('#cartTotal');
+
+  function addToCart(id){
+    const p = state.products.find(x=>x.id===id); if(!p || p.stock<=0) return alert('Sin stock');
+    const item = state.cart.find(i=>i.id===id);
+    if(item){ item.qty = Math.min(item.qty+1, p.stock); }
+    else state.cart.push({id, qty:1});
+    renderCart();
+  }
+  function removeFromCart(id){
+    state.cart = state.cart.filter(i=>i.id!==id); renderCart();
+  }
+  function setQty(id, qty){
+    const it = state.cart.find(i=>i.id===id); if(!it) return; it.qty = Math.max(1, qty|0); renderCart();
+  }
+
+  function renderCatalog(){
+    const q = catSearch.value.toLowerCase();
+    const cat = catCategory.value;
+    const cards = state.products.filter(p=>{
+      const matchQ = !q || p.name.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+      const matchC = !cat || p.category===cat;
+      return matchQ && matchC;
+    }).map(p=>{
+      const url = p.image||'';
+      return `<div class="product">
+        <img alt="${p.name}" src="${url}" onerror="this.style.background='linear-gradient(135deg,#2b2b2b,#444)';this.src=''">
+        <h4>${p.name}</h4>
+        <div class="muted">${p.category}</div>
+        <div class="price">${money(p.price)}</div>
+        <button class="small" data-buy="${p.id}" style="margin-top:8px;width:100%">Agregar</button>
+        <div class="muted" style="margin-top:6px;font-size:12px">Stock: ${p.stock}</div>
+      </div>`
+    }).join('');
+    grid.innerHTML = cards || '<div class="muted">Sin productos para mostrar.</div>';
+  }
+
+  grid.addEventListener('click', e=>{
+    const id = e.target.dataset.buy; if(!id) return; addToCart(id);
+  });
+
+  function renderCart(){
+    let total = 0;
+    cartList.innerHTML = state.cart.map(it=>{
+      const p = state.products.find(x=>x.id===it.id); if(!p) return '';
+      const line = p.price * it.qty; total += line;
+      return `<div class="item">
+        <div>
+          <div style="font-weight:600">${p.name}</div>
+          <small class="muted">${money(p.price)} × </small>
+          <input class="qty" type="number" min="1" max="${p.stock}" value="${it.qty}" data-qty="${p.id}">
+        </div>
+        <div>
+          <div>${money(line)}</div>
+          <button class="small secondary" data-rm="${p.id}">Quitar</button>
+        </div>
+      </div>`
+    }).join('');
+    cartTotal.textContent = money(total);
+  }
+
+  cartList.addEventListener('input', e=>{
+    const id = e.target.dataset.qty; if(!id) return; setQty(id, Number(e.target.value||1));
+  });
+  cartList.addEventListener('click', e=>{
+    const id = e.target.dataset.rm; if(!id) return; removeFromCart(id);
+  });
+
+  $('#btnCheckout').addEventListener('click', ()=>{
+    if(!state.cart.length) return alert('Carrito vacío');
+    const name = prompt('Nombre del cliente:','Cliente Demo');
+    if(!name) return;
+    // verificar stock suficiente
+    for(const it of state.cart){
+      const p = state.products.find(x=>x.id===it.id);
+      if(!p || p.stock < it.qty) return alert('Stock insuficiente para '+(p? p.name : it.id));
+    }
+    // descontar stock y registrar venta
+    const items = state.cart.map(it=>{
+      const p = state.products.find(x=>x.id===it.id);
+      p.stock -= it.qty; return {id:p.id,name:p.name,qty:it.qty,price:p.price}
+    });
+    const total = items.reduce((s,i)=>s+i.qty*i.price,0);
+    state.sales.unshift({id:uid(), date:new Date().toISOString(), customer:name, items, total});
+    state.cart = []; save(); renderCart(); alert('Venta registrada');
+  });
+
+  // --- Ventas ---
+  const salesTable = $('#salesTable');
+  const salesSearch = $('#salesSearch');
+
+  function renderSales(){
+    const q = salesSearch.value.toLowerCase();
+    const rows = state.sales.filter(s=>{
+      return !q || s.customer.toLowerCase().includes(q) || s.id.includes(q);
+    }).map(s=>{
+      return `<tr>
+        <td>${new Date(s.date).toLocaleString()}</td>
+        <td>${s.customer}</td>
+        <td>${s.items.length} ítems</td>
+        <td>${money(s.total)}</td>
+      </tr>`
+    }).join('');
+    salesTable.innerHTML = rows || '<tr><td colspan="4" class="center muted">Aún no hay ventas</td></tr>';
+  }
+
+  $('#btnExportCSV').addEventListener('click', ()=>{
+    const csv = ['Fecha,Cliente,Items,Total'];
+    state.sales.forEach(s=> csv.push(`${new Date(s.date).toLocaleString()},${s.customer},${s.items.length},${s.total}`));
+    const blob = new Blob([csv.join('\n')],{type:'text/csv;charset=utf-8;'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download='ventas_vertice_urbam.csv'; a.click();
+  });
+
+  // --- Reportes ---
+  function renderReports(){
+    $('#kpiProducts').textContent = state.products.length;
+    $('#kpiUnits').textContent = state.products.reduce((s,p)=>s+p.stock,0);
+    $('#kpiSales').textContent = state.sales.length;
+    const revenue = state.sales.reduce((s,v)=>s+v.total,0);
+    $('#kpiRevenue').textContent = money(revenue);
+    // top vendidos
+    const counter = new Map();
+    state.sales.forEach(s=> s.items.forEach(i=> counter.set(i.name,(counter.get(i.name)||0)+i.qty)) );
+    const top = [...counter.entries()].sort((a,b)=>b[1]-a[1]).slice(0,5);
+    $('#kpiTop').innerHTML = top.map(([name,qty])=>`<li>${name} <small class="muted">(${qty} u.)</small></li>`).join('') || '<li class="muted">Sin datos</li>';
+  }
+
+  // --- Export / Reset demo ---
+  $('#btnExport').addEventListener('click', ()=>{
+    const data = {products:state.products, sales:state.sales};
+    const blob = new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download='vertice_urbam_demo.json'; a.click();
+  });
+  $('#btnReset').addEventListener('click', ()=>{
+    if(!confirm('Restablecer datos de demostración?')) return;
+    localStorage.removeItem(LS_KEYS.PRODUCTS);
+    localStorage.removeItem(LS_KEYS.SALES);
+    state.products = demoProducts.map(p=>({...p, id:uid()}));
+    state.sales = []; state.cart=[]; save(); fillCategories(); renderCart(); alert('Datos restablecidos');
+  });
+
+  // --- Render global ---
+  function renderAll(){
+    renderInventory(); renderCatalog(); renderCart(); renderSales(); renderReports();
+  }
+
+  fillCategories(); renderAll();
+})();
+</script>
+</body>
+</html>

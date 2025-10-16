@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DTrace Systems S.A.S. — Auditoría y Calidad de Software</title>
+  <meta name="description" content="Supervisión, auditoría y validación de código para garantizar calidad, seguridad y cumplimiento de estándares internacionales en proyectos de software." />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0b0f1a;         /* fondo oscuro elegante */
+      --card:#11182a;       /* tarjetas */
+      --muted:#9fb0c9;      /* texto secundario */
+      --text:#e8efff;       /* texto principal */
+      --primary-1:#7c4dff;  /* púrpura */
+      --primary-2:#00d4ff;  /* cian */
+      --accent:#23d18b;     /* acento */
+      --danger:#ff6b6b;     /* alerta */
+      --shadow: 0 10px 30px rgba(0,0,0,.35), 0 2px 10px rgba(0,0,0,.25);
+      --radius:20px;
+    }
+    *{box-sizing:border-box} html{scroll-behavior:smooth}
+    body{margin:0;background:radial-gradient(1200px 600px at 20% -10%, rgba(124,77,255,.15), transparent 60%), radial-gradient(900px 500px at 120% 10%, rgba(0,212,255,.12), transparent 60%), var(--bg);color:var(--text);font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;line-height:1.5}
+    a{color:inherit;text-decoration:none}
+    .container{width:min(1120px,92vw);margin-inline:auto}
+    header{position:sticky;top:0;z-index:40;background:rgba(11,15,26,.65);backdrop-filter:blur(8px);border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav{display:flex;align-items:center;gap:24px;padding:10px 0}
+    .logo{display:flex;align-items:center;gap:12px}
+    .logo svg{width:34px;height:34px}
+    .logo-title{font-weight:800;letter-spacing:.2px}
+    .nav a{opacity:.9}
+    .nav a:hover{opacity:1}
+    .nav-right{margin-left:auto;display:flex;gap:12px}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.08);background:linear-gradient(135deg, rgba(124,77,255,.25), rgba(0,212,255,.15));color:var(--text);box-shadow:var(--shadow);transition:.2s}
+    .btn:hover{transform:translateY(-1px);filter:saturate(110%)}
+    .btn.ghost{background:transparent;border-color:rgba(255,255,255,.15)}
+    .chip{display:inline-block;padding:6px 10px;border-radius:999px;font-size:.82rem;background:rgba(124,77,255,.15);border:1px solid rgba(124,77,255,.35)}
+    .hero{padding:64px 0 32px}
+    .hero-grid{display:grid;grid-template-columns:1.2fr .9fr;gap:28px;align-items:center}
+    .headline{font-size:clamp(28px,4.6vw,48px);line-height:1.1;font-weight:800;letter-spacing:.2px;margin:8px 0 12px}
+    .sub{color:var(--muted);font-size:clamp(14px,1.7vw,18px)}
+    .cta{display:flex;gap:12px;margin-top:18px;flex-wrap:wrap}
+    .glass{background:linear-gradient(180deg, rgba(17,24,42,.6), rgba(17,24,42,.45));border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .hero-card{padding:18px}
+    .stat{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;background:rgba(255,255,255,.03);border:1px dashed rgba(255,255,255,.08)}
+    .badges{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .badge{font-size:.8rem;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.12);opacity:.9}
+
+    section{padding:48px 0}
+    h2{font-size:clamp(22px,3.6vw,34px);margin:0 0 14px}
+    p.lead{color:var(--muted);max-width:68ch}
+    .grid{display:grid;gap:18px}
+    .grid-3{grid-template-columns:repeat(3,1fr)}
+    .grid-2{grid-template-columns:repeat(2,1fr)}
+    @media (max-width:880px){.hero-grid{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr}}
+
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+    .card h3{margin:6px 0 6px;font-size:1.12rem}
+    .card p{color:var(--muted);font-size:.98rem}
+    .icon{width:26px;height:26px;display:inline-grid;place-items:center;border-radius:9px;background:linear-gradient(135deg, rgba(124,77,255,.4), rgba(0,212,255,.35));border:1px solid rgba(255,255,255,.12)}
+
+    .divider{height:1px;background:linear-gradient(90deg, transparent, rgba(255,255,255,.12), transparent);margin:30px 0}
+
+    /* Timeline */
+    .timeline{position:relative;padding-left:22px}
+    .timeline:before{content:"";position:absolute;left:9px;top:0;bottom:0;width:2px;background:linear-gradient(180deg, rgba(124,77,255,.9), rgba(0,212,255,.9))}
+    .tl-item{position:relative;margin:14px 0;padding-left:12px}
+    .tl-item:before{content:"";position:absolute;left:-2px;top:4px;width:14px;height:14px;border-radius:50%;background:linear-gradient(135deg, var(--primary-1), var(--primary-2));box-shadow:0 0 0 3px rgba(124,77,255,.15)}
+
+    /* Precios */
+    .pricing-toggle{display:flex;align-items:center;gap:12px;margin:12px 0}
+    .switch{position:relative;width:56px;height:30px;background:#25304a;border-radius:999px;border:1px solid rgba(255,255,255,.08);cursor:pointer}
+    .knob{position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:white;transition:.25s}
+    .switch.active .knob{left:29px}
+    .price-cards{display:grid;gap:18px;grid-template-columns:repeat(3,1fr)}
+    @media (max-width:880px){.price-cards{grid-template-columns:1fr}}
+    .price{font-size:2rem;font-weight:800}
+    .price small{font-weight:600;color:var(--muted);font-size:.9rem}
+    .popular{outline:2px solid rgba(0,212,255,.35)}
+
+    /* Calculadora */
+    .calc input, .calc select, .form input, .form textarea{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);color:var(--text)}
+    .calc label, .form label{font-size:.9rem;opacity:.9}
+    .calc .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    @media (max-width:720px){.calc .row{grid-template-columns:1fr}}
+    .pill{display:inline-block;padding:6px 10px;border-radius:999px;background:rgba(35,209,139,.14);border:1px solid rgba(35,209,139,.35)}
+
+    /* FAQ */
+    .faq-item{border:1px solid rgba(255,255,255,.10);border-radius:14px}
+    .faq-q{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;cursor:pointer}
+    .faq-a{display:none;padding:0 16px 12px;color:var(--muted)}
+
+    footer{padding:28px 0;color:#b7c6de;border-top:1px solid rgba(255,255,255,.08)}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:18px}
+    @media (max-width:900px){.footer-grid{grid-template-columns:1fr}}
+
+    /* Utilidades */
+    .gradient-text{background:linear-gradient(90deg, var(--primary-1), var(--primary-2));-webkit-background-clip:text;background-clip:text;color:transparent}
+    .hide{display:none}
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"Organization",
+    "name":"DTrace Systems S.A.S.",
+    "url":"https://ejemplo-dtrace.local",
+    "logo":"/logo.svg",
+    "sameAs":["https://www.linkedin.com/"],
+    "description":"Supervisión, auditoría y validación de código para garantizar calidad y seguridad en software.",
+    "foundingDate":"2025-10-01",
+    "brand":{
+      "@type":"Brand","name":"DTrace Systems","slogan":"Supervisamos tu código. Garantizamos tu éxito."
+    }
+  }
+  </script>
+</head>
+<body>
+  <header>
+    <div class="container nav">
+      <a class="logo" href="#inicio" aria-label="DTrace Systems">
+        <svg viewBox="0 0 64 64" aria-hidden="true">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#7c4dff"/><stop offset="100%" stop-color="#00d4ff"/>
+            </linearGradient>
+          </defs>
+          <rect x="4" y="8" width="56" height="48" rx="12" fill="url(#g)"/>
+          <rect x="12" y="18" width="40" height="4" rx="2" fill="#0b0f1a"/>
+          <rect x="12" y="28" width="28" height="4" rx="2" fill="#0b0f1a"/>
+          <rect x="12" y="38" width="14" height="4" rx="2" fill="#0b0f1a"/>
+        </svg>
+        <span class="logo-title">DTrace Systems</span>
+      </a>
+      <a href="#servicios">Servicios</a>
+      <a href="#valor">Valor</a>
+      <a href="#proceso">Proceso</a>
+      <a href="#precios">Planes</a>
+      <a href="#contacto">Contacto</a>
+      <div class="nav-right">
+        <a class="btn ghost" href="#demo">Ver demo</a>
+        <a class="btn" href="#contacto">Solicitar auditoría</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="inicio" class="hero container">
+    <div class="hero-grid">
+      <div>
+        <span class="chip">Calidad • Seguridad • Eficiencia</span>
+        <h1 class="headline">Auditoría de código para <span class="gradient-text">software confiable</span>.</h1>
+        <p class="sub">Supervisamos tu código con revisión manual y análisis automatizado (OWASP, ISO/IEC 25010, buenas prácticas de Clean Code). Reportes claros, planes de mejora y acompañamiento al equipo.</p>
+        <div class="cta">
+          <a class="btn" href="#precios">Ver planes</a>
+          <a class="btn ghost" href="#contacto">Cotiza ahora</a>
+        </div>
+        <div class="badges">
+          <span class="badge">Empresas • Startups • Fintech • Educación</span>
+          <span class="badge">SaaS • Web • Móvil • APIs</span>
+        </div>
+      </div>
+      <div class="glass hero-card">
+        <div class="stat"><span class="icon">🛡️</span><div><strong>Seguridad de aplicaciones</strong><br><small class="muted">Revisiones alineadas con OWASP</small></div></div>
+        <div class="stat"><span class="icon">📈</span><div><strong>Rendimiento y mantenibilidad</strong><br><small class="muted">Medidas de deuda técnica y refactors</small></div></div>
+        <div class="stat"><span class="icon">📄</span><div><strong>Reporte ejecutivo + técnico</strong><br><small class="muted">Hallazgos, riesgo, acciones y esfuerzo</small></div></div>
+        <div class="badges" style="margin-top:10px">
+          <span class="badge">Acompañamiento post-auditoría</span>
+          <span class="badge">Confidencialidad garantizada</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section id="servicios" class="container">
+    <h2>Servicios principales</h2>
+    <p class="lead">Soluciones para elevar la <strong>calidad</strong>, <strong>seguridad</strong> y <strong>eficiencia</strong> del software en todas las etapas del ciclo de vida.</p>
+    <div class="grid grid-3">
+      <div class="card">
+        <div class="icon">🔍</div>
+        <h3>Auditoría de código</h3>
+        <p>Revisión estática y manual multi-lenguaje, detección de vulnerabilidades y malas prácticas.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🧪</div>
+        <h3>Pruebas y cobertura</h3>
+        <p>Recomendaciones de pruebas unitarias/integración, métricas de cobertura y calidad.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🛡️</div>
+        <h3>Seguridad OWASP</h3>
+        <p>Checklist OWASP Top 10, hardening de API y guía para mitigación de riesgos.</p>
+      </div>
+      <div class="card">
+        <div class="icon">📄</div>
+        <h3>Reporte técnico</h3>
+        <p>Informe con severidad, evidencia, esfuerzo de remediación y plan de acción priorizado.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🎓</div>
+        <h3>Capacitación QA</h3>
+        <p>Talleres para equipos en Clean Code, revisiones de PR, pipelines y prácticas seguras.</p>
+      </div>
+      <div class="card">
+        <div class="icon">🤝</div>
+        <h3>Planes de suscripción</h3>
+        <p>Acompañamiento continuo para proyectos en evolución y releases frecuentes.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="valor" class="container">
+    <div class="grid grid-2">
+      <div>
+        <h2>Propuesta de valor</h2>
+        <p class="lead">Integramos <strong>revisión manual experta</strong> con <strong>análisis automatizado</strong> (SonarQube/linters) para emitir diagnósticos precisos y accionables. Acompañamos a tu equipo hasta la remediación, enfocándonos en <em>seguridad</em>, <em>rendimiento</em> y <em>mantenibilidad</em>.</p>
+        <div class="grid grid-2">
+          <div class="card"><strong>✔︎</strong> Confidencialidad y ética profesional</div>
+          <div class="card"><strong>✔︎</strong> Enfoque adaptable a startups y pymes</div>
+          <div class="card"><strong>✔︎</strong> Reportes para directivos y devs</div>
+          <div class="card"><strong>✔︎</strong> Métricas claras de deuda técnica</div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Diagnóstico express (demo)</h3>
+        <p>Ejemplo de checklist resumido que verías en un pilotaje:</p>
+        <ul>
+          <li>✔️ Linters y reglas básicas activas</li>
+          <li>⚠️ Falta validación de entrada en 3 endpoints</li>
+          <li>⚠️ Claves expuestas en config de pruebas</li>
+          <li>✔️ Pruebas unitarias > 60% módulos core</li>
+          <li>❗ SQL sin parámetros en 2 consultas</li>
+        </ul>
+        <a class="btn" href="#contacto">Solicitar pilotaje</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="proceso" class="container">
+    <h2>Proceso de trabajo</h2>
+    <div class="timeline">
+      <div class="tl-item"><strong>1. Alcance & NDA</strong> — definimos repos, módulos y confidencialidad.</div>
+      <div class="tl-item"><strong>2. Ingesta</strong> — acceso a código/artefactos y contexto arquitectónico.</div>
+      <div class="tl-item"><strong>3. Análisis automático</strong> — linters, SAST, métricas de calidad.</div>
+      <div class="tl-item"><strong>4. Revisión manual</strong> — riesgos OWASP, deuda técnica y smell catalog.</div>
+      <div class="tl-item"><strong>5. Reporte & plan</strong> — severidad, evidencia y roadmap de remediación.</div>
+      <div class="tl-item"><strong>6. Acompañamiento</strong> — sesiones de transferencia y verificación.</div>
+    </div>
+  </section>
+
+  <section id="demo" class="container card">
+    <div class="grid grid-2">
+      <div>
+        <h2>Calculadora rápida de estimación</h2>
+        <p class="lead">Obtén una <strong>estimación base</strong> según tamaño y complejidad. (Ejemplo demostrativo, no vinculante).</p>
+        <div class="calc">
+          <div class="row">
+            <div>
+              <label for="loc">Líneas de código aprox. (KLOC)</label>
+              <input id="loc" type="number" min="1" value="20" />
+            </div>
+            <div>
+              <label for="cx">Complejidad</label>
+              <select id="cx">
+                <option value="0.9">Baja</option>
+                <option value="1.0" selected>Media</option>
+                <option value="1.25">Alta</option>
+              </select>
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px">
+            <div>
+              <label for="sec">Enfoque en seguridad</label>
+              <select id="sec">
+                <option value="0">Estándar</option>
+                <option value="1">Crítico (fintech/PII)</option>
+              </select>
+            </div>
+            <div>
+              <label for="subs">¿Deseas suscripción?</label>
+              <select id="subs">
+                <option value="0">Única auditoría</option>
+                <option value="1">Mensual</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:12px">
+            <button class="btn" id="calcBtn">Calcular</button>
+            <span id="calcOut" class="pill" style="margin-left:10px">—</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h2>Preguntas frecuentes</h2>
+        <div class="faq-item">
+          <div class="faq-q">¿Qué recibo al finalizar?<span>＋</span></div>
+          <div class="faq-a">Un reporte ejecutivo y técnico con evidencia, severidad, plan de remediación y recomendaciones priorizadas.</div>
+        </div>
+        <div class="faq-item" style="margin-top:10px">
+          <div class="faq-q">¿Trabajan con repos privados?<span>＋</span></div>
+          <div class="faq-a">Sí. Firmamos NDA y trabajamos con repositorios privados con accesos de solo lectura.</div>
+        </div>
+        <div class="faq-item" style="margin-top:10px">
+          <div class="faq-q">¿Pueden capacitar a mi equipo?<span>＋</span></div>
+          <div class="faq-a">Claro. Ofrecemos talleres en buenas prácticas, seguridad y flujos de revisión de código.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="precios" class="container">
+    <h2>Planes y precios</h2>
+    <div class="pricing-toggle"><span>Mensual</span><div id="toggle" class="switch" role="switch" aria-checked="false" tabindex="0"><div class="knob"></div></div><span>Anual <small style="opacity:.7">(ahorra 15%)</small></span></div>
+    <div class="price-cards">
+      <div class="card">
+        <h3>Starter</h3>
+        <p>1 proyecto • 1 auditoría puntual • Reporte base</p>
+        <div class="price" data-month="$1.2M" data-year="$12.2M">$1.2M <small>COP</small></div>
+        <a class="btn" href="#contacto">Empezar</a>
+      </div>
+      <div class="card popular">
+        <h3>Growth</h3>
+        <p>Hasta 3 repos • Acompañamiento • Sesión de remediación</p>
+        <div class="price" data-month="$2.6M" data-year="$26.5M">$2.6M <small>COP</small></div>
+        <a class="btn" href="#contacto">Seleccionar</a>
+      </div>
+      <div class="card">
+        <h3>Enterprise</h3>
+        <p>Multi-equipo • Auditorías recurrentes • Capacitación</p>
+        <div class="price" data-month="$4.9M" data-year="$49.9M">$4.9M <small>COP</small></div>
+        <a class="btn" href="#contacto">Hablar con ventas</a>
+      </div>
+    </div>
+    <p class="lead" style="margin-top:10px">* Los valores son referenciales para demo. Cotizamos según alcance, criticidad y tiempos.</p>
+  </section>
+
+  <section id="contacto" class="container">
+    <div class="grid grid-2">
+      <div>
+        <h2>Conversemos</h2>
+        <p class="lead">Cuéntanos del proyecto para enviarte una propuesta en menos de 24h hábiles.</p>
+        <form class="form card" onsubmit="submitForm(event)">
+          <div class="grid grid-2">
+            <div>
+              <label>Nombre</label>
+              <input required placeholder="Tu nombre" />
+            </div>
+            <div>
+              <label>Correo</label>
+              <input required type="email" placeholder="tucorreo@empresa.com" />
+            </div>
+          </div>
+          <div style="margin-top:10px">
+            <label>Empresa</label>
+            <input placeholder="Nombre de la empresa" />
+          </div>
+          <div style="margin-top:10px">
+            <label>Mensaje</label>
+            <textarea rows="4" placeholder="Cuéntanos brevemente tu necesidad..."></textarea>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn" type="submit">Solicitar propuesta</button>
+            <a class="btn ghost" href="mailto:contacto@dtrace.example">Enviar correo</a>
+            <a class="btn ghost" href="https://wa.me/573000000000" target="_blank">WhatsApp</a>
+          </div>
+          <p id="formMsg" class="pill hide" style="margin-top:10px">¡Gracias! Te contactaremos muy pronto.</p>
+        </form>
+      </div>
+      <div class="card">
+        <h3>¿Por qué DTrace?</h3>
+        <ul>
+          <li>Equipo con foco en QA, ciberseguridad y DevEx</li>
+          <li>Metodología replicable + acompañamiento humano</li>
+          <li>Reportes accionables para CTOs y desarrolladores</li>
+          <li>Confidencialidad (NDA) y buenas prácticas</li>
+        </ul>
+        <div class="divider"></div>
+        <h3>Alianzas y ecosistema</h3>
+        <p class="lead">Vinculados a iniciativas académicas y de innovación regional (SENA, comunidades dev, ferias tecnológicas).</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container footer-grid">
+      <div>
+        <div class="logo" style="margin-bottom:8px">
+          <svg viewBox="0 0 64 64" width="24" aria-hidden="true"><use href="#"/></svg>
+          <strong>DTrace Systems S.A.S.</strong>
+        </div>
+        <small>"Supervisamos tu código. Garantizamos tu éxito."</small>
+      </div>
+      <div>
+        <strong>Explorar</strong>
+        <div><a href="#servicios">Servicios</a></div>
+        <div><a href="#proceso">Proceso</a></div>
+        <div><a href="#precios">Planes</a></div>
+      </div>
+      <div>
+        <strong>Contacto</strong>
+        <div><a href="mailto:contacto@dtrace.example">contacto@dtrace.example</a></div>
+        <div><a href="https://wa.me/573000000000" target="_blank">+57 300 000 0000</a></div>
+        <div>Corozal, Sucre — Colombia</div>
+      </div>
+    </div>
+    <div class="container" style="margin-top:10px"><small>© <span id="year"></span> DTrace Systems S.A.S. • Hecho con ♥ para la feria empresarial</small></div>
+  </footer>
+
+  <script>
+    // Toggle precios: mensual/anual
+    const toggle=document.getElementById('toggle');
+    toggle?.addEventListener('click',()=>{
+      toggle.classList.toggle('active');
+      const yearly = toggle.classList.contains('active');
+      document.querySelectorAll('.price').forEach(p=>{
+        const val = p.getAttribute(yearly? 'data-year':'data-month');
+        p.innerHTML = val + ' <small>COP</small>';
+      });
+    });
+    toggle?.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle.click();}});
+
+    // FAQ acordeón
+    document.querySelectorAll('.faq-q').forEach(q=>{
+      q.addEventListener('click',()=>{
+        const a=q.nextElementSibling; const open=a.style.display==='block';
+        document.querySelectorAll('.faq-a').forEach(el=>el.style.display='none');
+        if(!open) a.style.display='block';
+      });
+    });
+
+    // Calculadora simple
+    function formatCOP(n){return new Intl.NumberFormat('es-CO',{style:'currency',currency:'COP',maximumFractionDigits:0}).format(n)}
+    document.getElementById('calcBtn')?.addEventListener('click',()=>{
+      const kloc= Math.max(1, parseFloat(document.getElementById('loc').value||'1'));
+      const cx= parseFloat(document.getElementById('cx').value||'1');
+      const sec= parseInt(document.getElementById('sec').value||'0',10);
+      const subs= parseInt(document.getElementById('subs').value||'0',10);
+      const base = 60000; // tarifa referencial por KLOC (COP)
+      let total = kloc*base*cx;
+      if(sec) total*=1.35; // enfoque crítico
+      if(subs) total*=0.85; // descuento por suscripción
+      const out=document.getElementById('calcOut');
+      out.textContent = `Estimado: ${formatCOP(total)}`;
+    });
+
+    // Form demo
+    function submitForm(e){e.preventDefault();document.getElementById('formMsg').classList.remove('hide')}
+    window.submitForm=submitForm;
+
+    // Año actual
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

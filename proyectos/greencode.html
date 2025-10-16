@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenCode S.A.S. - Software Sostenible</title>
+    <meta name="description" content="Desarrollamos soluciones de software sostenibles que optimizan el consumo energético y reducen la huella de carbono digital. Tecnología responsable para un futuro verde." />
+    <meta name="author" content="GreenCode S.A.S." />
+    <meta name="keywords" content="software sostenible, desarrollo verde, programación ecológica, eficiencia energética, tecnología responsable, SENA" />
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-background: #ffffff;
+            --color-foreground: #0d3d2e;
+            --color-primary: #1ca078;
+            --color-primary-light: #22cc99;
+            --color-secondary: #f0f9f5;
+            --color-muted: #8a9e95;
+            --color-border: #d9e8e1;
+            --gradient-hero: linear-gradient(135deg, #1ca078, #22cc99);
+            --gradient-card: linear-gradient(to bottom, #f9fcfb, #f0f9f5);
+            --shadow-eco: 0 10px 40px -10px rgba(28, 160, 120, 0.2);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--color-foreground);
+            background-color: var(--color-background);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            background-color: transparent;
+        }
+
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .logo img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--color-foreground);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-menu a:hover {
+            color: var(--color-primary);
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: var(--gradient-hero);
+            color: white;
+            box-shadow: var(--shadow-eco);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 50px -15px rgba(28, 160, 120, 0.3);
+        }
+
+        .btn-outline {
+            background: white;
+            border: 2px solid var(--color-primary);
+            color: var(--color-primary);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--color-foreground);
+        }
+
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            padding: 1rem 0;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .hero-content {
+            animation: fadeIn 0.6s ease;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--color-secondary);
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .gradient-text {
+            background: var(--gradient-hero);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-description {
+            font-size: 1.125rem;
+            color: var(--color-muted);
+            margin-bottom: 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            padding-top: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--color-primary);
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--color-muted);
+        }
+
+        .hero-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: var(--shadow-eco);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .feature-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--gradient-card);
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-hero);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 6rem 0;
+        }
+
+        .section-bg {
+            background-color: rgba(240, 249, 245, 0.3);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-header h2 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .section-description {
+            font-size: 1.125rem;
+            color: var(--color-muted);
+            max-width: 42rem;
+            margin: 0 auto;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--gradient-card);
+            border: 2px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .service-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-eco);
+        }
+
+        .service-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-hero);
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+
+        .service-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .service-description {
+            color: var(--color-muted);
+        }
+
+        /* Team Grid */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 80rem;
+            margin: 0 auto;
+        }
+
+        .team-card {
+            background: var(--gradient-card);
+            border: 1px solid var(--color-border);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .team-card:hover {
+            box-shadow: var(--shadow-eco);
+        }
+
+        .team-member {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .team-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-hero);
+            border-radius: 9999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .member-name {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .member-role {
+            font-size: 0.875rem;
+            color: var(--color-muted);
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            max-width: 80rem;
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            background: var(--gradient-card);
+            border: 1px solid var(--color-border);
+            border-radius: 1rem;
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid var(--color-border);
+            border-radius: 0.5rem;
+            font-family: inherit;
+            font-size: 1rem;
+        }
+
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .contact-info-card {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .contact-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-hero);
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .contact-info h3 {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .contact-info p {
+            color: var(--color-muted);
+        }
+
+        /* Footer */
+        footer {
+            background: white;
+            border-top: 1px solid var(--color-border);
+            padding: 3rem 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .footer-brand img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .footer-list {
+            list-style: none;
+            font-size: 0.875rem;
+        }
+
+        .footer-list li {
+            margin-bottom: 0.5rem;
+            color: var(--color-muted);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-border);
+            font-size: 0.875rem;
+            color: var(--color-muted);
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            display: none;
+            animation: slideIn 0.3s ease;
+            z-index: 2000;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .toast-description {
+            font-size: 0.875rem;
+            color: var(--color-muted);
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .section-header h2 {
+                font-size: 2rem;
+            }
+
+            .hero-grid,
+            .services-grid,
+            .team-grid,
+            .contact-grid,
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .stats {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-title">¡Mensaje enviado!</div>
+        <div class="toast-description">Gracias por contactarnos. Te responderemos pronto.</div>
+    </div>
+
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    <img src="Logo-Sin fondo.png" alt="GreenCode Logo">
+                    <span class="logo-text">GreenCode</span>
+                </div>
+
+                <div class="nav-menu" id="navMenu">
+                    <a href="#inicio" onclick="scrollToSection(event, 'inicio')">Inicio</a>
+                    <a href="#servicios" onclick="scrollToSection(event, 'servicios')">Servicios</a>
+                    <a href="#equipo" onclick="scrollToSection(event, 'equipo')">Equipo</a>
+                    <a href="#contacto" onclick="scrollToSection(event, 'contacto')" class="btn btn-primary">Contacto</a>
+                </div>
+
+                <button class="menu-toggle" id="menuToggle" onclick="toggleMobileMenu()">☰</button>
+            </nav>
+
+            <div class="mobile-menu" id="mobileMenu">
+                <a href="#inicio" onclick="scrollToSection(event, 'inicio')">Inicio</a>
+                <a href="#servicios" onclick="scrollToSection(event, 'servicios')">Servicios</a>
+                <a href="#equipo" onclick="scrollToSection(event, 'equipo')">Equipo</a>
+                <a href="#contacto" onclick="scrollToSection(event, 'contacto')" class="btn btn-primary">Contacto</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="inicio" class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="badge">
+                        🌿 Software Sostenible
+                    </div>
+                    
+                    <h1>
+                        Tecnología Verde para un
+                        <span class="gradient-text">Futuro Sostenible</span>
+                    </h1>
+                    
+                    <p class="hero-description">
+                        Desarrollamos soluciones de software innovadoras que optimizan el consumo energético 
+                        y reducen la huella de carbono digital, creando tecnología responsable con el planeta.
+                    </p>
+
+                    <div class="hero-buttons">
+                        <a href="#servicios" onclick="scrollToSection(event, 'servicios')" class="btn btn-primary">
+                            Nuestros Servicios
+                        </a>
+                        <a href="#contacto" onclick="scrollToSection(event, 'contacto')" class="btn btn-outline">
+                            Contáctanos
+                        </a>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat">
+                            <div class="stat-value">-40%</div>
+                            <div class="stat-label">Consumo Energético</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">100%</div>
+                            <div class="stat-label">Código Limpio</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-value">+30%</div>
+                            <div class="stat-label">Eficiencia</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="hero-card">
+                    <div class="feature-card">
+                        <div class="feature-icon">💻</div>
+                        <div>
+                            <div style="font-weight: 600;">Desarrollo Sostenible</div>
+                            <div style="font-size: 0.875rem; color: var(--color-muted);">Código optimizado y eficiente</div>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <div>
+                            <div style="font-weight: 600;">Bajo Consumo</div>
+                            <div style="font-size: 0.875rem; color: var(--color-muted);">Reducción de huella digital</div>
+                        </div>
+                    </div>
+
+                    <div class="feature-card">
+                        <div class="feature-icon">🌿</div>
+                        <div>
+                            <div style="font-weight: 600;">Impacto Positivo</div>
+                            <div style="font-size: 0.875rem; color: var(--color-muted);">Tecnología responsable</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="servicios" class="section-bg">
+        <div class="container">
+            <div class="section-header">
+                <h2>
+                    Nuestros <span class="gradient-text">Servicios</span>
+                </h2>
+                <p class="section-description">
+                    Soluciones tecnológicas innovadoras que combinan eficiencia, sostenibilidad y responsabilidad ambiental
+                </p>
+            </div>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <div class="service-icon">💻</div>
+                    <h3 class="service-title">Desarrollo de Aplicaciones Sostenibles</h3>
+                    <p class="service-description">
+                        Creamos software eficiente que utiliza menos energía y recursos, optimizando cada línea de código para minimizar el impacto ambiental.
+                    </p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">🔍</div>
+                    <h3 class="service-title">Auditorías de Sostenibilidad Digital</h3>
+                    <p class="service-description">
+                        Analizamos tus sistemas para identificar y corregir procesos de alto consumo energético, mejorando la eficiencia de tu infraestructura tecnológica.
+                    </p>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-icon">👥</div>
+                    <h3 class="service-title">Consultorías Tecnológicas</h3>
+                    <p class="service-description">
+                        Asesoramos a empresas que deseen implementar prácticas de programación ecológica y responsable, transformando su forma de desarrollar software.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="equipo">
+        <div class="container">
+            <div class="section-header">
+                <h2>
+                    Nuestro <span class="gradient-text">Equipo</span>
+                </h2>
+                <p class="section-description">
+                    Un grupo de estudiantes apasionadas por la tecnología sostenible, formadas en el programa 
+                    Técnico en Programación de Software del SENA
+                </p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-member">
+                        <div class="team-icon">👤</div>
+                        <div>
+                            <h3 class="member-name">Maura Marcela Mercado Cuello</h3>
+                            <p class="member-role">Directora General</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-member">
+                        <div class="team-icon">👤</div>
+                        <div>
+                            <h3 class="member-name">Yulieth Paola Mendoza Salgado</h3>
+                            <p class="member-role">Directora Técnica</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-member">
+                        <div class="team-icon">👤</div>
+                        <div>
+                            <h3 class="member-name">Thaliana Barboza García</h3>
+                            <p class="member-role">Diseñadora UX/UI y Marketing Digital</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-member">
+                        <div class="team-icon">👤</div>
+                        <div>
+                            <h3 class="member-name">Stacey Cali Vergara</h3>
+                            <p class="member-role">Desarrolladora</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-card">
+                    <div class="team-member">
+                        <div class="team-icon">👤</div>
+                        <div>
+                            <h3 class="member-name">Eyleen Lara Nassis</h3>
+                            <p class="member-role">Desarrolladora</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contacto" class="section-bg">
+        <div class="container">
+            <div class="section-header">
+                <h2>
+                    <span class="gradient-text">Contáctanos</span>
+                </h2>
+                <p class="section-description">
+                    ¿Tienes un proyecto en mente? Hablemos sobre cómo podemos ayudarte a crear tecnología sostenible
+                </p>
+            </div>
+
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">Envíanos un mensaje</h3>
+                    <p style="color: var(--color-muted); margin-bottom: 1.5rem;">
+                        Completa el formulario y nos pondremos en contacto contigo
+                    </p>
+
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <input type="text" id="name" class="form-input" placeholder="Tu nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" class="form-input" placeholder="Tu email" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" class="form-textarea" placeholder="Tu mensaje" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            Enviar Mensaje
+                        </button>
+                    </form>
+                </div>
+
+                <div>
+                    <div class="contact-card contact-info-card">
+                        <div class="contact-icon">📍</div>
+                        <div class="contact-info">
+                            <h3>Ubicación</h3>
+                            <p>
+                                Corozal, Sucre<br>
+                                Colombia
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="contact-card contact-info-card">
+                        <div class="contact-icon">✉️</div>
+                        <div class="contact-info">
+                            <h3>Email</h3>
+                            <p>contacto@greencode.com</p>
+                        </div>
+                    </div>
+
+                    <div class="contact-card contact-info-card">
+                        <div class="contact-icon">📞</div>
+                        <div class="contact-info">
+                            <h3>Institución</h3>
+                            <p>
+                                SENA - Escuela Normal Superior de Corozal<br>
+                                Programa Técnico en Programación de Software
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-brand">
+                        <img src="Logo-Sin fondo.png" alt="GreenCode Logo">
+                        <span class="logo-text">GreenCode S.A.S.</span>
+                    </div>
+                    <p style="color: var(--color-muted); font-size: 0.875rem;">
+                        Desarrollando tecnología sostenible para un futuro más verde y responsable.
+                    </p>
+                </div>
+
+                <div>
+                    <h3 style="font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                        🌿 Nuestros Valores
+                    </h3>
+                    <ul class="footer-list">
+                        <li>✓ Sostenibilidad</li>
+                        <li>✓ Innovación responsable</li>
+                        <li>✓ Eficiencia energética</li>
+                        <li>✓ Código limpio</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 style="font-weight: 600; margin-bottom: 1rem;">Proyecto SENATIC</h3>
+                    <p style="color: var(--color-muted); font-size: 0.875rem;">
+                        Programa Técnico en Programación de Software en articulación con la media técnica.
+                        <br><br>
+                        SENA - Organización Internacional del Trabajo - MinTIC
+                    </p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>© 2025 GreenCode S.A.S. - Corozal, Sucre, Colombia</p>
+                <p style="margin-top: 0.5rem;">Proyecto desarrollado por estudiantes del SENA</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', function() {
+            const header = document.getElementById('header');
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobileMenu');
+            const menuToggle = document.getElementById('menuToggle');
+            mobileMenu.classList.toggle('active');
+            menuToggle.textContent = mobileMenu.classList.contains('active') ? '✕' : '☰';
+        }
+
+        // Smooth scroll to section
+        function scrollToSection(event, id) {
+            event.preventDefault();
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                // Close mobile menu if open
+                const mobileMenu = document.getElementById('mobileMenu');
+                const menuToggle = document.getElementById('menuToggle');
+                mobileMenu.classList.remove('active');
+                menuToggle.textContent = '☰';
+            }
+        }
+
+        // Contact form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                message: document.getElementById('message').value,
+                date: new Date().toISOString()
+            };
+
+            // Get existing messages from localStorage
+            let messages = JSON.parse(localStorage.getItem('greencode-messages') || '[]');
+            messages.push(formData);
+            localStorage.setItem('greencode-messages', JSON.stringify(messages));
+
+            // Show toast notification
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+
+            // Reset form
+            this.reset();
+        });
+
+        // Add fade-in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeIn 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all sections
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>

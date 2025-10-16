@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enlace Digital S.A.S. - MVP Estilizado</title>
+    <style>
+        /* Paleta de colores:
+           --color-primary: #1e88e5; (Azul Vibrante)
+           --color-secondary: #00acc1; (Cyan/Verde Azulado)
+           --color-text: #263238; (Gris Oscuro)
+           --color-bg: #f5f7fa; (Fondo Claro)
+        */
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-bg, #f5f7fa);
+            color: var(--color-text, #263238);
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1e88e5 0%, #00acc1 100%);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        header p {
+            margin-top: 5px;
+            font-style: italic;
+            opacity: 0.9;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 40px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+
+        .card {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+            flex: 1 1 300px;
+            min-width: 280px;
+            border-top: 5px solid var(--color-primary, #1e88e5);
+        }
+        
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card.wide {
+            flex: 1 1 100%;
+            border-top: 5px solid var(--color-secondary, #00acc1);
+        }
+
+        .card h2 {
+            color: var(--color-primary, #1e88e5);
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+            margin-top: 0;
+            font-size: 1.5em;
+            font-weight: 600;
+        }
+
+        /* Estilos de Formulario */
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: 600;
+            color: #455a64;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 1px solid #cfd8dc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--color-primary, #1e88e5);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(30, 136, 229, 0.2);
+        }
+
+        /* Estilos de Botones */
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 25px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        
+        button:active {
+            transform: scale(0.99);
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary, #1e88e5);
+        }
+
+        .btn-primary:hover {
+            background-color: #1565c0; /* Azul más oscuro */
+        }
+        
+        .btn-secondary {
+            background-color: var(--color-secondary, #00acc1);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #008998; /* Cyan más oscuro */
+        }
+
+        /* Dashboard */
+        #resumen-data {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        #resumen-data div {
+            flex-grow: 1;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #e3f2fd; /* Azul muy claro */
+            color: var(--color-text, #263238);
+            font-size: 1.1em;
+            font-weight: 500;
+            text-align: center;
+            border: 1px solid #bbdefb;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        #resumen-data span {
+            display: block;
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--color-primary, #1e88e5);
+            margin-top: 5px;
+        }
+        
+        /* Mensajes */
+        .msg-success { color: #388e3c; font-weight: bold; margin-top: 15px; }
+        .msg-error { color: #d32f2f; font-weight: bold; margin-top: 15px; }
+
+        /* Estilos de la tabla de carrito */
+        #carrito-tabla {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #carrito-tabla th, #carrito-tabla td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eceff1;
+        }
+        
+        #carrito-tabla th {
+            background-color: var(--color-primary, #1e88e5);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.9em;
+        }
+
+        #carrito-tabla tr:nth-child(even) {
+            background-color: #fcfcfc;
+        }
+
+        #carrito-tabla tr:hover {
+            background-color: #f0f0f0;
+        }
+
+        #total-carrito {
+            font-weight: 700;
+            font-size: 1.2em;
+            text-align: right;
+            padding: 15px 12px;
+            background-color: #e0f7fa; /* Fondo del total */
+            color: var(--color-text);
+        }
+        
+        #monto-total-venta {
+            font-size: 1.3em;
+            font-weight: 800;
+            color: #d32f2f; /* Destacar el monto total */
+            background-color: #e0f7fa;
+            padding: 15px 12px;
+        }
+        
+        /* Pequeño ajuste para la lista de productos disponibles en el select */
+        #venta-producto option {
+            color: var(--color-text);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>ENLACE DIGITAL S.A.S.</h1>
+        <p>"Conectamos negocios con soluciones digitales y crecimiento."</p>
+        <p>MVP: Sistema de Gestión con Punto de Venta (Simulación)</p>
+    </header>
+
+    <div class="container">
+        <div class="card wide">
+            <h2>1. Panel de Control Digital</h2>
+            <div id="resumen-data">
+                <div>
+                    Productos Únicos Registrados: 
+                    <span id="total-productos">0</span>
+                </div>
+                <div>
+                    Transacciones de Venta: 
+                    <span id="total-ventas">0</span>
+                </div>
+                <div>
+                    Ganancia Total Estimada: 
+                    <span id="ganancia-estimada">$0 COP</span>
+                </div>
+            </div>
+            <p class="msg-success" style="color: #1e88e5;">"Con Enlace Digital, mantén tu negocio bajo control total."</p>
+        </div>
+
+        <div class="card">
+            <h2>2. Gestión de Inventario</h2>
+            <form id="form-inventario">
+                <label for="producto-nombre">Nombre del Producto</label>
+                <input type="text" id="producto-nombre" required>
+
+                <label for="producto-stock">Stock Inicial</label>
+                <input type="number" id="producto-stock" value="10" min="1" required>
+
+                <label for="producto-precio">Precio de Venta (COP)</label>
+                <input type="number" id="producto-precio" value="10000" min="100" required>
+
+                <button type="submit" class="btn-primary">➕ Registrar Producto</button>
+            </form>
+            <p id="mensaje-inventario" class="msg-success"></p>
+        </div>
+
+        <div class="card" style="flex: 2 1 600px;">
+            <h2>3. Punto de Venta (Tiquete de Venta)</h2>
+            
+            <form id="form-add-item">
+                <label for="venta-producto">Seleccionar Producto</label>
+                <select id="venta-producto" required>
+                    <option value="">-- No hay productos --</option>
+                </select>
+
+                <label for="venta-cantidad">Cantidad a Vender</label>
+                <input type="number" id="venta-cantidad" value="1" min="1" required>
+                
+                <button type="submit" class="btn-secondary">🛒 Agregar al Carrito</button>
+                <p id="mensaje-add-item" class="msg-error" style="color: #00acc1;"></p>
+            </form>
+
+            <h3 style="color: var(--color-text); margin-top: 30px; border-top: 1px dashed #cfd8dc; padding-top: 20px;">Detalle de la Transacción</h3>
+            <table id="carrito-tabla">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cant.</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody id="carrito-items">
+                    </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" id="total-carrito">TOTAL A PAGAR:</td>
+                        <td id="monto-total-venta">$0 COP</td>
+                    </tr>
+                </tfoot>
+            </table>
+            
+            <form id="form-finalizar-venta">
+                <label for="cliente-nombre">Cliente (Opcional)</label>
+                <input type="text" id="cliente-nombre" placeholder="Nombre del cliente para el CRM">
+
+                <button type="submit" class="btn-primary">💰 Finalizar Venta</button>
+            </form>
+            <p id="mensaje-ventas" class="msg-success"></p>
+        </div>
+    </div>
+
+    <script>
+        let inventario = {};
+        let carrito = {}; 
+        let totalVentas = 0;
+        let gananciaTotal = 0;
+
+        const totalProductosEl = document.getElementById('total-productos');
+        const totalVentasEl = document.getElementById('total-ventas');
+        const gananciaEstimadaEl = document.getElementById('ganancia-estimada');
+        const selectVentaEl = document.getElementById('venta-producto');
+        const mensajeInventarioEl = document.getElementById('mensaje-inventario');
+        const mensajeVentasEl = document.getElementById('mensaje-ventas');
+        const carritoItemsEl = document.getElementById('carrito-items');
+        const montoTotalVentaEl = document.getElementById('monto-total-venta');
+        const mensajeAddItemEl = document.getElementById('mensaje-add-item');
+        const btnFinalizar = document.querySelector('#form-finalizar-venta button');
+
+
+        // Función para actualizar la interfaz (select y dashboard)
+        function actualizarInterfaz() {
+            // Actualizar Dashboard
+            totalProductosEl.textContent = Object.keys(inventario).length;
+            totalVentasEl.textContent = totalVentas;
+            gananciaEstimadaEl.textContent = `$${gananciaTotal.toLocaleString('es-CO')}`;
+
+            // Actualizar Selector de Ventas
+            selectVentaEl.innerHTML = '<option value="">-- Seleccionar Producto --</option>';
+            for (const nombre in inventario) {
+                const stockDisponible = inventario[nombre].stock - (carrito[nombre] ? carrito[nombre].cantidad : 0);
+
+                if (stockDisponible > 0) {
+                    const option = document.createElement('option');
+                    option.value = nombre;
+                    option.textContent = `${nombre} (Disp: ${stockDisponible} | $${inventario[nombre].precio.toLocaleString('es-CO')})`;
+                    selectVentaEl.appendChild(option);
+                }
+            }
+        }
+
+        // Función para renderizar el carrito
+        function renderizarCarrito() {
+            carritoItemsEl.innerHTML = '';
+            let totalVentaActual = 0;
+
+            for (const nombre in carrito) {
+                const item = carrito[nombre];
+                const subtotal = item.cantidad * item.precio;
+                totalVentaActual += subtotal;
+
+                const fila = document.createElement('tr');
+                fila.innerHTML = `
+                    <td>${nombre}</td>
+                    <td>${item.cantidad}</td>
+                    <td>$${item.precio.toLocaleString('es-CO')}</td>
+                    <td>$${subtotal.toLocaleString('es-CO')}</td>
+                `;
+                carritoItemsEl.appendChild(fila);
+            }
+
+            montoTotalVentaEl.textContent = `$${totalVentaActual.toLocaleString('es-CO')} COP`;
+
+            // Habilitar/Deshabilitar el botón de finalizar venta
+            btnFinalizar.disabled = totalVentaActual === 0;
+            btnFinalizar.textContent = totalVentaActual === 0 ? '❌ Carrito Vacío' : '💰 Finalizar Venta';
+        }
+
+
+        // 1. REGISTRO DE INVENTARIO
+        document.getElementById('form-inventario').addEventListener('submit', function(e) {
+            e.preventDefault();
+            mensajeInventarioEl.className = 'msg-success'; // Resetear clase
+            
+            const nombre = document.getElementById('producto-nombre').value.trim();
+            const stock = parseInt(document.getElementById('producto-stock').value);
+            const precio = parseInt(document.getElementById('producto-precio').value);
+
+            if (inventario[nombre]) {
+                mensajeInventarioEl.textContent = `⚠️ Producto "${nombre}" ya existe. El stock disponible es ${inventario[nombre].stock}.`;
+                mensajeInventarioEl.className = 'msg-error';
+                return;
+            }
+
+            inventario[nombre] = { stock: stock, precio: precio };
+            mensajeInventarioEl.textContent = `✅ Producto "${nombre}" registrado con ${stock} unidades.`;
+            document.getElementById('form-inventario').reset(); 
+            
+            actualizarInterfaz();
+        });
+
+
+        // 2. AGREGAR ITEM AL CARRITO
+        document.getElementById('form-add-item').addEventListener('submit', function(e) {
+            e.preventDefault();
+            mensajeAddItemEl.className = 'msg-error'; // Por defecto, si hay un error
+            mensajeAddItemEl.textContent = '';
+            const nombreProducto = selectVentaEl.value;
+            const cantidad = parseInt(document.getElementById('venta-cantidad').value);
+
+            if (!nombreProducto) {
+                mensajeAddItemEl.textContent = '⚠️ Selecciona un producto.';
+                return;
+            }
+
+            const stockDisponible = inventario[nombreProducto].stock;
+            const cantidadEnCarrito = carrito[nombreProducto] ? carrito[nombreProducto].cantidad : 0;
+            const cantidadSolicitada = cantidad;
+            
+            if ((cantidadEnCarrito + cantidadSolicitada) > stockDisponible) {
+                mensajeAddItemEl.textContent = `❌ Stock insuficiente. Solo quedan ${stockDisponible - cantidadEnCarrito} unidades disponibles.`;
+                return;
+            }
+            
+            // Agregar/actualizar en el carrito
+            if (carrito[nombreProducto]) {
+                carrito[nombreProducto].cantidad += cantidadSolicitada;
+            } else {
+                carrito[nombreProducto] = { 
+                    nombre: nombreProducto,
+                    cantidad: cantidadSolicitada,
+                    precio: inventario[nombreProducto].precio 
+                };
+            }
+
+            mensajeAddItemEl.textContent = `✅ ${cantidadSolicitada} x "${nombreProducto}" agregado(s) al carrito.`;
+            mensajeAddItemEl.className = 'msg-success';
+            document.getElementById('form-add-item').reset();
+            renderizarCarrito();
+            actualizarInterfaz(); // Actualiza el select mostrando el stock restante
+        });
+
+
+        // 3. FINALIZAR VENTA (Procesar el carrito)
+        document.getElementById('form-finalizar-venta').addEventListener('submit', function(e) {
+            e.preventDefault();
+            mensajeVentasEl.className = 'msg-success'; // Resetear clase
+
+            const itemsEnCarrito = Object.keys(carrito).length;
+
+            if (itemsEnCarrito === 0) {
+                mensajeVentasEl.textContent = '⚠️ El carrito está vacío. Agrega productos primero.';
+                mensajeVentasEl.className = 'msg-error';
+                return;
+            }
+
+            let montoVenta = 0;
+            
+            // 1. Actualizar el inventario y calcular el total
+            for (const nombre in carrito) {
+                const item = carrito[nombre];
+                inventario[nombre].stock -= item.cantidad; // Reducir el stock real
+                montoVenta += item.cantidad * item.precio;
+            }
+
+            gananciaTotal += montoVenta;
+            totalVentas += 1; // Contar la transacción
+
+            mensajeVentasEl.textContent = `✅ Venta N° ${totalVentas} de $${montoVenta.toLocaleString('es-CO')} finalizada. ¡Stock actualizado!`;
+            
+            // 2. Limpiar carrito
+            carrito = {};
+            document.getElementById('form-finalizar-venta').reset();
+            
+            // 3. Actualizar la interfaz
+            renderizarCarrito();
+            actualizarInterfaz();
+        });
+
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', () => {
+             // Cargar productos de ejemplo
+             inventario['Servicio de Consultoría'] = { stock: 100, precio: 50000 };
+             inventario['Licencia Básica SaaS'] = { stock: 50, precio: 80000 };
+             inventario['Mantenimiento Anual'] = { stock: 20, precio: 150000 };
+             actualizarInterfaz();
+             renderizarCarrito();
+             mensajeInventarioEl.textContent = `Productos de ejemplo cargados.`;
+        });
+    </script>
+
+</body>
+</html>

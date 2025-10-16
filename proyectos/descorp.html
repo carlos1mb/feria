@@ -1,0 +1,1475 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DESCORP S.A.S. - Sistema de Control de Acceso</title>
+    <style>
+        :root {
+            --primary-dark: #1a365d; /* Azul oscuro */
+            --primary-light: #2d7d9a; /* Azul medio */
+            --accent: #9ae6b4; /* Verde lima */
+            --neutral: #718096; /* Gris neutro */
+            --light: #f7fafc; /* Blanco */
+            --danger: #e53e3e; /* Rojo para alertas */
+            --success: #38a169; /* Verde para éxito */
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background-color: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+            font-weight: bold;
+            font-size: 24px;
+        }
+        
+        .logo-text h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+        
+        .logo-text p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        nav a:hover, nav a.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .hero {
+            background-color: var(--light);
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 0 0 10px 10px;
+        }
+        
+        .hero h2 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            font-size: 32px;
+        }
+        
+        .hero p {
+            color: var(--neutral);
+            max-width: 800px;
+            margin: 0 auto 20px;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent);
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-light);
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--neutral);
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        
+        .tab.active {
+            border-bottom-color: var(--accent);
+            color: var(--primary-dark);
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background-color: var(--light);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-light);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+        
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 14px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--primary-dark);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--neutral);
+        }
+        
+        footer {
+            background-color: var(--primary-dark);
+            color: white;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+        
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 15px;
+            color: var(--accent);
+        }
+        
+        .footer-section p, .footer-section a {
+            color: #cbd5e0;
+            margin-bottom: 10px;
+            display: block;
+            text-decoration: none;
+        }
+        
+        .footer-section a:hover {
+            color: white;
+        }
+        
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #2d3748;
+            color: #a0aec0;
+        }
+        
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background-color: #c6f6d5;
+            color: #22543d;
+        }
+        
+        .status-inactive {
+            background-color: #fed7d7;
+            color: #742a2a;
+        }
+        
+        .status-pending {
+            background-color: #feebcb;
+            color: #744210;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .mobile-menu {
+                display: none;
+                width: 100%;
+                margin-top: 15px;
+            }
+            
+            .mobile-menu.active {
+                display: block;
+            }
+            
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">D</div>
+                    <div class="logo-text">
+                        <h1>DESCORP S.A.S.</h1>
+                        <p>Seguridad que genera confianza</p>
+                    </div>
+                </div>
+                <button class="mobile-menu-btn">☰</button>
+                <nav class="mobile-menu">
+                    <ul>
+                        <li><a href="#" class="active">Inicio</a></li>
+                        <li><a href="#control-acceso">Control de Acceso</a></li>
+                        <li><a href="#registros">Registros</a></li>
+                        <li><a href="#reportes">Reportes</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h2>Sistema de Control de Acceso Educativo</h2>
+            <p>Plataforma integral para la gestión de seguridad y control de acceso en instituciones educativas. Registra, monitorea y gestiona en tiempo real las entradas, salidas, permisos y visitas.</p>
+            <button class="btn btn-primary" id="registrarAccesoBtn">Registrar Acceso</button>
+        </div>
+    </section>
+
+    <div class="container">
+        <div class="dashboard">
+            <div class="card">
+                <h3>Resumen de Hoy</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value" id="totalEntradas">0</div>
+                        <div class="stat-label">Entradas</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="totalSalidas">0</div>
+                        <div class="stat-label">Salidas</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="totalVisitantes">0</div>
+                        <div class="stat-label">Visitantes</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Alertas Recientes</h3>
+                <ul id="alertasList">
+                    <li>No hay alertas recientes</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Actividad en Tiempo Real</h3>
+                <div id="actividadTiempoReal">
+                    <p>No hay actividad reciente</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab active" data-tab="estudiantes">Estudiantes</div>
+            <div class="tab" data-tab="docentes">Docentes</div>
+            <div class="tab" data-tab="visitantes">Visitantes</div>
+            <div class="tab" data-tab="permisos">Permisos</div>
+        </div>
+
+        <div class="tab-content active" id="estudiantes">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>Gestión de Estudiantes</h3>
+                    <button class="btn btn-primary" id="agregarEstudianteBtn">Agregar Estudiante</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Grado</th>
+                            <th>Estado</th>
+                            <th>Último Acceso</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaEstudiantes">
+                        <!-- Los datos se cargarán con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="docentes">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>Gestión de Docentes</h3>
+                    <button class="btn btn-primary" id="agregarDocenteBtn">Agregar Docente</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Área</th>
+                            <th>Estado</th>
+                            <th>Último Acceso</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaDocentes">
+                        <!-- Los datos se cargarán con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="visitantes">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>Gestión de Visitantes</h3>
+                    <button class="btn btn-primary" id="agregarVisitanteBtn">Agregar Visitante</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Documento</th>
+                            <th>Motivo</th>
+                            <th>Fecha/Hora</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaVisitantes">
+                        <!-- Los datos se cargarán con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="permisos">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                    <h3>Gestión de Permisos</h3>
+                    <button class="btn btn-primary" id="agregarPermisoBtn">Agregar Permiso</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Estudiante</th>
+                            <th>Tipo</th>
+                            <th>Fecha/Hora</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaPermisos">
+                        <!-- Los datos se cargarán con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para registrar acceso -->
+    <div class="modal" id="modalAcceso">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Registrar Acceso</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="formAcceso">
+                <div class="form-group">
+                    <label for="tipoPersona">Tipo de Persona</label>
+                    <select id="tipoPersona" required>
+                        <option value="">Seleccione...</option>
+                        <option value="estudiante">Estudiante</option>
+                        <option value="docente">Docente</option>
+                        <option value="visitante">Visitante</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="personaId">Persona</label>
+                    <select id="personaId" required>
+                        <option value="">Seleccione...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tipoAcceso">Tipo de Acceso</label>
+                    <select id="tipoAcceso" required>
+                        <option value="entrada">Entrada</option>
+                        <option value="salida">Salida</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Registrar Acceso</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para agregar estudiante -->
+    <div class="modal" id="modalEstudiante">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tituloModalEstudiante">Agregar Estudiante</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="formEstudiante">
+                <input type="hidden" id="estudianteId">
+                <div class="form-group">
+                    <label for="nombreEstudiante">Nombre Completo</label>
+                    <input type="text" id="nombreEstudiante" required>
+                </div>
+                <div class="form-group">
+                    <label for="documentoEstudiante">Documento</label>
+                    <input type="text" id="documentoEstudiante" required>
+                </div>
+                <div class="form-group">
+                    <label for="gradoEstudiante">Grado</label>
+                    <input type="text" id="gradoEstudiante" required>
+                </div>
+                <div class="form-group">
+                    <label for="estadoEstudiante">Estado</label>
+                    <select id="estadoEstudiante" required>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para agregar docente -->
+    <div class="modal" id="modalDocente">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tituloModalDocente">Agregar Docente</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="formDocente">
+                <input type="hidden" id="docenteId">
+                <div class="form-group">
+                    <label for="nombreDocente">Nombre Completo</label>
+                    <input type="text" id="nombreDocente" required>
+                </div>
+                <div class="form-group">
+                    <label for="documentoDocente">Documento</label>
+                    <input type="text" id="documentoDocente" required>
+                </div>
+                <div class="form-group">
+                    <label for="areaDocente">Área</label>
+                    <input type="text" id="areaDocente" required>
+                </div>
+                <div class="form-group">
+                    <label for="estadoDocente">Estado</label>
+                    <select id="estadoDocente" required>
+                        <option value="activo">Activo</option>
+                        <option value="inactivo">Inactivo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para agregar visitante -->
+    <div class="modal" id="modalVisitante">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tituloModalVisitante">Agregar Visitante</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="formVisitante">
+                <input type="hidden" id="visitanteId">
+                <div class="form-group">
+                    <label for="nombreVisitante">Nombre Completo</label>
+                    <input type="text" id="nombreVisitante" required>
+                </div>
+                <div class="form-group">
+                    <label for="documentoVisitante">Documento</label>
+                    <input type="text" id="documentoVisitante" required>
+                </div>
+                <div class="form-group">
+                    <label for="motivoVisitante">Motivo de Visita</label>
+                    <input type="text" id="motivoVisitante" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para agregar permiso -->
+    <div class="modal" id="modalPermiso">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tituloModalPermiso">Agregar Permiso</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <form id="formPermiso">
+                <input type="hidden" id="permisoId">
+                <div class="form-group">
+                    <label for="estudiantePermiso">Estudiante</label>
+                    <select id="estudiantePermiso" required>
+                        <option value="">Seleccione un estudiante</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="tipoPermiso">Tipo de Permiso</label>
+                    <select id="tipoPermiso" required>
+                        <option value="salida_temprana">Salida Temprana</option>
+                        <option value="entrada_tardia">Entrada Tardía</option>
+                        <option value="ausencia_justificada">Ausencia Justificada</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="fechaPermiso">Fecha y Hora</label>
+                    <input type="datetime-local" id="fechaPermiso" required>
+                </div>
+                <div class="form-group">
+                    <label for="estadoPermiso">Estado</label>
+                    <select id="estadoPermiso" required>
+                        <option value="pendiente">Pendiente</option>
+                        <option value="aprobado">Aprobado</option>
+                        <option value="rechazado">Rechazado</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DESCORP S.A.S.</h3>
+                    <p>Desarrollo de Software de Control y Registro de Personas</p>
+                    <p>Seguridad que genera confianza</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <p>Corozal, Sucre - Colombia</p>
+                    <p>Email: info@descorp.co</p>
+                    <p>Tel: +57 300 123 4567</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces</h3>
+                    <a href="#">Inicio</a>
+                    <a href="#control-acceso">Control de Acceso</a>
+                    <a href="#registros">Registros</a>
+                    <a href="#reportes">Reportes</a>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 DESCORP S.A.S. - Todos los derechos reservados</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Datos de ejemplo para la demostración
+        let estudiantes = [
+            { id: 1, nombre: "Ana García Pérez", documento: "1001234567", grado: "10A", estado: "activo", ultimoAcceso: "2025-03-15 07:45" },
+            { id: 2, nombre: "Carlos López Martínez", documento: "1002345678", grado: "9B", estado: "activo", ultimoAcceso: "2025-03-15 07:50" },
+            { id: 3, nombre: "María Rodríguez Silva", documento: "1003456789", grado: "11C", estado: "inactivo", ultimoAcceso: "2025-03-14 12:30" }
+        ];
+
+        let docentes = [
+            { id: 1, nombre: "Prof. Laura Méndez", documento: "2001234567", area: "Matemáticas", estado: "activo", ultimoAcceso: "2025-03-15 07:30" },
+            { id: 2, nombre: "Prof. Javier Rojas", documento: "2002345678", area: "Ciencias", estado: "activo", ultimoAcceso: "2025-03-15 07:35" },
+            { id: 3, nombre: "Prof. Sandra Vega", documento: "2003456789", area: "Humanidades", estado: "inactivo", ultimoAcceso: "2025-03-14 16:00" }
+        ];
+
+        let visitantes = [
+            { id: 1, nombre: "Pedro Sánchez", documento: "3001234567", motivo: "Reunión con dirección", fechaHora: "2025-03-15 09:00" },
+            { id: 2, nombre: "Lucía Fernández", documento: "3002345678", motivo: "Entrega de material", fechaHora: "2025-03-15 10:30" }
+        ];
+
+        let permisos = [
+            { id: 1, estudianteId: 1, estudianteNombre: "Ana García Pérez", tipo: "salida_temprana", fechaHora: "2025-03-15 12:00", estado: "aprobado" },
+            { id: 2, estudianteId: 2, estudianteNombre: "Carlos López Martínez", tipo: "entrada_tardia", fechaHora: "2025-03-15 09:30", estado: "pendiente" }
+        ];
+
+        let registrosAcceso = [
+            { id: 1, personaId: 1, personaNombre: "Ana García Pérez", tipoPersona: "estudiante", tipoAcceso: "entrada", fechaHora: "2025-03-15 07:45" },
+            { id: 2, personaId: 2, personaNombre: "Carlos López Martínez", tipoPersona: "estudiante", tipoAcceso: "entrada", fechaHora: "2025-03-15 07:50" },
+            { id: 3, personaId: 1, personaNombre: "Prof. Laura Méndez", tipoPersona: "docente", tipoAcceso: "entrada", fechaHora: "2025-03-15 07:30" }
+        ];
+
+        // Funciones para manejar los tabs
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remover clase active de todos los tabs y contenidos
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Agregar clase active al tab clickeado y su contenido correspondiente
+                tab.classList.add('active');
+                const tabId = tab.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // Funciones para mostrar/ocultar modales
+        function mostrarModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function ocultarModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Event listeners para los botones de abrir modales
+        document.getElementById('registrarAccesoBtn').addEventListener('click', () => {
+            llenarSelectPersonas();
+            mostrarModal('modalAcceso');
+        });
+
+        document.getElementById('agregarEstudianteBtn').addEventListener('click', () => {
+            document.getElementById('tituloModalEstudiante').textContent = 'Agregar Estudiante';
+            document.getElementById('formEstudiante').reset();
+            document.getElementById('estudianteId').value = '';
+            mostrarModal('modalEstudiante');
+        });
+
+        document.getElementById('agregarDocenteBtn').addEventListener('click', () => {
+            document.getElementById('tituloModalDocente').textContent = 'Agregar Docente';
+            document.getElementById('formDocente').reset();
+            document.getElementById('docenteId').value = '';
+            mostrarModal('modalDocente');
+        });
+
+        document.getElementById('agregarVisitanteBtn').addEventListener('click', () => {
+            document.getElementById('tituloModalVisitante').textContent = 'Agregar Visitante';
+            document.getElementById('formVisitante').reset();
+            document.getElementById('visitanteId').value = '';
+            mostrarModal('modalVisitante');
+        });
+
+        document.getElementById('agregarPermisoBtn').addEventListener('click', () => {
+            document.getElementById('tituloModalPermiso').textContent = 'Agregar Permiso';
+            document.getElementById('formPermiso').reset();
+            document.getElementById('permisoId').value = '';
+            llenarSelectEstudiantesPermiso();
+            mostrarModal('modalPermiso');
+        });
+
+        // Event listeners para cerrar modales
+        document.querySelectorAll('.close-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const modal = this.closest('.modal');
+                ocultarModal(modal.id);
+            });
+        });
+
+        // Cerrar modal al hacer clic fuera del contenido
+        window.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                ocultarModal(e.target.id);
+            }
+        });
+
+        // Funciones para llenar selects
+        function llenarSelectPersonas() {
+            const selectPersona = document.getElementById('personaId');
+            const tipoPersona = document.getElementById('tipoPersona').value;
+            
+            // Limpiar opciones actuales
+            selectPersona.innerHTML = '<option value="">Seleccione...</option>';
+            
+            if (tipoPersona === 'estudiante') {
+                estudiantes.forEach(est => {
+                    if (est.estado === 'activo') {
+                        const option = document.createElement('option');
+                        option.value = est.id;
+                        option.textContent = est.nombre;
+                        selectPersona.appendChild(option);
+                    }
+                });
+            } else if (tipoPersona === 'docente') {
+                docentes.forEach(doc => {
+                    if (doc.estado === 'activo') {
+                        const option = document.createElement('option');
+                        option.value = doc.id;
+                        option.textContent = doc.nombre;
+                        selectPersona.appendChild(option);
+                    }
+                });
+            } else if (tipoPersona === 'visitante') {
+                visitantes.forEach(vis => {
+                    const option = document.createElement('option');
+                    option.value = vis.id;
+                    option.textContent = vis.nombre;
+                    selectPersona.appendChild(option);
+                });
+            }
+        }
+
+        function llenarSelectEstudiantesPermiso() {
+            const selectEstudiante = document.getElementById('estudiantePermiso');
+            
+            // Limpiar opciones actuales
+            selectEstudiante.innerHTML = '<option value="">Seleccione un estudiante</option>';
+            
+            estudiantes.forEach(est => {
+                if (est.estado === 'activo') {
+                    const option = document.createElement('option');
+                    option.value = est.id;
+                    option.textContent = est.nombre;
+                    selectEstudiante.appendChild(option);
+                }
+            });
+        }
+
+        // Event listener para cambiar tipo de persona en el modal de acceso
+        document.getElementById('tipoPersona').addEventListener('change', llenarSelectPersonas);
+
+        // Funciones para renderizar tablas
+        function renderizarTablaEstudiantes() {
+            const tbody = document.getElementById('tablaEstudiantes');
+            tbody.innerHTML = '';
+            
+            estudiantes.forEach(est => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${est.id}</td>
+                    <td>${est.nombre}</td>
+                    <td>${est.grado}</td>
+                    <td><span class="status-badge ${est.estado === 'activo' ? 'status-active' : 'status-inactive'}">${est.estado}</span></td>
+                    <td>${est.ultimoAcceso}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm editar-estudiante" data-id="${est.id}">Editar</button>
+                        <button class="btn btn-danger btn-sm eliminar-estudiante" data-id="${est.id}">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            // Agregar event listeners a los botones de editar y eliminar
+            document.querySelectorAll('.editar-estudiante').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    editarEstudiante(id);
+                });
+            });
+            
+            document.querySelectorAll('.eliminar-estudiante').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    eliminarEstudiante(id);
+                });
+            });
+        }
+
+        function renderizarTablaDocentes() {
+            const tbody = document.getElementById('tablaDocentes');
+            tbody.innerHTML = '';
+            
+            docentes.forEach(doc => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${doc.id}</td>
+                    <td>${doc.nombre}</td>
+                    <td>${doc.area}</td>
+                    <td><span class="status-badge ${doc.estado === 'activo' ? 'status-active' : 'status-inactive'}">${doc.estado}</span></td>
+                    <td>${doc.ultimoAcceso}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm editar-docente" data-id="${doc.id}">Editar</button>
+                        <button class="btn btn-danger btn-sm eliminar-docente" data-id="${doc.id}">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            // Agregar event listeners a los botones de editar y eliminar
+            document.querySelectorAll('.editar-docente').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    editarDocente(id);
+                });
+            });
+            
+            document.querySelectorAll('.eliminar-docente').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    eliminarDocente(id);
+                });
+            });
+        }
+
+        function renderizarTablaVisitantes() {
+            const tbody = document.getElementById('tablaVisitantes');
+            tbody.innerHTML = '';
+            
+            visitantes.forEach(vis => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${vis.id}</td>
+                    <td>${vis.nombre}</td>
+                    <td>${vis.documento}</td>
+                    <td>${vis.motivo}</td>
+                    <td>${vis.fechaHora}</td>
+                    <td>
+                        <button class="btn btn-primary btn-sm editar-visitante" data-id="${vis.id}">Editar</button>
+                        <button class="btn btn-danger btn-sm eliminar-visitante" data-id="${vis.id}">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            // Agregar event listeners a los botones de editar y eliminar
+            document.querySelectorAll('.editar-visitante').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    editarVisitante(id);
+                });
+            });
+            
+            document.querySelectorAll('.eliminar-visitante').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    eliminarVisitante(id);
+                });
+            });
+        }
+
+        function renderizarTablaPermisos() {
+            const tbody = document.getElementById('tablaPermisos');
+            tbody.innerHTML = '';
+            
+            permisos.forEach(perm => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${perm.id}</td>
+                    <td>${perm.estudianteNombre}</td>
+                    <td>${formatearTipoPermiso(perm.tipo)}</td>
+                    <td>${perm.fechaHora}</td>
+                    <td><span class="status-badge ${obtenerClaseEstadoPermiso(perm.estado)}">${perm.estado}</span></td>
+                    <td>
+                        <button class="btn btn-primary btn-sm editar-permiso" data-id="${perm.id}">Editar</button>
+                        <button class="btn btn-danger btn-sm eliminar-permiso" data-id="${perm.id}">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+            
+            // Agregar event listeners a los botones de editar y eliminar
+            document.querySelectorAll('.editar-permiso').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    editarPermiso(id);
+                });
+            });
+            
+            document.querySelectorAll('.eliminar-permiso').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    eliminarPermiso(id);
+                });
+            });
+        }
+
+        function formatearTipoPermiso(tipo) {
+            const tipos = {
+                'salida_temprana': 'Salida Temprana',
+                'entrada_tardia': 'Entrada Tardía',
+                'ausencia_justificada': 'Ausencia Justificada'
+            };
+            return tipos[tipo] || tipo;
+        }
+
+        function obtenerClaseEstadoPermiso(estado) {
+            const clases = {
+                'pendiente': 'status-pending',
+                'aprobado': 'status-active',
+                'rechazado': 'status-inactive'
+            };
+            return clases[estado] || 'status-pending';
+        }
+
+        // Funciones para editar registros
+        function editarEstudiante(id) {
+            const estudiante = estudiantes.find(est => est.id == id);
+            if (estudiante) {
+                document.getElementById('tituloModalEstudiante').textContent = 'Editar Estudiante';
+                document.getElementById('estudianteId').value = estudiante.id;
+                document.getElementById('nombreEstudiante').value = estudiante.nombre;
+                document.getElementById('documentoEstudiante').value = estudiante.documento;
+                document.getElementById('gradoEstudiante').value = estudiante.grado;
+                document.getElementById('estadoEstudiante').value = estudiante.estado;
+                mostrarModal('modalEstudiante');
+            }
+        }
+
+        function editarDocente(id) {
+            const docente = docentes.find(doc => doc.id == id);
+            if (docente) {
+                document.getElementById('tituloModalDocente').textContent = 'Editar Docente';
+                document.getElementById('docenteId').value = docente.id;
+                document.getElementById('nombreDocente').value = docente.nombre;
+                document.getElementById('documentoDocente').value = docente.documento;
+                document.getElementById('areaDocente').value = docente.area;
+                document.getElementById('estadoDocente').value = docente.estado;
+                mostrarModal('modalDocente');
+            }
+        }
+
+        function editarVisitante(id) {
+            const visitante = visitantes.find(vis => vis.id == id);
+            if (visitante) {
+                document.getElementById('tituloModalVisitante').textContent = 'Editar Visitante';
+                document.getElementById('visitanteId').value = visitante.id;
+                document.getElementById('nombreVisitante').value = visitante.nombre;
+                document.getElementById('documentoVisitante').value = visitante.documento;
+                document.getElementById('motivoVisitante').value = visitante.motivo;
+                mostrarModal('modalVisitante');
+            }
+        }
+
+        function editarPermiso(id) {
+            const permiso = permisos.find(perm => perm.id == id);
+            if (permiso) {
+                document.getElementById('tituloModalPermiso').textContent = 'Editar Permiso';
+                document.getElementById('permisoId').value = permiso.id;
+                document.getElementById('estudiantePermiso').value = permiso.estudianteId;
+                document.getElementById('tipoPermiso').value = permiso.tipo;
+                document.getElementById('fechaPermiso').value = permiso.fechaHora.replace(' ', 'T');
+                document.getElementById('estadoPermiso').value = permiso.estado;
+                mostrarModal('modalPermiso');
+            }
+        }
+
+        // Funciones para eliminar registros
+        function eliminarEstudiante(id) {
+            if (confirm('¿Está seguro de que desea eliminar este estudiante?')) {
+                estudiantes = estudiantes.filter(est => est.id != id);
+                renderizarTablaEstudiantes();
+                actualizarDashboard();
+            }
+        }
+
+        function eliminarDocente(id) {
+            if (confirm('¿Está seguro de que desea eliminar este docente?')) {
+                docentes = docentes.filter(doc => doc.id != id);
+                renderizarTablaDocentes();
+                actualizarDashboard();
+            }
+        }
+
+        function eliminarVisitante(id) {
+            if (confirm('¿Está seguro de que desea eliminar este visitante?')) {
+                visitantes = visitantes.filter(vis => vis.id != id);
+                renderizarTablaVisitantes();
+                actualizarDashboard();
+            }
+        }
+
+        function eliminarPermiso(id) {
+            if (confirm('¿Está seguro de que desea eliminar este permiso?')) {
+                permisos = permisos.filter(perm => perm.id != id);
+                renderizarTablaPermisos();
+                actualizarDashboard();
+            }
+        }
+
+        // Funciones para manejar formularios
+        document.getElementById('formEstudiante').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('estudianteId').value;
+            const nombre = document.getElementById('nombreEstudiante').value;
+            const documento = document.getElementById('documentoEstudiante').value;
+            const grado = document.getElementById('gradoEstudiante').value;
+            const estado = document.getElementById('estadoEstudiante').value;
+            
+            if (id) {
+                // Editar estudiante existente
+                const index = estudiantes.findIndex(est => est.id == id);
+                if (index !== -1) {
+                    estudiantes[index].nombre = nombre;
+                    estudiantes[index].documento = documento;
+                    estudiantes[index].grado = grado;
+                    estudiantes[index].estado = estado;
+                }
+            } else {
+                // Agregar nuevo estudiante
+                const nuevoId = estudiantes.length > 0 ? Math.max(...estudiantes.map(est => est.id)) + 1 : 1;
+                estudiantes.push({
+                    id: nuevoId,
+                    nombre,
+                    documento,
+                    grado,
+                    estado,
+                    ultimoAcceso: 'N/A'
+                });
+            }
+            
+            renderizarTablaEstudiantes();
+            ocultarModal('modalEstudiante');
+            actualizarDashboard();
+        });
+
+        document.getElementById('formDocente').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('docenteId').value;
+            const nombre = document.getElementById('nombreDocente').value;
+            const documento = document.getElementById('documentoDocente').value;
+            const area = document.getElementById('areaDocente').value;
+            const estado = document.getElementById('estadoDocente').value;
+            
+            if (id) {
+                // Editar docente existente
+                const index = docentes.findIndex(doc => doc.id == id);
+                if (index !== -1) {
+                    docentes[index].nombre = nombre;
+                    docentes[index].documento = documento;
+                    docentes[index].area = area;
+                    docentes[index].estado = estado;
+                }
+            } else {
+                // Agregar nuevo docente
+                const nuevoId = docentes.length > 0 ? Math.max(...docentes.map(doc => doc.id)) + 1 : 1;
+                docentes.push({
+                    id: nuevoId,
+                    nombre,
+                    documento,
+                    area,
+                    estado,
+                    ultimoAcceso: 'N/A'
+                });
+            }
+            
+            renderizarTablaDocentes();
+            ocultarModal('modalDocente');
+            actualizarDashboard();
+        });
+
+        document.getElementById('formVisitante').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('visitanteId').value;
+            const nombre = document.getElementById('nombreVisitante').value;
+            const documento = document.getElementById('documentoVisitante').value;
+            const motivo = document.getElementById('motivoVisitante').value;
+            
+            if (id) {
+                // Editar visitante existente
+                const index = visitantes.findIndex(vis => vis.id == id);
+                if (index !== -1) {
+                    visitantes[index].nombre = nombre;
+                    visitantes[index].documento = documento;
+                    visitantes[index].motivo = motivo;
+                }
+            } else {
+                // Agregar nuevo visitante
+                const nuevoId = visitantes.length > 0 ? Math.max(...visitantes.map(vis => vis.id)) + 1 : 1;
+                visitantes.push({
+                    id: nuevoId,
+                    nombre,
+                    documento,
+                    motivo,
+                    fechaHora: new Date().toISOString().slice(0, 16).replace('T', ' ')
+                });
+            }
+            
+            renderizarTablaVisitantes();
+            ocultarModal('modalVisitante');
+            actualizarDashboard();
+        });
+
+        document.getElementById('formPermiso').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = document.getElementById('permisoId').value;
+            const estudianteId = document.getElementById('estudiantePermiso').value;
+            const tipo = document.getElementById('tipoPermiso').value;
+            const fechaHora = document.getElementById('fechaPermiso').value.replace('T', ' ');
+            const estado = document.getElementById('estadoPermiso').value;
+            
+            const estudiante = estudiantes.find(est => est.id == estudianteId);
+            const estudianteNombre = estudiante ? estudiante.nombre : '';
+            
+            if (id) {
+                // Editar permiso existente
+                const index = permisos.findIndex(perm => perm.id == id);
+                if (index !== -1) {
+                    permisos[index].estudianteId = estudianteId;
+                    permisos[index].estudianteNombre = estudianteNombre;
+                    permisos[index].tipo = tipo;
+                    permisos[index].fechaHora = fechaHora;
+                    permisos[index].estado = estado;
+                }
+            } else {
+                // Agregar nuevo permiso
+                const nuevoId = permisos.length > 0 ? Math.max(...permisos.map(perm => perm.id)) + 1 : 1;
+                permisos.push({
+                    id: nuevoId,
+                    estudianteId,
+                    estudianteNombre,
+                    tipo,
+                    fechaHora,
+                    estado
+                });
+            }
+            
+            renderizarTablaPermisos();
+            ocultarModal('modalPermiso');
+            actualizarDashboard();
+        });
+
+        document.getElementById('formAcceso').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const tipoPersona = document.getElementById('tipoPersona').value;
+            const personaId = document.getElementById('personaId').value;
+            const tipoAcceso = document.getElementById('tipoAcceso').value;
+            
+            let personaNombre = '';
+            
+            if (tipoPersona === 'estudiante') {
+                const estudiante = estudiantes.find(est => est.id == personaId);
+                personaNombre = estudiante ? estudiante.nombre : '';
+            } else if (tipoPersona === 'docente') {
+                const docente = docentes.find(doc => doc.id == personaId);
+                personaNombre = docente ? docente.nombre : '';
+            } else if (tipoPersona === 'visitante') {
+                const visitante = visitantes.find(vis => vis.id == personaId);
+                personaNombre = visitante ? visitante.nombre : '';
+            }
+            
+            if (personaNombre) {
+                const nuevoId = registrosAcceso.length > 0 ? Math.max(...registrosAcceso.map(reg => reg.id)) + 1 : 1;
+                const fechaHora = new Date().toISOString().slice(0, 16).replace('T', ' ');
+                
+                registrosAcceso.push({
+                    id: nuevoId,
+                    personaId,
+                    personaNombre,
+                    tipoPersona,
+                    tipoAcceso,
+                    fechaHora
+                });
+                
+                // Actualizar último acceso de la persona
+                if (tipoPersona === 'estudiante') {
+                    const index = estudiantes.findIndex(est => est.id == personaId);
+                    if (index !== -1) {
+                        estudiantes[index].ultimoAcceso = fechaHora;
+                    }
+                } else if (tipoPersona === 'docente') {
+                    const index = docentes.findIndex(doc => doc.id == personaId);
+                    if (index !== -1) {
+                        docentes[index].ultimoAcceso = fechaHora;
+                    }
+                }
+                
+                actualizarDashboard();
+                renderizarTablaEstudiantes();
+                renderizarTablaDocentes();
+                ocultarModal('modalAcceso');
+                
+                alert(`Acceso registrado: ${personaNombre} - ${tipoAcceso === 'entrada' ? 'Entrada' : 'Salida'}`);
+            }
+        });
+
+        // Función para actualizar el dashboard
+        function actualizarDashboard() {
+            // Calcular estadísticas
+            const entradasHoy = registrosAcceso.filter(reg => 
+                reg.fechaHora.startsWith('2025-03-15') && reg.tipoAcceso === 'entrada'
+            ).length;
+            
+            const salidasHoy = registrosAcceso.filter(reg => 
+                reg.fechaHora.startsWith('2025-03-15') && reg.tipoAcceso === 'salida'
+            ).length;
+            
+            const visitantesHoy = registrosAcceso.filter(reg => 
+                reg.fechaHora.startsWith('2025-03-15') && reg.tipoPersona === 'visitante'
+            ).length;
+            
+            // Actualizar valores en el dashboard
+            document.getElementById('totalEntradas').textContent = entradasHoy;
+            document.getElementById('totalSalidas').textContent = salidasHoy;
+            document.getElementById('totalVisitantes').textContent = visitantesHoy;
+            
+            // Actualizar alertas
+            const alertasList = document.getElementById('alertasList');
+            alertasList.innerHTML = '';
+            
+            const estudiantesSinAcceso = estudiantes.filter(est => 
+                est.estado === 'activo' && !registrosAcceso.some(reg => 
+                    reg.personaId === est.id && reg.fechaHora.startsWith('2025-03-15')
+                )
+            );
+            
+            if (estudiantesSinAcceso.length > 0) {
+                const li = document.createElement('li');
+                li.textContent = `${estudiantesSinAcceso.length} estudiantes activos sin registro de entrada hoy`;
+                alertasList.appendChild(li);
+            } else {
+                const li = document.createElement('li');
+                li.textContent = 'No hay alertas recientes';
+                alertasList.appendChild(li);
+            }
+            
+            // Actualizar actividad en tiempo real
+            const actividadTiempoReal = document.getElementById('actividadTiempoReal');
+            actividadTiempoReal.innerHTML = '';
+            
+            const actividadesRecientes = registrosAcceso
+                .sort((a, b) => new Date(b.fechaHora) - new Date(a.fechaHora))
+                .slice(0, 3);
+            
+            if (actividadesRecientes.length > 0) {
+                actividadesRecientes.forEach(act => {
+                    const p = document.createElement('p');
+                    p.textContent = `${act.personaNombre} - ${act.tipoAcceso === 'entrada' ? 'Entrada' : 'Salida'} (${act.fechaHora})`;
+                    actividadTiempoReal.appendChild(p);
+                });
+            } else {
+                const p = document.createElement('p');
+                p.textContent = 'No hay actividad reciente';
+                actividadTiempoReal.appendChild(p);
+            }
+        }
+
+        // Inicialización
+        function inicializar() {
+            renderizarTablaEstudiantes();
+            renderizarTablaDocentes();
+            renderizarTablaVisitantes();
+            renderizarTablaPermisos();
+            actualizarDashboard();
+            
+            // Manejar menú móvil
+            document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+                document.querySelector('.mobile-menu').classList.toggle('active');
+            });
+        }
+
+        // Ejecutar inicialización cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', inicializar);
+    </script>
+</body>
+</html>

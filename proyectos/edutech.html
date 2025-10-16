@@ -1,0 +1,1526 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EDUTECH · MVP Feria Empresarial</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#111a2e; --muted:#6b7a90; --text:#e6edf6; --accent:#1ABC9C; --primary:#2874A6; --warn:#ffb703; --danger:#ef476f; --ok:#06d6a0;
+      --ring: 0 0 0 2px rgba(26,188,156,0.35);
+    }
+    [data-theme="light"]{ --bg:#f6f8fb; --card:#ffffff; --muted:#5a6472; --text:#0e1320; --accent:#0fb; --primary:#1d6fa8; }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--text);font:500 16px/1.45 system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;transition:background .3s,color .3s}
+    .app{display:grid;grid-template-columns:280px 1fr;min-height:100vh}
+    aside{background:linear-gradient(180deg,var(--card),#0c1528);padding:16px;position:sticky;top:0;height:100vh;border-right:1px solid rgba(255,255,255,.06);overflow-y:auto}
+    .brand{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+    .logo{width:38px;height:38px;border-radius:12px;background:conic-gradient(from 200deg,var(--primary),var(--accent));display:grid;place-items:center;color:#fff;font-weight:800}
+    .brand h1{font-size:18px;margin:0;letter-spacing:.4px}
+    nav{display:grid;gap:6px}
+    nav button{background:transparent;border:0;color:var(--text);text-align:left;padding:10px 12px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:all .2s}
+    nav button.active{background:rgba(255,255,255,.12);outline:var(--ring)}
+    nav button:hover{background:rgba(255,255,255,.06)}
+    header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,255,255,.02),transparent);flex-wrap:wrap;gap:10px}
+    .main{padding:20px;display:grid;gap:16px;overflow-y:auto}
+    .grid{display:grid;gap:16px}
+    .grid.cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid.cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid.cols-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media (max-width:1100px){.app{grid-template-columns:1fr} aside{position:relative;height:auto} .grid.cols-3,.grid.cols-4{grid-template-columns:repeat(2,1fr)} }
+    @media (max-width:720px){.grid.cols-2,.grid.cols-3,.grid.cols-4{grid-template-columns:1fr}}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.06);border-radius:16px;padding:16px;box-shadow:0 6px 30px rgba(0,0,0,.18)}
+    .card h3{margin:0 0 10px;font-size:16px}
+    .muted{color:var(--muted)}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    input,select,textarea{background:#0e1a2f;border:1px solid rgba(255,255,255,.08);color:var(--text);border-radius:12px;padding:10px 12px;width:100%;font-family:inherit}
+    [data-theme="light"] input,[data-theme="light"] select,[data-theme="light"] textarea{background:#f3f5f9;color:#0e1320;border-color:#e7ecf3}
+    label{font-size:13px;color:var(--muted);cursor:pointer}
+    .btn{background:var(--primary);color:#fff;border:0;border-radius:12px;padding:10px 14px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap}
+    .btn:hover{opacity:.9;transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+    .btn.secondary{background:rgba(255,255,255,.06)}
+    .btn.success{background:var(--ok)}
+    .btn.warn{background:var(--warn);color:#111}
+    .btn.danger{background:var(--danger)}
+    .kpi{display:flex;align-items:center;gap:12px}
+    .kpi span{display:block;font-size:13px;color:var(--muted)}
+    .kpi strong{font-size:22px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
+    th,td{padding:10px;border-bottom:1px dashed rgba(255,255,255,.08);text-align:left}
+    th{color:var(--muted);font-size:13px}
+    .pill{padding:6px 10px;border-radius:999px;background:rgba(255,255,255,.08);font-size:12px;display:inline-block}
+    .toolbar{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+    .badge{font-size:11px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.08)}
+    .hidden{display:none!important}
+    .footer{font-size:12px;color:var(--muted);text-align:center;padding:14px;margin-top:20px}
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;display:grid;place-items:center;padding:20px}
+    .modal{background:var(--card);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:20px;max-width:600px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+    .success-msg{color:var(--ok);font-weight:600;margin-top:8px}
+    .error-msg{color:var(--danger);font-weight:600;margin-top:8px}
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <aside>
+      <div class="brand">
+        <div class="logo">E</div>
+        <div>
+          <h1>EDUTECH · MVP</h1>
+          <div class="badge">Feria Empresarial</div>
+        </div>
+      </div>
+      <div class="row" style="margin-bottom:10px">
+        <select id="role">
+          <option value="admin">Rol: Admin</option>
+          <option value="docente">Rol: Docente</option>
+          <option value="estudiante">Rol: Estudiante</option>
+        </select>
+        <button class="btn secondary" id="themeBtn" type="button">🌓 Tema</button>
+      </div>
+      <nav id="menu"></nav>
+      <div class="footer">© EDUTECH S.A.S.<br><span class="muted">MVP Funcional · LocalStorage</span></div>
+    </aside>
+    <section>
+      <header>
+        <div>
+          <div style="font-weight:800">Panel · <span id="viewTitle">Dashboard</span></div>
+          <div class="muted" id="breadcrumbs">Inicio / Dashboard</div>
+        </div>
+        <div class="row">
+          <button class="btn secondary" id="exportBtn" type="button" title="Exportar datos JSON">📥 Exportar</button>
+          <label class="btn secondary" for="importInput" title="Importar datos JSON">📤 Importar</label>
+          <input id="importInput" type="file" accept="application/json" class="hidden"/>
+          <button class="btn warn" id="demoBtn" type="button">🎬 Demo</button>
+          <button class="btn danger" id="resetBtn" type="button">🗑️ Reset</button>
+        </div>
+      </header>
+      <main class="main" id="main"></main>
+    </section>
+  </div>
+
+  <template id="tpl-dashboard">
+    <div class="grid cols-4">
+      <div class="card kpi"><div class="pill">📚 Cursos</div><div><strong id="kpiCursos">0</strong><span>activos</span></div></div>
+      <div class="card kpi"><div class="pill">👥 Estudiantes</div><div><strong id="kpiEstudiantes">0</strong><span>registrados</span></div></div>
+      <div class="card kpi"><div class="pill">📝 Evaluaciones</div><div><strong id="kpiQuizzes">0</strong><span>publicadas</span></div></div>
+      <div class="card kpi"><div class="pill">✅ Asistencia</div><div><strong id="kpiAsist">0%</strong><span>promedio</span></div></div>
+    </div>
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>📊 Progreso general</h3>
+        <canvas id="chartProgreso" height="160"></canvas>
+      </div>
+      <div class="card">
+        <h3>📢 Últimos anuncios</h3>
+        <div id="anunciosList" style="max-height:200px;overflow-y:auto"></div>
+        <div class="row" style="margin-top:10px">
+          <input id="anuncioTxt" placeholder="Escribe un anuncio..." />
+          <button class="btn" id="addAnuncio" type="button">Publicar</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-cursos">
+    <div class="card">
+      <div class="toolbar"><h3>📚 Cursos</h3>
+        <div class="row admin-only docente-only">
+          <input id="cursoNombre" placeholder="Nombre del curso"/>
+          <button class="btn" id="addCurso" type="button">➕ Agregar</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Curso</th><th>Lecciones</th><th>Acciones</th></tr></thead>
+        <tbody id="cursosTbody"></tbody>
+      </table>
+    </div>
+  </template>
+
+  <template id="tpl-evaluaciones">
+    <div class="grid cols-2">
+      <div class="card docente-only admin-only">
+        <h3>📝 Crear evaluación</h3>
+        <div style="display:grid;gap:10px">
+          <input id="quizTitulo" placeholder="Título de la evaluación"/>
+          <textarea id="quizPregunta" rows="3" placeholder="Pregunta"></textarea>
+          <input id="optA" placeholder="Opción A"/>
+          <input id="optB" placeholder="Opción B"/>
+          <input id="optC" placeholder="Opción C"/>
+          <select id="optCorrecta">
+            <option value="A">Respuesta correcta: A</option>
+            <option value="B">Respuesta correcta: B</option>
+            <option value="C">Respuesta correcta: C</option>
+          </select>
+          <button class="btn" id="addQuiz" type="button">💾 Guardar evaluación</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>📋 Evaluaciones disponibles</h3>
+        <table>
+          <thead><tr><th>Título</th><th>Acciones</th></tr></thead>
+          <tbody id="quizTbody"></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="card">
+      <h3>🎯 Resolver evaluación</h3>
+      <div class="row">
+        <select id="quizSelect" style="flex:1"></select>
+        <button class="btn" id="startQuiz" type="button">▶️ Iniciar</button>
+        <button class="btn secondary docente-only admin-only" id="exportNotas" type="button">📊 Exportar notas</button>
+      </div>
+      <div id="quizPlay" style="margin-top:10px"></div>
+    </div>
+  </template>
+
+  <template id="tpl-asistencia">
+    <div class="card">
+      <div class="toolbar">
+        <h3>✅ Registro de asistencia</h3>
+        <div class="row docente-only admin-only">
+          <input id="alumnoNombre" placeholder="Nombre del estudiante"/>
+          <button class="btn" id="addAlumno" type="button">➕ Agregar</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Estudiante</th><th>Presente</th><th>Ausente</th><th>%</th></tr></thead>
+        <tbody id="asistTbody"></tbody>
+      </table>
+      <div class="row" style="margin-top:12px">
+        <button class="btn" id="calcAsist" type="button">📊 Ver promedio</button>
+        <button class="btn secondary" id="exportAsist" type="button">📥 Exportar CSV</button>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-comunicaciones">
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>💬 Foro / Novedades</h3>
+        <div id="foroList" style="max-height:300px;overflow-y:auto;margin-bottom:10px"></div>
+        <div class="row">
+          <input id="foroTxt" placeholder="Publica algo..."/>
+          <button class="btn" id="foroAdd" type="button">📤 Publicar</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>💬 Chat en vivo</h3>
+        <div id="chatBox" class="card" style="max-height:250px;overflow-y:auto;background:rgba(0,0,0,.2);margin-bottom:10px"></div>
+        <div class="row">
+          <input id="chatMsg" placeholder="Escribe un mensaje"/>
+          <button class="btn" id="chatSend" type="button">📨 Enviar</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="tpl-biblioteca">
+    <div class="card">
+      <div class="toolbar"><h3>📖 Biblioteca de recursos</h3>
+        <div class="row docente-only admin-only">
+          <input id="recursoTitulo" placeholder="Título del recurso" />
+          <input id="recursoURL" placeholder="URL (https://...)" />
+          <button class="btn" id="addRecurso" type="button">➕ Agregar</button>
+        </div>
+      </div>
+      <table>
+        <thead><tr><th>Título</th><th>Enlace</th><th>Acciones</th></tr></thead>
+        <tbody id="recursosTbody"></tbody>
+      </table>
+    </div>
+  </template>
+
+  <template id="tpl-ciber">
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>🛡️ Escaneo de seguridad</h3>
+        <p class="muted">Simulación educativa de análisis de vulnerabilidades</p>
+        <div class="row"><button class="btn" id="scanBtn" type="button">🔍 Iniciar escaneo</button><span class="muted" id="scanStatus">Listo</span></div>
+        <div id="scanResult" style="margin-top:10px"></div>
+      </div>
+      <div class="card">
+        <h3>🎣 Detector de phishing</h3>
+        <p class="muted">Entrena tu capacidad para detectar correos maliciosos</p>
+        <div id="phishingBox" class="card" style="background:rgba(0,0,0,.2);padding:15px;min-height:100px"></div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn success" id="btnSeguro" type="button">✅ Es seguro</button>
+          <button class="btn danger" id="btnPhish" type="button">⚠️ Es phishing</button>
+        </div>
+        <div id="phishFeedback" style="margin-top:8px;font-weight:600"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📋 Buenas prácticas de ciberseguridad</h3>
+      <ul style="line-height:1.8">
+        <li>🔄 Actualiza tus equipos y aplicaciones regularmente</li>
+        <li>📧 No abras archivos adjuntos de remitentes desconocidos</li>
+        <li>🔐 Activa 2FA y usa contraseñas robustas únicas</li>
+        <li>🔗 Verifica URLs antes de iniciar sesión</li>
+        <li>🚫 No compartas información sensible por medios no seguros</li>
+      </ul>
+    </div>
+  </template>
+
+  <template id="tpl-reportes">
+    <div class="grid cols-2">
+      <div class="card">
+        <h3>📊 Rendimiento académico</h3>
+        <canvas id="chartNotas" height="180"></canvas>
+      </div>
+      <div class="card">
+        <h3>📈 Uso de la plataforma</h3>
+        <canvas id="chartUso" height="180"></canvas>
+      </div>
+    </div>
+    <div class="card">
+      <div class="toolbar">
+        <h3>📄 Exportar reportes</h3>
+        <button class="btn" id="exportReportes" type="button">📥 Generar reporte completo</button>
+      </div>
+      <p class="muted">Genera un reporte consolidado con todos los KPIs y métricas de la plataforma</p>
+    </div>
+  </template>
+
+  <script>
+  // ====== Sistema de almacenamiento ======
+  const LS = {
+    get: (k, d) => {
+      try {
+        const item = localStorage.getItem(k);
+        return item ? JSON.parse(item) : d;
+      } catch(e) {
+        console.error('Error reading from localStorage:', e);
+        return d;
+      }
+    },
+    set: (k, v) => {
+      try {
+        localStorage.setItem(k, JSON.stringify(v));
+      } catch(e) {
+        console.error('Error writing to localStorage:', e);
+      }
+    }
+  }
+
+  // ====== Base de datos ======
+  const DB = {
+    cursos: LS.get('cursos', []),
+    lecciones: LS.get('lecciones', {}),
+    alumnos: LS.get('alumnos', []),
+    asistencia: LS.get('asistencia', {}),
+    quizzes: LS.get('quizzes', []),
+    notas: LS.get('notas', []),
+    anuncios: LS.get('anuncios', []),
+    foro: LS.get('foro', []),
+    chat: LS.get('chat', []),
+    recursos: LS.get('recursos', [])
+  }
+
+  const saveDB = () => {
+    Object.entries(DB).forEach(([k,v]) => LS.set(k,v));
+  }
+
+  // ====== Navegación ======
+  const views = [
+    {id:'dashboard', label:'Dashboard', icon:'📊'},
+    {id:'cursos', label:'Cursos', icon:'📚'},
+    {id:'evaluaciones', label:'Evaluaciones', icon:'📝'},
+    {id:'asistencia', label:'Asistencia', icon:'✅'},
+    {id:'comunicaciones', label:'Comunicaciones', icon:'💬'},
+    {id:'biblioteca', label:'Biblioteca', icon:'📖'},
+    {id:'ciber', label:'Ciberseguridad', icon:'🛡️'},
+    {id:'reportes', label:'Reportes', icon:'📈'},
+  ]
+
+  const menu = document.getElementById('menu');
+  const main = document.getElementById('main');
+  const viewTitle = document.getElementById('viewTitle');
+  const breadcrumbs = document.getElementById('breadcrumbs');
+  let current = 'dashboard';
+
+  function renderMenu(){
+    menu.innerHTML = '';
+    views.forEach(v=>{
+      const b = document.createElement('button');
+      b.textContent = `${v.icon} ${v.label}`;
+      b.className = v.id===current ? 'active' : '';
+      b.onclick = ()=>go(v.id);
+      menu.appendChild(b);
+    });
+  }
+
+  function go(id){
+    current = id;
+    renderMenu();
+    const view = views.find(v=>v.id===id);
+    viewTitle.textContent = view.label;
+    breadcrumbs.textContent = `Inicio / ${view.label}`;
+    
+    const tpl = document.getElementById(`tpl-${id}`);
+    main.innerHTML = '';
+    main.appendChild(tpl.content.cloneNode(true));
+    
+    // Inicializar vista
+    const initFn = {
+      dashboard: initDashboard,
+      cursos: initCursos,
+      evaluaciones: initEvaluaciones,
+      asistencia: initAsistencia,
+      comunicaciones: initComunicaciones,
+      biblioteca: initBiblioteca,
+      ciber: initCiber,
+      reportes: initReportes
+    }[id];
+    
+    if(initFn) initFn();
+    applyRoleVisibility();
+  }
+
+  // ====== Tema ======
+  document.getElementById('themeBtn').onclick = ()=>{
+    const currentTheme = document.body.getAttribute('data-theme') || 'dark';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.body.setAttribute('data-theme', newTheme);
+    LS.set('theme', newTheme);
+  }
+  document.body.setAttribute('data-theme', LS.get('theme','dark'));
+
+  // ====== Rol ======
+  const roleSel = document.getElementById('role');
+  roleSel.value = LS.get('role','admin');
+  roleSel.onchange = ()=>{
+    LS.set('role', roleSel.value);
+    applyRoleVisibility();
+  }
+
+  function applyRoleVisibility(){
+    const role = roleSel.value;
+    document.querySelectorAll('.admin-only').forEach(el=>{
+      el.classList.toggle('hidden', role !== 'admin');
+    });
+    document.querySelectorAll('.docente-only').forEach(el=>{
+      el.classList.toggle('hidden', !['admin','docente'].includes(role));
+    });
+  }
+
+  // ====== DASHBOARD ======
+  function initDashboard(){
+    // KPIs
+    document.getElementById('kpiCursos').textContent = DB.cursos.length;
+    document.getElementById('kpiEstudiantes').textContent = DB.alumnos.length;
+    document.getElementById('kpiQuizzes').textContent = DB.quizzes.length;
+    
+    const totalAsist = DB.alumnos.length ? Math.round(
+      DB.alumnos.reduce((acc,n)=>{
+        const r = DB.asistencia[n] || {p:0,a:0};
+        const t = r.p + r.a;
+        return acc + (t ? (r.p*100/t) : 0);
+      }, 0) / DB.alumnos.length
+    ) : 0;
+    document.getElementById('kpiAsist').textContent = totalAsist + "%";
+
+    // Anuncios
+    const ul = document.getElementById('anunciosList');
+    ul.innerHTML = DB.anuncios.slice(-10).reverse()
+      .map(a=>`<div style="margin:.5rem 0;padding:8px;background:rgba(255,255,255,.03);border-radius:8px">📢 ${a}</div>`)
+      .join('') || '<div class="muted">Sin anuncios aún</div>';
+    
+    const addBtn = document.getElementById('addAnuncio');
+    addBtn.onclick = ()=>{
+      const txt = document.getElementById('anuncioTxt');
+      const val = txt.value.trim();
+      if(!val) {
+        showMessage('Por favor escribe el contenido del anuncio', 'error');
+        return;
+      }
+      DB.anuncios.push(val);
+      saveDB();
+      txt.value = '';
+      showMessage('✅ Anuncio publicado exitosamente', 'success');
+      initDashboard();
+    }
+
+    // Gráfico
+    setTimeout(()=>{
+      drawBar('chartProgreso', 
+        ['Cursos','Alumnos','Quizzes','Asistencia'], 
+        [DB.cursos.length, DB.alumnos.length, DB.quizzes.length, totalAsist]
+      );
+    }, 100);
+  }
+
+  // ====== CURSOS ======
+  function initCursos(){
+    const tb = document.getElementById('cursosTbody');
+    
+    const render = ()=>{
+      if(DB.cursos.length === 0){
+        tb.innerHTML = '<tr><td colspan="3" class="muted" style="text-align:center">No hay cursos registrados. Agrega uno para comenzar.</td></tr>';
+        return;
+      }
+      
+      tb.innerHTML = DB.cursos.map(c=>{
+        const count = (DB.lecciones[c]||[]).length;
+        return `<tr>
+          <td><strong>${c}</strong></td>
+          <td>${count} lección${count !== 1 ? 'es' : ''}</td>
+          <td class="row">
+            <button class="btn secondary" data-open="${c}" type="button">📖 Ver lecciones</button>
+            <button class="btn danger admin-only" data-del="${c}" type="button">🗑️</button>
+          </td>
+        </tr>`;
+      }).join('');
+      
+      tb.querySelectorAll('[data-open]').forEach(b=>{
+        b.onclick=()=>openLecciones(b.dataset.open);
+      });
+      tb.querySelectorAll('[data-del]').forEach(b=>{
+        b.onclick=()=>{
+          if(confirm(`¿Eliminar el curso "${b.dataset.del}" y todas sus lecciones?`)){
+            DB.cursos = DB.cursos.filter(x=>x!==b.dataset.del);
+            delete DB.lecciones[b.dataset.del];
+            saveDB();
+            showMessage('Curso eliminado', 'success');
+            render();
+          }
+        };
+      });
+      applyRoleVisibility();
+    }
+    render();
+
+    const addBtn = document.getElementById('addCurso');
+    if(addBtn){
+      addBtn.onclick = ()=>{
+        const inp = document.getElementById('cursoNombre');
+        const n = inp.value.trim();
+        if(!n) {
+          showMessage('Por favor ingresa el nombre del curso', 'error');
+          return;
+        }
+        if(DB.cursos.includes(n)) {
+          showMessage('Este curso ya existe', 'error');
+          return;
+        }
+        DB.cursos.push(n);
+        saveDB();
+        inp.value='';
+        showMessage('✅ Curso agregado exitosamente', 'success');
+        render();
+      }
+    }
+
+    function openLecciones(curso){
+      const overlay = document.createElement('div');
+      overlay.className = 'modal-overlay';
+      overlay.onclick = (e)=>{ if(e.target===overlay) overlay.remove(); }
+      
+      const modal = document.createElement('div');
+      modal.className = 'modal';
+      modal.innerHTML = `
+        <div class="toolbar">
+          <h3>📚 Lecciones · ${curso}</h3>
+          <button class="btn danger" id="closeModal" type="button">✖️ Cerrar</button>
+        </div>
+        <div class="row admin-only docente-only" style="margin:15px 0">
+          <input id="lecTitulo" placeholder="Título de lección" style="flex:1"/>
+          <textarea id="lecContenido" rows="3" placeholder="Contenido de la lección" style="flex:1"></textarea>
+          <button class="btn" id="lecAdd" type="button">➕ Agregar</button>
+        </div>
+        <div id="lecList"></div>
+      `;
+      
+      overlay.appendChild(modal);
+      document.body.appendChild(overlay);
+      
+      const renderL = ()=>{
+        const arr = DB.lecciones[curso] || [];
+        const list = document.getElementById('lecList');
+        if(arr.length === 0){
+          list.innerHTML = '<div class="muted" style="text-align:center;padding:20px">No hay lecciones aún</div>';
+        } else {
+          list.innerHTML = arr.map((lec,i)=>`
+            <div class="card" style="margin:8px 0">
+              <div class="toolbar">
+                <div><span class="pill">${i+1}</span> <strong>${lec.titulo}</strong></div>
+                <div class="row">
+                  <button class="btn secondary" data-view="${i}" type="button">👁️ Ver</button>
+                  <button class="btn danger admin-only" data-del="${i}" type="button">🗑️</button>
+                </div>
+              </div>
+            </div>
+          `).join('');
+          
+          list.querySelectorAll('[data-view]').forEach(b=>{
+            b.onclick=()=>{
+              const lec = arr[+b.dataset.view];
+              const lecModal = document.createElement('div');
+              lecModal.className = 'modal-overlay';
+              lecModal.onclick = (e)=>{ if(e.target===lecModal) lecModal.remove(); }
+              
+              const content = document.createElement('div');
+              content.className = 'modal';
+              content.innerHTML = `
+                <div class="toolbar">
+                  <h3>${lec.titulo}</h3>
+                  <button class="btn danger" id="closeLec" type="button">✖️ Cerrar</button>
+                </div>
+                <div style="padding:15px;line-height:1.7">${lec.contenido}</div>
+              `;
+              lecModal.appendChild(content);
+              document.body.appendChild(lecModal);
+              content.querySelector('#closeLec').onclick = ()=> lecModal.remove();
+            };
+          });
+          
+          list.querySelectorAll('[data-del]').forEach(b=>{
+            b.onclick=()=>{
+              if(confirm('¿Eliminar esta lección?')){
+                arr.splice(+b.dataset.del,1);
+                DB.lecciones[curso] = arr;
+                saveDB();
+                showMessage('Lección eliminada', 'success');
+                renderL();
+              }
+            };
+          });
+        }
+        applyRoleVisibility();
+      };
+      renderL();
+      
+      const addLec = document.getElementById('lecAdd');
+      if(addLec){
+        addLec.onclick = ()=>{
+          const t = document.getElementById('lecTitulo').value.trim();
+          const c = document.getElementById('lecContenido').value.trim();
+          if(!t || !c) {
+            showMessage('Complete título y contenido', 'error');
+            return;
+          }
+          DB.lecciones[curso] = DB.lecciones[curso] || [];
+          DB.lecciones[curso].push({titulo:t, contenido:c});
+          saveDB();
+          document.getElementById('lecTitulo').value = '';
+          document.getElementById('lecContenido').value = '';
+          showMessage('✅ Lección agregada', 'success');
+          renderL();
+        };
+      }
+      
+      document.getElementById('closeModal').onclick = ()=> overlay.remove();
+      applyRoleVisibility();
+    }
+  }
+
+  // ====== EVALUACIONES ======
+  function initEvaluaciones(){
+    const tb = document.getElementById('quizTbody');
+    const sel = document.getElementById('quizSelect');
+
+    const render = ()=>{
+      if(DB.quizzes.length === 0){
+        tb.innerHTML = '<tr><td colspan="2" class="muted" style="text-align:center">No hay evaluaciones creadas</td></tr>';
+        sel.innerHTML = '<option value="">-- Selecciona una evaluación --</option>';
+      } else {
+        tb.innerHTML = DB.quizzes.map((q,i)=>`
+          <tr>
+            <td><strong>${q.titulo}</strong></td>
+            <td class="row">
+              <button class="btn secondary" data-prev="${i}" type="button">👁️ Vista previa</button>
+              <button class="btn danger admin-only docente-only" data-del="${i}" type="button">🗑️</button>
+            </td>
+          </tr>
+        `).join('');
+        
+        sel.innerHTML = '<option value="">-- Selecciona --</option>' + 
+          DB.quizzes.map((q,i)=>`<option value="${i}">${q.titulo}</option>`).join('');
+        
+        tb.querySelectorAll('[data-del]').forEach(b=>{
+          b.onclick=()=>{
+            if(confirm('¿Eliminar esta evaluación?')){
+              DB.quizzes.splice(+b.dataset.del,1);
+              saveDB();
+              showMessage('Evaluación eliminada', 'success');
+              render();
+            }
+          };
+        });
+        
+        tb.querySelectorAll('[data-prev]').forEach(b=>{
+          b.onclick=()=>playQuiz(+b.dataset.prev, true);
+        });
+      }
+      applyRoleVisibility();
+    };
+    render();
+
+    const addBtn = document.getElementById('addQuiz');
+    if(addBtn){
+      addBtn.onclick = ()=>{
+        const q = {
+          titulo: document.getElementById('quizTitulo').value.trim(),
+          enunciado: document.getElementById('quizPregunta').value.trim(),
+          A: document.getElementById('optA').value.trim(),
+          B: document.getElementById('optB').value.trim(),
+          C: document.getElementById('optC').value.trim(),
+          ok: document.getElementById('optCorrecta').value
+        };
+        
+        if(!q.titulo || !q.enunciado || !q.A || !q.B || !q.C) {
+          showMessage('Complete todos los campos', 'error');
+          return;
+        }
+        
+        DB.quizzes.push(q);
+        saveDB();
+        
+        ['quizTitulo','quizPregunta','optA','optB','optC'].forEach(id=>{
+          document.getElementById(id).value='';
+        });
+        
+        showMessage('✅ Evaluación creada exitosamente', 'success');
+        render();
+      };
+    }
+
+    const startBtn = document.getElementById('startQuiz');
+    if(startBtn){
+      startBtn.onclick = ()=>{
+        const idx = sel.value;
+        if(!idx) {
+          showMessage('Selecciona una evaluación', 'error');
+          return;
+        }
+        playQuiz(+idx, false);
+      };
+    }
+
+    function playQuiz(idx, preview){
+      const q = DB.quizzes[idx];
+      if(!q) return;
+      
+      const box = document.getElementById('quizPlay');
+      box.innerHTML = `
+        <div class="card">
+          <h3>${q.titulo}</h3>
+          <p style="margin:15px 0;font-size:15px">${q.enunciado}</p>
+          <div style="display:grid;gap:10px;margin:15px 0">
+            <label style="padding:10px;background:rgba(255,255,255,.03);border-radius:8px;cursor:pointer;display:flex;gap:10px">
+              <input type="radio" name="respuesta" value="A"> <span>A) ${q.A}</span>
+            </label>
+            <label style="padding:10px;background:rgba(255,255,255,.03);border-radius:8px;cursor:pointer;display:flex;gap:10px">
+              <input type="radio" name="respuesta" value="B"> <span>B) ${q.B}</span>
+            </label>
+            <label style="padding:10px;background:rgba(255,255,255,.03);border-radius:8px;cursor:pointer;display:flex;gap:10px">
+              <input type="radio" name="respuesta" value="C"> <span>C) ${q.C}</span>
+            </label>
+          </div>
+          <button class="btn" id="sendAns" type="button">✅ Enviar respuesta</button>
+          <div id="quizFeedback" style="margin-top:10px;font-weight:600"></div>
+        </div>
+      `;
+      
+      document.getElementById('sendAns').onclick = ()=>{
+        const selected = box.querySelector('input[name="respuesta"]:checked');
+        if(!selected){
+          showMessage('Selecciona una respuesta', 'error');
+          return;
+        }
+        
+        const v = selected.value;
+        const ok = v === q.ok;
+        const fb = document.getElementById('quizFeedback');
+        
+        if(ok){
+          fb.innerHTML = '<div class="success-msg">✅ ¡Correcto! Excelente trabajo.</div>';
+        } else {
+          fb.innerHTML = `<div class="error-msg">❌ Incorrecto. La respuesta correcta es: ${q.ok}</div>`;
+        }
+        
+        if(!preview){
+          DB.notas.push({
+            quiz: q.titulo,
+            timestamp: Date.now(),
+            ok: ok
+          });
+          saveDB();
+        }
+        
+        document.getElementById('sendAns').disabled = true;
+      };
+    }
+
+    const expBtn = document.getElementById('exportNotas');
+    if(expBtn){
+      expBtn.onclick = ()=>{
+        if(DB.notas.length === 0) {
+          showMessage('No hay notas para exportar', 'error');
+          return;
+        }
+        const rows = [['Quiz','Fecha','Resultado']].concat(
+          DB.notas.map(n=>[
+            n.quiz,
+            new Date(n.timestamp).toLocaleString(),
+            n.ok ? 'Correcto' : 'Incorrecto'
+          ])
+        );
+        downloadCSV(rows, 'notas_edutech.csv');
+        showMessage('✅ Notas exportadas', 'success');
+      };
+    }
+  }
+
+  // ====== ASISTENCIA ======
+  function initAsistencia(){
+    const tb = document.getElementById('asistTbody');
+    
+    const render = ()=>{
+      if(DB.alumnos.length === 0){
+        tb.innerHTML = '<tr><td colspan="4" class="muted" style="text-align:center">No hay estudiantes registrados</td></tr>';
+        return;
+      }
+      
+      tb.innerHTML = DB.alumnos.map(n=>{
+        const r = DB.asistencia[n] || {p:0, a:0};
+        const total = r.p + r.a;
+        const pct = total > 0 ? Math.round((r.p/total)*100) : 0;
+        return `
+          <tr>
+            <td><strong>${n}</strong></td>
+            <td>
+              <button class="btn success" data-p="${n}" type="button" style="padding:6px 10px">+</button>
+              <strong style="margin-left:8px">${r.p}</strong>
+            </td>
+            <td>
+              <button class="btn danger" data-a="${n}" type="button" style="padding:6px 10px">+</button>
+              <strong style="margin-left:8px">${r.a}</strong>
+            </td>
+            <td><strong>${pct}%</strong></td>
+          </tr>
+        `;
+      }).join('');
+      
+      tb.querySelectorAll('[data-p]').forEach(b=>{
+        b.onclick=()=>{
+          const n = b.dataset.p;
+          const r = DB.asistencia[n] || {p:0, a:0};
+          r.p++;
+          DB.asistencia[n] = r;
+          saveDB();
+          render();
+          showMessage(`✅ Presente registrado para ${n}`, 'success');
+        };
+      });
+      
+      tb.querySelectorAll('[data-a]').forEach(b=>{
+        b.onclick=()=>{
+          const n = b.dataset.a;
+          const r = DB.asistencia[n] || {p:0, a:0};
+          r.a++;
+          DB.asistencia[n] = r;
+          saveDB();
+          render();
+          showMessage(`Ausente registrado para ${n}`, 'success');
+        };
+      });
+    };
+    render();
+
+    const addBtn = document.getElementById('addAlumno');
+    if(addBtn){
+      addBtn.onclick = ()=>{
+        const inp = document.getElementById('alumnoNombre');
+        const n = inp.value.trim();
+        if(!n) {
+          showMessage('Ingresa el nombre del estudiante', 'error');
+          return;
+        }
+        if(DB.alumnos.includes(n)) {
+          showMessage('Este estudiante ya está registrado', 'error');
+          return;
+        }
+        DB.alumnos.push(n);
+        DB.asistencia[n] = {p:0, a:0};
+        saveDB();
+        inp.value = '';
+        showMessage('✅ Estudiante agregado', 'success');
+        render();
+      };
+    }
+
+    const calcBtn = document.getElementById('calcAsist');
+    if(calcBtn){
+      calcBtn.onclick = ()=>{
+        if(DB.alumnos.length === 0) {
+          showMessage('No hay estudiantes registrados', 'error');
+          return;
+        }
+        const prom = Math.round(
+          DB.alumnos.reduce((acc,n)=>{
+            const r = DB.asistencia[n] || {p:0, a:0};
+            const t = r.p + r.a;
+            return acc + (t ? (r.p*100/t) : 0);
+          }, 0) / DB.alumnos.length
+        );
+        alert(`📊 Promedio de asistencia: ${prom}%`);
+      };
+    }
+
+    const expBtn = document.getElementById('exportAsist');
+    if(expBtn){
+      expBtn.onclick = ()=>{
+        if(DB.alumnos.length === 0) {
+          showMessage('No hay datos para exportar', 'error');
+          return;
+        }
+        const rows = [['Estudiante','Presentes','Ausentes','Porcentaje']].concat(
+          DB.alumnos.map(n=>{
+            const r = DB.asistencia[n] || {p:0, a:0};
+            const t = r.p + r.a;
+            const pct = t > 0 ? Math.round((r.p/t)*100) : 0;
+            return [n, r.p, r.a, pct+'%'];
+          })
+        );
+        downloadCSV(rows, 'asistencia_edutech.csv');
+        showMessage('✅ Asistencia exportada', 'success');
+      };
+    }
+  }
+
+  // ====== COMUNICACIONES ======
+  function initComunicaciones(){
+    const foroList = document.getElementById('foroList');
+    const chatBox = document.getElementById('chatBox');
+    
+    const renderForo = ()=>{
+      if(DB.foro.length === 0){
+        foroList.innerHTML = '<div class="muted" style="text-align:center;padding:20px">No hay publicaciones aún</div>';
+      } else {
+        foroList.innerHTML = DB.foro.slice().reverse().map((p,i)=>`
+          <div style="margin:8px 0;padding:10px;background:rgba(255,255,255,.03);border-radius:8px">
+            <div style="font-size:12px;color:var(--muted);margin-bottom:4px">Publicación #${DB.foro.length - i}</div>
+            ${p}
+          </div>
+        `).join('');
+      }
+    };
+    
+    const renderChat = ()=>{
+      if(DB.chat.length === 0){
+        chatBox.innerHTML = '<div class="muted" style="text-align:center;padding:20px">No hay mensajes aún</div>';
+      } else {
+        chatBox.innerHTML = DB.chat.map(m=>`
+          <div style="margin:8px 0;padding:8px;background:rgba(255,255,255,.05);border-radius:8px">
+            <span class="pill">${m.user}</span>
+            <span style="margin-left:8px">${m.text}</span>
+          </div>
+        `).join('');
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+    };
+    
+    renderForo();
+    renderChat();
+
+    const foroBtn = document.getElementById('foroAdd');
+    if(foroBtn){
+      foroBtn.onclick = ()=>{
+        const inp = document.getElementById('foroTxt');
+        const t = inp.value.trim();
+        if(!t) {
+          showMessage('Escribe algo para publicar', 'error');
+          return;
+        }
+        DB.foro.push(t);
+        saveDB();
+        inp.value = '';
+        showMessage('✅ Publicado en el foro', 'success');
+        renderForo();
+      };
+    }
+
+    const chatBtn = document.getElementById('chatSend');
+    if(chatBtn){
+      chatBtn.onclick = ()=>{
+        const inp = document.getElementById('chatMsg');
+        const t = inp.value.trim();
+        if(!t) {
+          showMessage('Escribe un mensaje', 'error');
+          return;
+        }
+        DB.chat.push({
+          user: roleSel.value,
+          text: t,
+          timestamp: Date.now()
+        });
+        saveDB();
+        inp.value = '';
+        renderChat();
+      };
+      
+      // Enter para enviar
+      document.getElementById('chatMsg').onkeypress = (e)=>{
+        if(e.key === 'Enter') chatBtn.click();
+      };
+    }
+  }
+
+  // ====== BIBLIOTECA ======
+  function initBiblioteca(){
+    const tb = document.getElementById('recursosTbody');
+    
+    const render = ()=>{
+      if(DB.recursos.length === 0){
+        tb.innerHTML = '<tr><td colspan="3" class="muted" style="text-align:center">No hay recursos disponibles</td></tr>';
+        return;
+      }
+      
+      tb.innerHTML = DB.recursos.map((r,i)=>`
+        <tr>
+          <td><strong>${r.titulo}</strong></td>
+          <td><a href="${r.url}" target="_blank" rel="noopener" style="color:var(--accent)">${r.url}</a></td>
+          <td>
+            <button class="btn danger admin-only docente-only" data-del="${i}" type="button">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+      
+      tb.querySelectorAll('[data-del]').forEach(b=>{
+        b.onclick=()=>{
+          if(confirm('¿Eliminar este recurso?')){
+            DB.recursos.splice(+b.dataset.del, 1);
+            saveDB();
+            showMessage('Recurso eliminado', 'success');
+            render();
+          }
+        };
+      });
+      
+      applyRoleVisibility();
+    };
+    render();
+
+    const addBtn = document.getElementById('addRecurso');
+    if(addBtn){
+      addBtn.onclick = ()=>{
+        const t = document.getElementById('recursoTitulo').value.trim();
+        const u = document.getElementById('recursoURL').value.trim();
+        
+        if(!t || !u) {
+          showMessage('Complete título y URL', 'error');
+          return;
+        }
+        
+        if(!u.startsWith('http://') && !u.startsWith('https://')) {
+          showMessage('La URL debe comenzar con http:// o https://', 'error');
+          return;
+        }
+        
+        DB.recursos.push({titulo: t, url: u});
+        saveDB();
+        document.getElementById('recursoTitulo').value = '';
+        document.getElementById('recursoURL').value = '';
+        showMessage('✅ Recurso agregado', 'success');
+        render();
+      };
+    }
+  }
+
+  // ====== CIBERSEGURIDAD ======
+  function initCiber(){
+    const status = document.getElementById('scanStatus');
+    const out = document.getElementById('scanResult');
+    const scanBtn = document.getElementById('scanBtn');
+    
+    if(scanBtn){
+      scanBtn.onclick = async ()=>{
+        status.textContent = 'Escaneando...';
+        scanBtn.disabled = true;
+        out.innerHTML = '<div class="muted">Analizando sistema...</div>';
+        
+        await sleep(1500);
+        
+        const issues = [
+          {t:'Contraseña débil detectada en navegador', sev:'ALTO', color:'var(--danger)'},
+          {t:'Actualizaciones de seguridad pendientes', sev:'MEDIO', color:'var(--warn)'},
+          {t:'Archivos desconocidos en carpeta Descargas', sev:'BAJO', color:'var(--ok)'}
+        ];
+        
+        out.innerHTML = issues.map(i=>`
+          <div style="margin:10px 0;padding:10px;background:rgba(255,255,255,.03);border-left:3px solid ${i.color};border-radius:4px">
+            <span class="pill" style="background:${i.color};color:#fff;font-weight:700">${i.sev}</span>
+            <span style="margin-left:10px">${i.t}</span>
+          </div>
+        `).join('') + 
+        '<div class="muted" style="margin-top:15px;font-size:13px">* Simulación educativa para la feria. No accede a tu equipo real.</div>';
+        
+        status.textContent = '✅ Completado';
+        scanBtn.disabled = false;
+      };
+    }
+
+    // Simulador de phishing
+    const emails = [
+      {txt:'⚠️ URGENTE: Tu cuenta será suspendida. Haz clic aquí para "verificar" inmediatamente.', phish:true},
+      {txt:'📅 Recordatorio: Taller de ciberseguridad EDUTECH mañana 7:00 AM en el auditorio.', phish:false},
+      {txt:'💰 Factura pendiente Nº 5321. Descarga el archivo .zip adjunto para ver detalles.', phish:true},
+      {txt:'✅ Actualización de contraseña realizada correctamente. Si no fuiste tú, contacta a soporte.', phish:false},
+      {txt:'🎁 ¡Felicidades! Has ganado un iPhone 15 Pro. Reclama tu premio haciendo clic aquí.', phish:true},
+      {txt:'📚 Confirmación de matrícula: Tu inscripción al curso ha sido procesada exitosamente.', phish:false},
+      {txt:'🏦 URGENTE: Actualiza tu información bancaria para evitar bloqueo de cuenta en 24h.', phish:true},
+      {txt:'📖 Material del curso: Los apuntes de la semana ya están disponibles en el portal.', phish:false},
+      {txt:'💻 Oferta especial: 90% descuento en software antivirus premium. Descarga ahora.', phish:true},
+      {txt:'📝 Recordatorio: La evaluación de algoritmos vence mañana a las 11:59 PM.', phish:false}
+    ];
+    
+    const box = document.getElementById('phishingBox');
+    const fb = document.getElementById('phishFeedback');
+    let curEmail = 0;
+    let score = {correct: 0, total: 0};
+    
+    const showEmail = ()=>{
+      curEmail = Math.floor(Math.random() * emails.length);
+      box.innerHTML = `<div style="line-height:1.6">${emails[curEmail].txt}</div>`;
+      fb.innerHTML = '<div class="muted">Analiza el mensaje y decide si es legítimo o phishing</div>';
+    };
+    showEmail();
+    
+    const btnS = document.getElementById('btnSeguro');
+    const btnP = document.getElementById('btnPhish');
+    
+    if(btnS){
+      btnS.onclick = ()=>{
+        score.total++;
+        const isCorrect = !emails[curEmail].phish;
+        if(isCorrect) score.correct++;
+        
+        if(emails[curEmail].phish){
+          fb.innerHTML = `<div class="error-msg">❌ Era phishing. Señales: urgencia, enlaces sospechosos, archivos .zip, premios inesperados.</div>`;
+        } else {
+          fb.innerHTML = `<div class="success-msg">✅ ¡Correcto! Es un mensaje legítimo de la institución.</div>`;
+        }
+        
+        DB.notas.push({quiz:'PhishingSim', timestamp:Date.now(), ok:isCorrect});
+        saveDB();
+        
+        setTimeout(showEmail, 2500);
+      };
+    }
+    
+    if(btnP){
+      btnP.onclick = ()=>{
+        score.total++;
+        const isCorrect = emails[curEmail].phish;
+        if(isCorrect) score.correct++;
+        
+        if(emails[curEmail].phish){
+          fb.innerHTML = `<div class="success-msg">✅ ¡Bien detectado! Nunca abras enlaces dudosos ni descargues archivos sospechosos.</div>`;
+        } else {
+          fb.innerHTML = `<div class="error-msg">❌ Era legítimo. Revisa remitente y contexto antes de descartar mensajes oficiales.</div>`;
+        }
+        
+        DB.notas.push({quiz:'PhishingSim', timestamp:Date.now(), ok:isCorrect});
+        saveDB();
+        
+        setTimeout(showEmail, 2500);
+      };
+    }
+  }
+
+  // ====== REPORTES ======
+  function initReportes(){
+    const aprob = DB.notas.reduce((a,n)=>a+(n.ok?1:0), 0);
+    const reprob = DB.notas.length - aprob;
+    
+    setTimeout(()=>{
+      drawBar('chartNotas', ['Aprobados','Reprobados'], [aprob, reprob]);
+      drawBar('chartUso', 
+        ['Cursos','Alumnos','Quizzes','Recursos'], 
+        [DB.cursos.length, DB.alumnos.length, DB.quizzes.length, DB.recursos.length]
+      );
+    }, 100);
+
+    const expBtn = document.getElementById('exportReportes');
+    if(expBtn){
+      expBtn.onclick = ()=>{
+        const totalAsist = DB.alumnos.length ? Math.round(
+          DB.alumnos.reduce((acc,n)=>{
+            const r = DB.asistencia[n]||{p:0,a:0};
+            const t = r.p+r.a;
+            return acc + (t? (r.p*100/t):0);
+          },0)/DB.alumnos.length
+        ) : 0;
+        
+        const report = {
+          fecha_generacion: new Date().toISOString(),
+          institucion: 'EDUTECH S.A.S.',
+          tipo_reporte: 'Consolidado General',
+          kpis: {
+            cursos_activos: DB.cursos.length,
+            estudiantes_registrados: DB.alumnos.length,
+            evaluaciones_publicadas: DB.quizzes.length,
+            asistencia_promedio: totalAsist + '%',
+            recursos_biblioteca: DB.recursos.length
+          },
+          rendimiento_academico: {
+            evaluaciones_aprobadas: aprob,
+            evaluaciones_reprobadas: reprob,
+            total_evaluaciones: DB.notas.length,
+            tasa_aprobacion: DB.notas.length > 0 ? Math.round((aprob/DB.notas.length)*100) + '%' : '0%'
+          },
+          actividad_plataforma: {
+            publicaciones_foro: DB.foro.length,
+            mensajes_chat: DB.chat.length,
+            anuncios_publicados: DB.anuncios.length
+          },
+          cursos_detalle: DB.cursos.map(c=>({
+            nombre: c,
+            lecciones: (DB.lecciones[c]||[]).length
+          }))
+        };
+        
+        downloadText(JSON.stringify(report, null, 2), 'reporte_completo_edutech.json');
+        showMessage('✅ Reporte completo generado', 'success');
+      };
+    }
+  }
+
+  // ====== HELPERS ======
+  function sleep(ms){
+    return new Promise(r=>setTimeout(r,ms));
+  }
+
+  function downloadText(text, filename){
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], {type:'application/json'}));
+    a.download = filename;
+    a.click();
+  }
+
+  function downloadCSV(rows, filename){
+    const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type:'text/csv;charset=utf-8'}));
+    a.download = filename;
+    a.click();
+  }
+
+  function drawBar(id, labels, values){
+    const c = document.getElementById(id);
+    if(!c) return;
+    const ctx = c.getContext('2d');
+    const W = c.width = c.clientWidth;
+    const H = c.height;
+    
+    ctx.clearRect(0, 0, W, H);
+    
+    const max = Math.max(1, ...values);
+    const bw = W / (values.length * 1.8);
+    const colors = ['#1ABC9C', '#2874A6', '#ffb703', '#ef476f', '#06d6a0'];
+    
+    values.forEach((v,i)=>{
+      const x = (i+1) * W / (values.length+1);
+      const h = (v/max) * (H-40);
+      
+      ctx.fillStyle = colors[i % colors.length];
+      ctx.fillRect(x - bw/2, H - h - 25, bw, h);
+      
+      ctx.fillStyle = 'rgba(255,255,255,.9)';
+      ctx.textAlign = 'center';
+      ctx.font = '12px system-ui';
+      ctx.fillText(labels[i], x, H - 8);
+      ctx.font = 'bold 14px system-ui';
+      ctx.fillText(v, x, H - h - 30);
+    });
+  }
+
+  function showMessage(msg, type='info'){
+    const toast = document.createElement('div');
+    toast.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px 20px;
+      background: ${type==='success'?'var(--ok)':type==='error'?'var(--danger)':'var(--primary)'};
+      color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.3);
+      z-index: 1000;
+      font-weight: 600;
+      animation: slideIn 0.3s ease;
+    `;
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    
+    setTimeout(()=>{
+      toast.style.animation = 'slideOut 0.3s ease';
+      setTimeout(()=>toast.remove(), 300);
+    }, 3000);
+  }
+
+  // ====== EXPORT/IMPORT/DEMO/RESET ======
+  document.getElementById('exportBtn').onclick = ()=>{
+    const data = JSON.stringify(DB, null, 2);
+    downloadText(data, 'edutech_backup_' + Date.now() + '.json');
+    showMessage('✅ Datos exportados exitosamente', 'success');
+  }
+
+  document.getElementById('importInput').onchange = (e)=>{
+    const f = e.target.files[0];
+    if(!f) return;
+    
+    if(!f.name.endsWith('.json')) {
+      showMessage('Por favor selecciona un archivo JSON válido', 'error');
+      return;
+    }
+    
+    const r = new FileReader();
+    r.onload = ()=>{
+      try {
+        const obj = JSON.parse(r.result);
+        Object.assign(DB, obj);
+        saveDB();
+        go(current);
+        showMessage('✅ Datos importados exitosamente', 'success');
+      } catch(e) {
+        showMessage('Error: archivo JSON inválido', 'error');
+      }
+    };
+    r.readAsText(f);
+  }
+
+  document.getElementById('resetBtn').onclick = ()=>{
+    if(confirm('⚠️ ¿Borrar TODOS los datos del MVP?\n\nEsta acción no se puede deshacer.')){
+      localStorage.clear();
+      showMessage('Datos eliminados. Recargando...', 'success');
+      setTimeout(()=>location.reload(), 1500);
+    }
+  }
+
+  document.getElementById('demoBtn').onclick = ()=>{
+    if(confirm('¿Cargar datos de demostración?\n\nEsto agregará contenido de ejemplo para la feria.')){
+      loadDemo();
+      showMessage('✅ Datos demo cargados exitosamente', 'success');
+      go(current);
+    }
+  }
+
+  function loadDemo(){
+    // Cursos
+    if(DB.cursos.length === 0){
+      DB.cursos = ['Ciberseguridad 101', 'Pensamiento Computacional', 'Desarrollo Web'];
+      
+      DB.lecciones['Ciberseguridad 101'] = [
+        {
+          titulo: 'Introducción a la Ciberseguridad',
+          contenido: `<h4>🛡️ Principios básicos de ciberseguridad</h4>
+            <p>La ciberseguridad es la práctica de proteger sistemas, redes y programas de ataques digitales.</p>
+            <h5>Pilares fundamentales:</h5>
+            <ul>
+              <li><strong>Confidencialidad:</strong> Solo personas autorizadas acceden a la información</li>
+              <li><strong>Integridad:</strong> Los datos no pueden ser modificados sin autorización</li>
+              <li><strong>Disponibilidad:</strong> La información está accesible cuando se necesita</li>
+            </ul>
+            <p>💡 <em>Recuerda: La seguridad es responsabilidad de todos.</em></p>`
+        },
+        {
+          titulo: 'Contraseñas y Autenticación',
+          contenido: `<h4>🔐 Gestión de contraseñas seguras</h4>
+            <p>Una contraseña fuerte es tu primera línea de defensa.</p>
+            <h5>Características de una buena contraseña:</h5>
+            <ul>
+              <li>Al menos 12 caracteres de longitud</li>
+              <li>Combinación de mayúsculas, minúsculas, números y símbolos</li>
+              <li>No usar información personal (fechas, nombres)</li>
+              <li>Única para cada cuenta</li>
+            </ul>
+            <h5>Autenticación de dos factores (2FA)</h5>
+            <p>Añade una capa extra de seguridad mediante códigos enviados a tu teléfono o app autenticadora.</p>`
+        },
+        {
+          titulo: 'Phishing y Ataques Sociales',
+          contenido: `<h4>🎣 Reconociendo el phishing</h4>
+            <p>El phishing es un intento de obtener información sensible haciéndose pasar por una entidad confiable.</p>
+            <h5>Señales de alerta:</h5>
+            <ul>
+              <li>⚠️ Urgencia o amenazas</li>
+              <li>📧 Errores ortográficos o gramaticales</li>
+              <li>🔗 URLs sospechosas o acortadas</li>
+              <li>📎 Archivos adjuntos inesperados</li>
+              <li>💰 Ofertas demasiado buenas para ser verdad</li>
+            </ul>
+            <p><strong>Regla de oro:</strong> Si algo parece sospechoso, probablemente lo es.</p>`
+        }
+      ];
+
+      DB.lecciones['Pensamiento Computacional'] = [
+        {
+          titulo: '¿Qué es un Algoritmo?',
+          contenido: `<h4>🧮 Introducción a los algoritmos</h4>
+            <p>Un algoritmo es una secuencia finita de pasos bien definidos para resolver un problema.</p>
+            <h5>Ejemplo cotidiano: Receta de cocina</h5>
+            <ol>
+              <li>Reunir todos los ingredientes necesarios</li>
+              <li>Preparar los utensilios de cocina</li>
+              <li>Seguir los pasos de preparación en orden</li>
+              <li>Cocinar según tiempo y temperatura indicados</li>
+              <li>Servir el plato terminado</li>
+            </ol>
+            <p>💡 En programación, los algoritmos son la base de todo software.</p>`
+        },
+        {
+          titulo: 'Reconocimiento de Patrones',
+          contenido: `<h4>🔍 Identificación de patrones</h4>
+            <p>Los patrones son repeticiones o regularidades en datos o procesos.</p>
+            <h5>¿Por qué son importantes?</h5>
+            <ul>
+              <li>Nos ayudan a predecir comportamientos futuros</li>
+              <li>Permiten optimizar procesos repetitivos</li>
+              <li>Facilitan la resolución de problemas complejos</li>
+            </ul>
+            <h5>Ejemplo numérico:</h5>
+            <p>Secuencia: 2, 4, 8, 16, 32, 64...</p>
+            <p>Patrón: Cada número es el doble del anterior (potencias de 2)</p>`
+        }
+      ];
+
+      DB.lecciones['Desarrollo Web'] = [
+        {
+          titulo: 'HTML: Estructura de páginas',
+          contenido: `<h4>🌐 Fundamentos de HTML</h4>
+            <p>HTML (HyperText Markup Language) es el lenguaje de marcado para crear páginas web.</p>
+            <h5>Etiquetas básicas:</h5>
+            <ul>
+              <li><code>&lt;h1&gt;</code> a <code>&lt;h6&gt;</code>: Títulos</li>
+              <li><code>&lt;p&gt;</code>: Párrafos</li>
+              <li><code>&lt;a&gt;</code>: Enlaces</li>
+              <li><code>&lt;img&gt;</code>: Imágenes</li>
+              <li><code>&lt;div&gt;</code>: Contenedores</li>
+            </ul>`
+        },
+        {
+          titulo: 'CSS: Diseño y estilos',
+          contenido: `<h4>🎨 Introducción a CSS</h4>
+            <p>CSS (Cascading Style Sheets) controla la presentación visual de páginas web.</p>
+            <h5>Propiedades comunes:</h5>
+            <ul>
+              <li><strong>color:</strong> Color del texto</li>
+              <li><strong>background:</strong> Color de fondo</li>
+              <li><strong>font-size:</strong> Tamaño de fuente</li>
+              <li><strong>margin/padding:</strong> Espaciado</li>
+            </ul>`
+        }
+      ];
+    }
+
+    // Estudiantes
+    if(DB.alumnos.length === 0){
+      DB.alumnos = ['Ana Pérez', 'Luis Gómez', 'María Rincón', 'Sofía Díaz', 'Carlos Torres'];
+      DB.asistencia['Ana Pérez'] = {p:8, a:1};
+      DB.asistencia['Luis Gómez'] = {p:7, a:2};
+      DB.asistencia['María Rincón'] = {p:9, a:0};
+      DB.asistencia['Sofía Díaz'] = {p:8, a:1};
+      DB.asistencia['Carlos Torres'] = {p:6, a:3};
+    }
+
+    // Evaluaciones
+    if(DB.quizzes.length === 0){
+      DB.quizzes = [
+        {
+          titulo: 'Conceptos básicos de Ciberseguridad',
+          enunciado: '¿Qué es el phishing?',
+          A: 'Un tipo de malware que se replica automáticamente',
+          B: 'Una técnica de suplantación de identidad para robar datos',
+          C: 'Un firewall avanzado en la nube',
+          ok: 'B'
+        },
+        {
+          titulo: 'Autenticación segura',
+          enunciado: '¿Qué es la autenticación de dos factores (2FA)?',
+          A: 'Usar dos contraseñas diferentes',
+          B: 'Verificar identidad con dos métodos independientes',
+          C: 'Cambiar la contraseña cada dos meses',
+          ok: 'B'
+        },
+        {
+          titulo: 'Pensamiento Computacional',
+          enunciado: '¿Qué es un algoritmo?',
+          A: 'Un lenguaje de programación',
+          B: 'Una secuencia de pasos para resolver un problema',
+          C: 'Un tipo de computadora',
+          ok: 'B'
+        }
+      ];
+    }
+
+    // Recursos
+    if(DB.recursos.length === 0){
+      DB.recursos = [
+        {titulo: 'Guía de contraseñas seguras - INCIBE', url: 'https://www.incibe.es/protege-tu-empresa/blog/guia-para-crear-contrasenas-seguras'},
+        {titulo: 'Portal de ciberseguridad INCIBE', url: 'https://www.incibe.es/'},
+        {titulo: 'Pensamiento computacional - Google', url: 'https://edu.google.com/resources/programs/exploring-computational-thinking/'},
+        {titulo: 'MDN Web Docs - Desarrollo Web', url: 'https://developer.mozilla.org/es/'},
+        {titulo: 'freeCodeCamp - Cursos gratuitos', url: 'https://www.freecodecamp.org/'}
+      ];
+    }
+
+    // Anuncios
+    if(DB.anuncios.length === 0){
+      DB.anuncios = [
+        'Bienvenidos a EDUTECH - Plataforma educativa innovadora',
+        'Taller de ciberseguridad este viernes a las 3:00 PM',
+        'Nuevos cursos disponibles en la biblioteca digital',
+        'Recuerden completar las evaluaciones pendientes'
+      ];
+    }
+
+    // Foro
+    if(DB.foro.length === 0){
+      DB.foro = [
+        '¡Hola a todos! Muy emocionado de comenzar con estos cursos.',
+        '¿Alguien ha completado la lección de phishing? Está muy interesante.',
+        'El simulador de ciberseguridad es excelente para practicar.'
+      ];
+    }
+
+    saveDB();
+  }
+
+  // ====== INICIALIZACIÓN ======
+  renderMenu();
+  go('dashboard');
+  applyRoleVisibility();
+
+  // Auto-cargar datos demo si no hay contenido
+  const hasData = DB.cursos.length || DB.alumnos.length || DB.quizzes.length;
+  if(!hasData && !LS.get('demoLoaded', false)){
+    loadDemo();
+    LS.set('demoLoaded', true);
+  }
+
+  // Animaciones CSS
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(400px); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(style);
+
+  console.log('✅ EDUTECH MVP completamente funcional');
+  console.log('📊 Cursos:', DB.cursos.length);
+  console.log('👥 Estudiantes:', DB.alumnos.length);
+  console.log('📝 Evaluaciones:', DB.quizzes.length);
+  console.log('📖 Recursos:', DB.recursos.length);
+  </script>
+</body>
+</html>
+      

@@ -1,0 +1,1366 @@
+<!DOCTYPE html>
+<invoke name="artifacts">
+<parameter name="command">create</parameter>
+<parameter name="type">text/html</parameter>
+<parameter name="id">nexus-mvp-demo</parameter>
+<parameter name="title">Nexus Tech Solutions - Plataforma Educativa MVP</parameter>
+<parameter name="content"><!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Tech Solutions - Plataforma de Gestión Educativa</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: slideDown 0.5s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .brand-info h1 {
+            color: white;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .brand-info p {
+            color: #a8d0ff;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        .user-info {
+            color: white;
+            text-align: right;
+        }
+
+        .user-info h3 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .user-info p {
+            font-size: 14px;
+            color: #a8d0ff;
+        }
+
+        /* Navigation */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .nav-tab {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 20px;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.6);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(235, 51, 73, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(242, 153, 74, 0.4);
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.6);
+        }
+
+        .stat-card h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .label {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Grade badges */
+        .grade-badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .grade-excellent { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; }
+        .grade-good { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; }
+        .grade-average { background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); color: white; }
+        .grade-poor { background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; }
+
+        /* Alerts */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, rgba(17, 153, 142, 0.2) 0%, rgba(56, 239, 125, 0.2) 100%);
+            border-left: 4px solid #11998e;
+            color: #0a5f56;
+        }
+
+        .alert-info {
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.2) 0%, rgba(0, 242, 254, 0.2) 100%);
+            border-left: 4px solid #4facfe;
+            color: #2c5f8d;
+        }
+
+        /* Grid layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .user-info {
+                text-align: center;
+                margin-top: 15px;
+            }
+
+            .nav-tabs {
+                flex-direction: column;
+            }
+
+            .nav-tab {
+                width: 100%;
+            }
+        }
+
+        /* Loading animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Message box */
+        .message-box {
+            background: white;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .message-box h4 {
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+
+        .message-box p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .message-box small {
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="header-content">
+                <div class="logo-section">
+                    <div class="logo">NT</div>
+                    <div class="brand-info">
+                        <h1>NEXUS TECH SOLUTIONS</h1>
+                        <p>Educación organizada, futuro asegurado</p>
+                    </div>
+                </div>
+                <div class="user-info">
+                    <h3>Demo Institucional</h3>
+                    <p>Colegio Normal Superior - Corozal</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation -->
+        <div class="nav-tabs">
+            <button class="nav-tab active" onclick="showSection('dashboard')">📊 Dashboard</button>
+            <button class="nav-tab" onclick="showSection('students')">👨‍🎓 Estudiantes</button>
+            <button class="nav-tab" onclick="showSection('grades')">📝 Calificaciones</button>
+            <button class="nav-tab" onclick="showSection('attendance')">✅ Asistencia</button>
+            <button class="nav-tab" onclick="showSection('communication')">💬 Comunicación</button>
+            <button class="nav-tab" onclick="showSection('reports')">📈 Reportes</button>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section active">
+            <div class="alert alert-info">
+                <strong>¡Bienvenido al MVP de Nexus Tech Solutions!</strong> Esta es una demostración completa de nuestra plataforma de gestión educativa integral.
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                    <h3>Total Estudiantes</h3>
+                    <div class="number" id="totalStudents">0</div>
+                    <div class="label">Registrados en el sistema</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                    <h3>Promedio General</h3>
+                    <div class="number" id="averageGrade">0</div>
+                    <div class="label">Calificación promedio</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                    <h3>Asistencia</h3>
+                    <div class="number" id="attendanceRate">0%</div>
+                    <div class="label">Promedio mensual</div>
+                </div>
+                <div class="stat-card" style="background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);">
+                    <h3>Mensajes</h3>
+                    <div class="number" id="totalMessages">0</div>
+                    <div class="label">Comunicaciones activas</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">📊 Resumen del Sistema</div>
+                <p style="line-height: 1.8; color: #666;">
+                    La plataforma de <strong>Nexus Tech Solutions</strong> centraliza todos los procesos educativos en un solo lugar. 
+                    Desde la gestión de matrículas hasta el seguimiento académico, nuestra solución optimiza el tiempo de docentes y 
+                    directivos, mejora la comunicación con las familias y garantiza la seguridad de los datos institucionales.
+                </p>
+            </div>
+        </div>
+
+        <!-- Students Section -->
+        <div id="students" class="content-section">
+            <div class="card">
+                <div class="card-header">➕ Registrar Nuevo Estudiante</div>
+                <form id="studentForm" onsubmit="addStudent(event)">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Nombres *</label>
+                            <input type="text" id="studentName" required placeholder="Ej: Juan Carlos">
+                        </div>
+                        <div class="form-group">
+                            <label>Apellidos *</label>
+                            <input type="text" id="studentLastName" required placeholder="Ej: Pérez García">
+                        </div>
+                        <div class="form-group">
+                            <label>Documento *</label>
+                            <input type="text" id="studentDoc" required placeholder="Ej: 1234567890">
+                        </div>
+                        <div class="form-group">
+                            <label>Grado *</label>
+                            <select id="studentGrade" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="6°">6° Grado</option>
+                                <option value="7°">7° Grado</option>
+                                <option value="8°">8° Grado</option>
+                                <option value="9°">9° Grado</option>
+                                <option value="10°">10° Grado</option>
+                                <option value="11°">11° Grado</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Correo Electrónico</label>
+                            <input type="email" id="studentEmail" placeholder="estudiante@ejemplo.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono Acudiente</label>
+                            <input type="tel" id="studentPhone" placeholder="3001234567">
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">💾 Registrar Estudiante</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">📋 Listado de Estudiantes</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Documento</th>
+                                <th>Nombre Completo</th>
+                                <th>Grado</th>
+                                <th>Contacto</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentsTable">
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #999;">No hay estudiantes registrados</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Grades Section -->
+        <div id="grades" class="content-section">
+            <div class="card">
+                <div class="card-header">📝 Registrar Calificaciones</div>
+                <form id="gradeForm" onsubmit="addGrade(event)">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Estudiante *</label>
+                            <select id="gradeStudent" required>
+                                <option value="">Seleccionar estudiante...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Materia *</label>
+                            <select id="gradeSubject" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="Matemáticas">Matemáticas</option>
+                                <option value="Español">Español</option>
+                                <option value="Ciencias">Ciencias Naturales</option>
+                                <option value="Sociales">Ciencias Sociales</option>
+                                <option value="Inglés">Inglés</option>
+                                <option value="Tecnología">Tecnología</option>
+                                <option value="Educación Física">Educación Física</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Periodo *</label>
+                            <select id="gradePeriod" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="1">Periodo 1</option>
+                                <option value="2">Periodo 2</option>
+                                <option value="3">Periodo 3</option>
+                                <option value="4">Periodo 4</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Calificación (1.0 - 5.0) *</label>
+                            <input type="number" id="gradeValue" step="0.1" min="1.0" max="5.0" required placeholder="Ej: 4.5">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <textarea id="gradeObservations" rows="3" placeholder="Comentarios sobre el desempeño del estudiante..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-success">✅ Guardar Calificación</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">📊 Registro de Calificaciones</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Estudiante</th>
+                                <th>Materia</th>
+                                <th>Periodo</th>
+                                <th>Calificación</th>
+                                <th>Observaciones</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="gradesTable">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: #999;">No hay calificaciones registradas</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Attendance Section -->
+        <div id="attendance" class="content-section">
+            <div class="card">
+                <div class="card-header">✅ Registro de Asistencia</div>
+                <form id="attendanceForm" onsubmit="addAttendance(event)">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Fecha *</label>
+                            <input type="date" id="attendanceDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Grado *</label>
+                            <select id="attendanceGrade" required onchange="filterStudentsByGrade()">
+                                <option value="">Seleccionar grado...</option>
+                                <option value="6°">6° Grado</option>
+                                <option value="7°">7° Grado</option>
+                                <option value="8°">8° Grado</option>
+                                <option value="9°">9° Grado</option>
+                                <option value="10°">10° Grado</option>
+                                <option value="11°">11° Grado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="attendanceList" style="margin-top: 20px;">
+                        <p style="text-align: center; color: #999;">Seleccione un grado para ver los estudiantes</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="attendanceSubmit" style="display: none;">💾 Guardar Asistencia</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">📅 Historial de Asistencia</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Estudiante</th>
+                                <th>Grado</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTable">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: #999;">No hay registros de asistencia</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Communication Section -->
+        <div id="communication" class="content-section">
+            <div class="card">
+                <div class="card-header">💬 Enviar Mensaje</div>
+                <form id="messageForm" onsubmit="sendMessage(event)">
+                    <div class="form-group">
+                        <label>Destinatario *</label>
+                        <select id="messageRecipient" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="Todos los Padres">Todos los Padres de Familia</option>
+                            <option value="Docentes">Todos los Docentes</option>
+                            <option value="Específico">Destinatario Específico</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="specificRecipientGroup" style="display: none;">
+                        <label>Seleccionar Estudiante</label>
+                        <select id="specificRecipient">
+                            <option value="">Seleccionar estudiante...</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Asunto *</label>
+                        <input type="text" id="messageSubject" required placeholder="Ej: Reunión de padres">
+                    </div>
+                    <div class="form-group">
+                        <label>Mensaje *</label>
+                        <textarea id="messageContent" rows="5" required placeholder="Escriba su mensaje aquí..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">📤 Enviar Mensaje</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <div class="card-header">📬 Mensajes Enviados</div>
+                <div id="messagesContainer">
+                    <p style="text-align: center; color: #999; padding: 20px;">No hay mensajes enviados</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div id="reports" class="content-section">
+            <div class="card">
+                <div class="card-header">📈 Generador de Reportes</div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Tipo de Reporte</label>
+                        <select id="reportType">
+                            <option value="students">Listado de Estudiantes</option>
+                            <option value="grades">Reporte de Calificaciones</option>
+                            <option value="attendance">Reporte de Asistencia</option>
+                            <option value="general">Reporte General</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Formato</label>
+                        <select id="reportFormat">
+                            <option value="pdf">PDF</option>
+                            <option value="excel">Excel</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-success" onclick="generateReport()">📄 Generar Reporte</button>
+            </div>
+
+            <div class="card">
+                <div class="card-header">📊 Estadísticas Generales</div>
+                <div id="reportStats">
+                    <div class="stats-grid">
+                        <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <h3>Estudiantes por Grado</h3>
+                            <div class="number" id="studentsPerGrade">-</div>
+                            <div class="label">Distribución actual</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                            <h3>Rendimiento Académico</h3>
+                            <div class="number" i
+d="academicPerformance">-</div>
+                            <div class="label">Promedio institucional</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                            <h3>Asistencia Promedio</h3>
+                            <div class="number" id="avgAttendance">-</div>
+                            <div class="label">Último mes</div>
+                        </div>
+                        <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                            <h3>Comunicaciones</h3>
+                            <div class="number" id="totalCommunications">-</div>
+                            <div class="label">Mensajes enviados</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">🎯 Análisis por Materia</div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Materia</th>
+                                <th>Promedio</th>
+                                <th>Mejor Nota</th>
+                                <th>Total Evaluaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subjectAnalysisTable">
+                            <tr>
+                                <td colspan="4" style="text-align: center; color: #999;">No hay datos suficientes para análisis</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage usando variables en memoria
+        let students = [];
+        let grades = [];
+        let attendance = [];
+        let messages = [];
+
+        // Initialize with demo data
+        function initializeDemoData() {
+            // Demo students
+            students = [
+                {
+                    id: 1,
+                    name: "María",
+                    lastName: "González López",
+                    doc: "1095234567",
+                    grade: "10°",
+                    email: "maria.gonzalez@ejemplo.com",
+                    phone: "3001234567"
+                },
+                {
+                    id: 2,
+                    name: "Carlos",
+                    lastName: "Martínez Pérez",
+                    doc: "1095234568",
+                    grade: "10°",
+                    email: "carlos.martinez@ejemplo.com",
+                    phone: "3001234568"
+                },
+                {
+                    id: 3,
+                    name: "Ana",
+                    lastName: "Rodríguez Silva",
+                    doc: "1095234569",
+                    grade: "9°",
+                    email: "ana.rodriguez@ejemplo.com",
+                    phone: "3001234569"
+                }
+            ];
+
+            // Demo grades
+            grades = [
+                {
+                    id: 1,
+                    studentId: 1,
+                    subject: "Matemáticas",
+                    period: "1",
+                    value: 4.5,
+                    observations: "Excelente desempeño en álgebra"
+                },
+                {
+                    id: 2,
+                    studentId: 1,
+                    subject: "Español",
+                    period: "1",
+                    value: 4.2,
+                    observations: "Buena comprensión lectora"
+                },
+                {
+                    id: 3,
+                    studentId: 2,
+                    subject: "Matemáticas",
+                    period: "1",
+                    value: 3.8,
+                    observations: "Debe mejorar en geometría"
+                }
+            ];
+
+            // Demo attendance
+            const today = new Date();
+            attendance = [
+                {
+                    id: 1,
+                    studentId: 1,
+                    date: today.toISOString().split('T')[0],
+                    status: "Presente"
+                },
+                {
+                    id: 2,
+                    studentId: 2,
+                    date: today.toISOString().split('T')[0],
+                    status: "Presente"
+                },
+                {
+                    id: 3,
+                    studentId: 3,
+                    date: today.toISOString().split('T')[0],
+                    status: "Ausente"
+                }
+            ];
+
+            // Demo messages
+            messages = [
+                {
+                    id: 1,
+                    recipient: "Todos los Padres",
+                    subject: "Reunión de Padres",
+                    content: "Les recordamos la reunión de padres programada para el próximo viernes a las 3:00 PM.",
+                    date: new Date().toLocaleString()
+                }
+            ];
+
+            updateAllDisplays();
+        }
+
+        // Navigation
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+
+            if (sectionId === 'reports') {
+                updateReportStats();
+            }
+        }
+
+        // Students Management
+        function addStudent(event) {
+            event.preventDefault();
+            
+            const student = {
+                id: students.length + 1,
+                name: document.getElementById('studentName').value,
+                lastName: document.getElementById('studentLastName').value,
+                doc: document.getElementById('studentDoc').value,
+                grade: document.getElementById('studentGrade').value,
+                email: document.getElementById('studentEmail').value,
+                phone: document.getElementById('studentPhone').value
+            };
+
+            students.push(student);
+            showAlert('success', '¡Estudiante registrado exitosamente!');
+            document.getElementById('studentForm').reset();
+            updateStudentsTable();
+            updateDashboard();
+            updateStudentSelects();
+        }
+
+        function updateStudentsTable() {
+            const tbody = document.getElementById('studentsTable');
+            if (students.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #999;">No hay estudiantes registrados</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = students.map(student => `
+                <tr>
+                    <td>${student.doc}</td>
+                    <td>${student.name} ${student.lastName}</td>
+                    <td>${student.grade}</td>
+                    <td>${student.email || 'N/A'}<br><small>${student.phone || 'N/A'}</small></td>
+                    <td>
+                        <button class="btn btn-danger" onclick="deleteStudent(${student.id})" style="padding: 8px 15px; margin: 0;">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteStudent(id) {
+            if (confirm('¿Está seguro de eliminar este estudiante?')) {
+                students = students.filter(s => s.id !== id);
+                grades = grades.filter(g => g.studentId !== id);
+                attendance = attendance.filter(a => a.studentId !== id);
+                updateAllDisplays();
+                showAlert('success', 'Estudiante eliminado correctamente');
+            }
+        }
+
+        // Grades Management
+        function addGrade(event) {
+            event.preventDefault();
+            
+            const grade = {
+                id: grades.length + 1,
+                studentId: parseInt(document.getElementById('gradeStudent').value),
+                subject: document.getElementById('gradeSubject').value,
+                period: document.getElementById('gradePeriod').value,
+                value: parseFloat(document.getElementById('gradeValue').value),
+                observations: document.getElementById('gradeObservations').value
+            };
+
+            grades.push(grade);
+            showAlert('success', '¡Calificación registrada exitosamente!');
+            document.getElementById('gradeForm').reset();
+            updateGradesTable();
+            updateDashboard();
+        }
+
+        function updateGradesTable() {
+            const tbody = document.getElementById('gradesTable');
+            if (grades.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">No hay calificaciones registradas</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = grades.map(grade => {
+                const student = students.find(s => s.id === grade.studentId);
+                const studentName = student ? `${student.name} ${student.lastName}` : 'Desconocido';
+                const badgeClass = grade.value >= 4.5 ? 'grade-excellent' : 
+                                   grade.value >= 4.0 ? 'grade-good' : 
+                                   grade.value >= 3.0 ? 'grade-average' : 'grade-poor';
+                
+                return `
+                    <tr>
+                        <td>${studentName}</td>
+                        <td>${grade.subject}</td>
+                        <td>Periodo ${grade.period}</td>
+                        <td><span class="grade-badge ${badgeClass}">${grade.value.toFixed(1)}</span></td>
+                        <td>${grade.observations || 'Sin observaciones'}</td>
+                        <td>
+                            <button class="btn btn-danger" onclick="deleteGrade(${grade.id})" style="padding: 8px 15px; margin: 0;">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function deleteGrade(id) {
+            if (confirm('¿Está seguro de eliminar esta calificación?')) {
+                grades = grades.filter(g => g.id !== id);
+                updateGradesTable();
+                updateDashboard();
+                showAlert('success', 'Calificación eliminada correctamente');
+            }
+        }
+
+        // Attendance Management
+        function filterStudentsByGrade() {
+            const selectedGrade = document.getElementById('attendanceGrade').value;
+            const attendanceList = document.getElementById('attendanceList');
+            const submitBtn = document.getElementById('attendanceSubmit');
+
+            if (!selectedGrade) {
+                attendanceList.innerHTML = '<p style="text-align: center; color: #999;">Seleccione un grado para ver los estudiantes</p>';
+                submitBtn.style.display = 'none';
+                return;
+            }
+
+            const filteredStudents = students.filter(s => s.grade === selectedGrade);
+            
+            if (filteredStudents.length === 0) {
+                attendanceList.innerHTML = '<p style="text-align: center; color: #999;">No hay estudiantes en este grado</p>';
+                submitBtn.style.display = 'none';
+                return;
+            }
+
+            attendanceList.innerHTML = `
+                <h4 style="margin-bottom: 15px; color: #667eea;">Marcar asistencia para ${selectedGrade}:</h4>
+                ${filteredStudents.map(student => `
+                    <div style="background: #f8f9fa; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                        <span><strong>${student.name} ${student.lastName}</strong> - ${student.doc}</span>
+                        <div>
+                            <label style="margin-right: 15px;">
+                                <input type="radio" name="attendance_${student.id}" value="Presente" checked> ✅ Presente
+                            </label>
+                            <label style="margin-right: 15px;">
+                                <input type="radio" name="attendance_${student.id}" value="Ausente"> ❌ Ausente
+                            </label>
+                            <label>
+                                <input type="radio" name="attendance_${student.id}" value="Tardanza"> ⏰ Tardanza
+                            </label>
+                        </div>
+                    </div>
+                `).join('')}
+            `;
+            submitBtn.style.display = 'inline-block';
+        }
+
+        function addAttendance(event) {
+            event.preventDefault();
+            
+            const date = document.getElementById('attendanceDate').value;
+            const grade = document.getElementById('attendanceGrade').value;
+            const filteredStudents = students.filter(s => s.grade === grade);
+
+            let count = 0;
+            filteredStudents.forEach(student => {
+                const status = document.querySelector(`input[name="attendance_${student.id}"]:checked`).value;
+                attendance.push({
+                    id: attendance.length + 1,
+                    studentId: student.id,
+                    date: date,
+                    status: status
+                });
+                count++;
+            });
+
+            showAlert('success', `¡Asistencia registrada para ${count} estudiantes!`);
+            document.getElementById('attendanceForm').reset();
+            document.getElementById('attendanceList').innerHTML = '<p style="text-align: center; color: #999;">Seleccione un grado para ver los estudiantes</p>';
+            document.getElementById('attendanceSubmit').style.display = 'none';
+            updateAttendanceTable();
+            updateDashboard();
+        }
+
+        function updateAttendanceTable() {
+            const tbody = document.getElementById('attendanceTable');
+            if (attendance.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">No hay registros de asistencia</td></tr>';
+                return;
+            }
+
+            // Get last 20 records
+            const recentAttendance = attendance.slice(-20).reverse();
+            
+            tbody.innerHTML = recentAttendance.map(att => {
+                const student = students.find(s => s.id === att.studentId);
+                const studentName = student ? `${student.name} ${student.lastName}` : 'Desconocido';
+                const studentGrade = student ? student.grade : '-';
+                
+                const statusBadge = att.status === 'Presente' ? 'grade-excellent' :
+                                   att.status === 'Tardanza' ? 'grade-average' : 'grade-poor';
+                
+                return `
+                    <tr>
+                        <td>${att.date}</td>
+                        <td>${studentName}</td>
+                        <td>${studentGrade}</td>
+                        <td><span class="grade-badge ${statusBadge}">${att.status}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Communication Management
+        document.getElementById('messageRecipient').addEventListener('change', function() {
+            const specificGroup = document.getElementById('specificRecipientGroup');
+            if (this.value === 'Específico') {
+                specificGroup.style.display = 'block';
+            } else {
+                specificGroup.style.display = 'none';
+            }
+        });
+
+        function sendMessage(event) {
+            event.preventDefault();
+            
+            let recipient = document.getElementById('messageRecipient').value;
+            if (recipient === 'Específico') {
+                const studentId = parseInt(document.getElementById('specificRecipient').value);
+                const student = students.find(s => s.id === studentId);
+                recipient = student ? `Padre de ${student.name} ${student.lastName}` : 'Desconocido';
+            }
+
+            const message = {
+                id: messages.length + 1,
+                recipient: recipient,
+                subject: document.getElementById('messageSubject').value,
+                content: document.getElementById('messageContent').value,
+                date: new Date().toLocaleString()
+            };
+
+            messages.push(message);
+            showAlert('success', '¡Mensaje enviado exitosamente!');
+            document.getElementById('messageForm').reset();
+            document.getElementById('specificRecipientGroup').style.display = 'none';
+            updateMessagesDisplay();
+            updateDashboard();
+        }
+
+        function updateMessagesDisplay() {
+            const container = document.getElementById('messagesContainer');
+            if (messages.length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: #999; padding: 20px;">No hay mensajes enviados</p>';
+                return;
+            }
+
+            container.innerHTML = messages.slice().reverse().map(msg => `
+                <div class="message-box">
+                    <h4>📧 ${msg.subject}</h4>
+                    <p><strong>Para:</strong> ${msg.recipient}</p>
+                    <p>${msg.content}</p>
+                    <small>📅 ${msg.date}</small>
+                </div>
+            `).join('');
+        }
+
+        // Reports and Statistics
+        function generateReport() {
+            const type = document.getElementById('reportType').value;
+            const format = document.getElementById('reportFormat').value;
+            
+            showAlert('info', `Generando reporte de ${type} en formato ${format.toUpperCase()}...`);
+            
+            setTimeout(() => {
+                showAlert('success', '¡Reporte generado exitosamente! En una versión completa, se descargaría automáticamente.');
+            }, 1500);
+        }
+
+        function updateReportStats() {
+            // Students per grade
+            const gradesCount = {};
+            students.forEach(s => {
+                gradesCount[s.grade] = (gradesCount[s.grade] || 0) + 1;
+            });
+            const gradesList = Object.entries(gradesCount)
+                .map(([grade, count]) => `${grade}: ${count}`)
+                .join(', ') || 'Sin datos';
+            document.getElementById('studentsPerGrade').textContent = gradesList;
+
+            // Academic performance
+            if (grades.length > 0) {
+                const avg = (grades.reduce((sum, g) => sum + g.value, 0) / grades.length).toFixed(1);
+                document.getElementById('academicPerformance').textContent = avg;
+            } else {
+                document.getElementById('academicPerformance').textContent = '-';
+            }
+
+            // Average attendance
+            if (attendance.length > 0) {
+                const present = attendance.filter(a => a.status === 'Presente').length;
+                const percentage = ((present / attendance.length) * 100).toFixed(0);
+                document.getElementById('avgAttendance').textContent = percentage + '%';
+            } else {
+                document.getElementById('avgAttendance').textContent = '-';
+            }
+
+            // Communications
+            document.getElementById('totalCommunications').textContent = messages.length;
+
+            // Subject analysis
+            updateSubjectAnalysis();
+        }
+
+        function updateSubjectAnalysis() {
+            const tbody = document.getElementById('subjectAnalysisTable');
+            
+            if (grades.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #999;">No hay datos suficientes para análisis</td></tr>';
+                return;
+            }
+
+            const subjectStats = {};
+            grades.forEach(grade => {
+                if (!subjectStats[grade.subject]) {
+                    subjectStats[grade.subject] = {
+                        total: 0,
+                        sum: 0,
+                        max: 0,
+                        count: 0
+                    };
+                }
+                subjectStats[grade.subject].sum += grade.value;
+                subjectStats[grade.subject].count++;
+                subjectStats[grade.subject].max = Math.max(subjectStats[grade.subject].max, grade.value);
+            });
+
+            tbody.innerHTML = Object.entries(subjectStats).map(([subject, stats]) => {
+                const avg = (stats.sum / stats.count).toFixed(1);
+                const badgeClass = avg >= 4.0 ? 'grade-excellent' : avg >= 3.5 ? 'grade-good' : 'grade-average';
+                
+                return `
+                    <tr>
+                        <td><strong>${subject}</strong></td>
+                        <td><span class="grade-badge ${badgeClass}">${avg}</span></td>
+                        <td><span class="grade-badge grade-excellent">${stats.max.toFixed(1)}</span></td>
+                        <td>${stats.count}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Dashboard Updates
+        function updateDashboard() {
+            document.getElementById('totalStudents').textContent = students.length;
+            
+            if (grades.length > 0) {
+                const avg = (grades.reduce((sum, g) => sum + g.value, 0) / grades.length).toFixed(1);
+                document.getElementById('averageGrade').textContent = avg;
+            } else {
+                document.getElementById('averageGrade').textContent = '0';
+            }
+
+            if (attendance.length > 0) {
+                const present = attendance.filter(a => a.status === 'Presente').length;
+                const percentage = ((present / attendance.length) * 100).toFixed(0);
+                document.getElementById('attendanceRate').textContent = percentage + '%';
+            } else {
+                document.getElementById('attendanceRate').textContent = '0%';
+            }
+
+            document.getElementById('totalMessages').textContent = messages.length;
+        }
+
+        // Update all student selects
+        function updateStudentSelects() {
+            const gradeSelect = document.getElementById('gradeStudent');
+            const messageSelect = document.getElementById('specificRecipient');
+            
+            const options = students.map(s => 
+                `<option value="${s.id}">${s.name} ${s.lastName} (${s.grade})</option>`
+            ).join('');
+            
+            gradeSelect.innerHTML = '<option value="">Seleccionar estudiante...</option>' + options;
+            messageSelect.innerHTML = '<option value="">Seleccionar estudiante...</option>' + options;
+        }
+
+        // Update all displays
+        function updateAllDisplays() {
+            updateStudentsTable();
+            updateGradesTable();
+            updateAttendanceTable();
+            updateMessagesDisplay();
+            updateDashboard();
+            updateStudentSelects();
+        }
+
+        // Alert system
+        function showAlert(type, message) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = `<strong>${type === 'success' ? '✅' : 'ℹ️'}</strong> ${message}`;
+            alertDiv.style.position = 'fixed';
+            alertDiv.style.top = '20px';
+            alertDiv.style.right = '20px';
+            alertDiv.style.zIndex = '9999';
+            alertDiv.style.maxWidth = '400px';
+            
+            document.body.appendChild(alertDiv);
+            
+            setTimeout(() => {
+                alertDiv.style.animation = 'slideOut 0.5s ease';
+                setTimeout(() => alertDiv.remove(), 500);
+            }, 3000);
+        }
+
+        // Set today's date as default
+        document.getElementById('attendanceDate').valueAsDate = new Date();
+
+        // Initialize on load
+        window.addEventListener('load', function() {
+            initializeDemoData();
+            showAlert('info', '¡Bienvenido a Nexus Tech Solutions! Esta es una demostración completa del sistema.');
+        });
+    </script>
+</body>
+</html></parameter>
+</invoke>

@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Guacamaya Systems - Dashboard MVP</title>
+  <style>
+    :root {
+      --primary: #00bcd4;
+      --secondary: #4caf50;
+      --accent: #ff5722;
+      --dark: #263238;
+      --light: #f5f7fa;
+      --white: #ffffff;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: var(--light);
+      color: #333;
+    }
+
+    header {
+      background: linear-gradient(to right, var(--primary), var(--secondary));
+      color: var(--white);
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav {
+      background: var(--dark);
+      display: flex;
+      padding: 0.5rem 2rem;
+      gap: 1rem;
+    }
+
+    nav button {
+      background: transparent;
+      border: none;
+      color: var(--white);
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+
+    nav button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+    }
+
+    .dashboard {
+      display: none;
+      padding: 2rem;
+      max-width: 1000px;
+      margin: auto;
+    }
+
+    .dashboard.active {
+      display: block;
+    }
+
+    .card {
+      background: var(--white);
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    h2 {
+      color: var(--secondary);
+      margin-top: 0;
+    }
+
+    form label {
+      display: block;
+      margin-top: 1rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.3rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button.submit {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 5px;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th, td {
+      padding: 0.8rem;
+      border-bottom: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background: var(--primary);
+      color: white;
+    }
+
+    footer {
+      background: var(--secondary);
+      color: white;
+      text-align: center;
+      padding: 1rem;
+      margin-top: 2rem;
+    }
+
+@media (max-width: 768px) {
+  header, nav, .dashboard {
+    padding: 1rem;
+  }
+
+  nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  nav button {
+    margin: 0.3rem;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .card {
+    padding: 1rem;
+  }
+
+  input, select {
+    font-size: 1rem;
+  }
+
+  table, th, td {
+    font-size: 0.9rem;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+  }
+
+  footer {
+    font-size: 0.9rem;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Guacamaya Systems</h1>
+    <p>Dashboard de Gestión Educativa</p>
+  </header>
+
+  <nav>
+    <button onclick="mostrar('inicio')">Inicio</button>
+    <button onclick="mostrar('estudiantes')">Estudiantes</button>
+    <button onclick="mostrar('cursos')">Cursos</button>
+    <button onclick="mostrar('calificaciones')">Calificaciones</button>
+  </nav>
+
+  <div id="inicio" class="dashboard active">
+    <div class="card">
+      <h2>Bienvenido</h2>
+      <p>Este sistema simula la gestión académica de Guacamaya Systems. Puedes registrar estudiantes, crear cursos y asignar calificaciones. Ideal para mostrar en la feria empresarial.</p>
+    </div>
+  </div>
+
+  <div id="estudiantes" class="dashboard">
+    <div class="card">
+      <h2>Registrar Estudiante</h2>
+      <form id="formEstudiante">
+        <label>Nombre completo:
+          <input type="text" id="nombreEst" required />
+        </label>
+        <label>Documento:
+          <input type="text" id="docEst" required />
+        </label>
+        <button type="submit" class="submit">Guardar</button>
+      </form>
+      <table>
+        <thead><tr><th>Nombre</th><th>Documento</th></tr></thead>
+        <tbody id="tablaEstudiantes"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="cursos" class="dashboard">
+    <div class="card">
+      <h2>Crear Curso</h2>
+      <form id="formCurso">
+        <label>Nombre del curso:
+          <input type="text" id="nombreCurso" required />
+        </label>
+        <label>Código:
+          <input type="text" id="codigoCurso" required />
+        </label>
+        <label>Docente:
+          <input type="text" id="docenteCurso" required />
+        </label>
+        <button type="submit" class="submit">Crear</button>
+      </form>
+      <table>
+        <thead><tr><th>Curso</th><th>Código</th><th>Docente</th></tr></thead>
+        <tbody id="tablaCursos"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="calificaciones" class="dashboard">
+    <div class="card">
+      <h2>Asignar Calificación</h2>
+      <form id="formNota">
+        <label>Estudiante:
+          <select id="selectEstudiante" required></select>
+        </label>
+        <label>Curso:
+          <select id="selectCurso" required></select>
+        </label>
+        <label>Nota (1 a 5):
+          <input type="number" id="nota" min="1" max="5" step="0.1" required />
+        </label>
+        <button type="submit" class="submit">Asignar</button>
+      </form>
+      <table>
+        <thead><tr><th>Estudiante</th><th>Curso</th><th>Nota</th></tr></thead>
+        <tbody id="tablaNotas"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <footer>
+    <p>&copy; 2025 Guacamaya Systems S.A.S. | Feria Empresarial</p>
+  </footer>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    function mostrar(id) {
+      document.querySelectorAll('.dashboard').forEach(d => d.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    const estudiantes = [];
+    const cursos = [];
+    const notas = [];
+
+    // Estudiantes
+    document.getElementById('formEstudiante').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('nombreEst').value.trim();
+      const doc = document.getElementById('docEst').value.trim();
+      estudiantes.push({ nombre, doc });
+      actualizarEstudiantes();
+      this.reset();
+    });
+
+    function actualizarEstudiantes() {
+      const tbody = document.getElementById('tablaEstudiantes');
+      const select = document.getElementById('selectEstudiante');
+      tbody.innerHTML = '';
+      select.innerHTML = '<option value="">Seleccione</option>';
+      estudiantes.forEach(est => {
+        tbody.innerHTML += `<tr><td>${est.nombre}</td><td>${est.doc}</td></tr>`;
+        select.innerHTML += `<option value="${est.nombre}">${est.nombre}</option>`;
+      });
+    }
+
+    // Cursos
+    document.getElementById('formCurso').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nombre = document.getElementById('nombreCurso').value.trim();
+      const codigo = document.getElementById('codigoCurso').value.trim();
+      const docente = document.getElementById('docenteCurso').value.trim();
+      cursos.push({ nombre, codigo, docente });
+      actualizarCursos();
+      this.reset();
+    });
+
+    function actualizarCursos() {
+      const tbody = document.getElementById('tablaCursos');
+      const select = document.getElementById('selectCurso');
+      tbody.innerHTML = '';
+      select.innerHTML = '<option value="">Seleccione</option>';
+      cursos.forEach(c => {
+        tbody.innerHTML += `<tr><td>${c.nombre}</td><td>${c.codigo}</td><td>${c.docente}</td></tr>`;
+        select.innerHTML += `<option value="${c.nombre}">${c.nombre}</option>`;
+      });
+    }
+
+    // Calificaciones
+    document.getElementById('formNota').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const estudiante = document.getElementById('selectEstudiante').value;
+      const curso = document.getElementById('selectCurso').value;
+      const nota = document.getElementById('nota').value;
+      if (!estudiante || !curso || !nota) return;
+
+      notas.push({ estudiante, curso, nota });
+      actualizarNotas();
+      this.reset();
+    });
+
+    function actualizarNotas() {
+      const tbody = document.getElementById('tablaNotas');
+      tbody.innerHTML = '';
+      notas.forEach(n => {
+        tbody.innerHTML += `<tr><td>${n.estudiante}</td><td>${n.curso}</td><td>${n.nota}</td></tr>`;
+      });
+    }
+
+    // Activar navegación
+    window.mostrar = mostrar;
+  });
+</script>
