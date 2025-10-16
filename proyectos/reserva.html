@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservaya - Plataforma de Reservas</title>
+    <style>
+        :root {
+            --turquesa: #1abc9c;
+            --verde-limon: #e8f48c;
+            --gris-claro: #f5f5f5;
+            --blanco: #ffffff;
+            --texto-oscuro: #333333;
+            --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--gris-claro);
+            color: var(--texto-oscuro);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background-color: var(--blanco);
+            box-shadow: var(--sombra);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--turquesa);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--turquesa);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: var(--texto-oscuro);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--turquesa);
+        }
+        
+        .btn {
+            background-color: var(--turquesa);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #16a085;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--turquesa), var(--verde-limon));
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+        
+        /* Search Section */
+        .search-section {
+            background-color: var(--blanco);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--sombra);
+            margin-bottom: 40px;
+        }
+        
+        .search-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-control {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        /* Filters */
+        .filters {
+            background-color: var(--blanco);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: var(--sombra);
+            height: fit-content;
+        }
+        
+        .filters h3 {
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .filter-group {
+            margin-bottom: 15px;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Accommodations */
+        .accommodations {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .accommodation-card {
+            background-color: var(--blanco);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: var(--sombra);
+            transition: transform 0.3s;
+        }
+        
+        .accommodation-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .accommodation-img {
+            height: 200px;
+            background-color: #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #777;
+        }
+        
+        .accommodation-info {
+            padding: 20px;
+        }
+        
+        .accommodation-info h3 {
+            margin-bottom: 10px;
+        }
+        
+        .accommodation-info p {
+            margin-bottom: 10px;
+            color: #666;
+        }
+        
+        .accommodation-price {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--turquesa);
+            margin-bottom: 15px;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background-color: var(--blanco);
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--sombra);
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+        
+        /* Forms */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab.active {
+            border-bottom: 3px solid var(--turquesa);
+            font-weight: bold;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Admin Section */
+        .admin-section {
+            background-color: var(--blanco);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: var(--sombra);
+            margin-bottom: 40px;
+        }
+        
+        .admin-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .data-table th {
+            background-color: #f9f9f9;
+            font-weight: 600;
+        }
+        
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+            color: var(--turquesa);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--texto-oscuro);
+            color: var(--blanco);
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .footer-section h3 {
+            margin-bottom: 15px;
+            color: var(--turquesa);
+        }
+        
+        .footer-bottom {
+            padding-top: 20px;
+            border-top: 1px solid #444;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <div class="logo-icon">R</div>
+                    <div class="logo-text">Reservaya</div>
+                </div>
+                <div class="nav-links">
+                    <a href="#inicio">Inicio</a>
+                    <a href="#alojamientos">Alojamientos</a>
+                    <a href="#reservas">Mis Reservas</a>
+                    <a href="#admin">Administración</a>
+                </div>
+                <button class="btn" id="loginBtn">Iniciar Sesión</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="container">
+            <h1>Viaja fácil, reserva ya.</h1>
+            <p>Encuentra los mejores alojamientos para tu próxima aventura. Simple, seguro y personalizado.</p>
+            <button class="btn" id="exploreBtn">Explorar Alojamientos</button>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <div class="container">
+        <!-- Search Section -->
+        <section class="search-section">
+            <h2>Encuentra tu alojamiento ideal</h2>
+            <form class="search-form" id="searchForm">
+                <div class="form-group">
+                    <label for="destination">Destino</label>
+                    <input type="text" id="destination" class="form-control" placeholder="¿A dónde vas?">
+                </div>
+                <div class="form-group">
+                    <label for="checkin">Fecha de entrada</label>
+                    <input type="date" id="checkin" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="checkout">Fecha de salida</label>
+                    <input type="date" id="checkout" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="guests">Huéspedes</label>
+                    <select id="guests" class="form-control">
+                        <option value="1">1 huésped</option>
+                        <option value="2" selected>2 huéspedes</option>
+                        <option value="3">3 huéspedes</option>
+                        <option value="4">4 huéspedes</option>
+                        <option value="5">5+ huéspedes</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn">Buscar</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Filters -->
+            <aside class="filters">
+                <h3>Filtros</h3>
+                <div class="filter-group">
+                    <label>Precio por noche</label>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="radio" id="price1" name="price" value="0-100000">
+                            <label for="price1">Hasta $100.000</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="radio" id="price2" name="price" value="100000-200000">
+                            <label for="price2">$100.000 - $200.000</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="radio" id="price3" name="price" value="200000-300000">
+                            <label for="price3">$200.000 - $300.000</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="radio" id="price4" name="price" value="300000+" checked>
+                            <label for="price4">Más de $300.000</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Tipo de alojamiento</label>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="type1" name="type" value="hotel">
+                            <label for="type1">Hotel</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="type2" name="type" value="hostal">
+                            <label for="type2">Hostal</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="type3" name="type" value="apartamento">
+                            <label for="type3">Apartamento</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="type4" name="type" value="casa">
+                            <label for="type4">Casa</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label>Calificación</label>
+                    <div class="filter-options">
+                        <div class="filter-option">
+                            <input type="checkbox" id="rating5" name="rating" value="5">
+                            <label for="rating5">★★★★★</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="rating4" name="rating" value="4">
+                            <label for="rating4">★★★★☆ o más</label>
+                        </div>
+                        <div class="filter-option">
+                            <input type="checkbox" id="rating3" name="rating" value="3">
+                            <label for="rating3">★★★☆☆ o más</label>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn" id="applyFilters">Aplicar Filtros</button>
+            </aside>
+
+            <!-- Accommodations -->
+            <section class="accommodations" id="alojamientos">
+                <!-- Los alojamientos se cargarán dinámicamente aquí -->
+            </section>
+        </div>
+
+        <!-- Admin Section -->
+        <section class="admin-section" id="admin">
+            <h2>Panel de Administración</h2>
+            <div class="tabs">
+                <div class="tab active" data-tab="accommodations">Alojamientos</div>
+                <div class="tab" data-tab="reservations">Reservas</div>
+                <div class="tab" data-tab="users">Usuarios</div>
+            </div>
+            
+            <div class="tab-content active" id="accommodations-tab">
+                <div class="admin-controls">
+                    <button class="btn" id="addAccommodationBtn">Agregar Alojamiento</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Tipo</th>
+                            <th>Ubicación</th>
+                            <th>Precio/Noche</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="accommodationsTable">
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="tab-content" id="reservations-tab">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Alojamiento</th>
+                            <th>Usuario</th>
+                            <th>Fechas</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reservationsTable">
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="tab-content" id="users-tab">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Tipo</th>
+                            <th>Fecha Registro</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTable">
+                        <!-- Los datos se cargarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Reservaya</h3>
+                    <p>Plataforma líder en reservas de alojamiento turístico en Colombia y Latinoamérica.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces Rápidos</h3>
+                    <ul>
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#alojamientos">Alojamientos</a></li>
+                        <li><a href="#reservas">Mis Reservas</a></li>
+                        <li><a href="#admin">Administración</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <p>Email: info@reservaya.com</p>
+                    <p>Teléfono: +57 123 456 7890</p>
+                    <p>Dirección: Corozal, Sucre, Colombia</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Reservaya S.A.S. - Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    <!-- Login Modal -->
+    <div class="modal" id="loginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Iniciar Sesión</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="loginPassword">Contraseña</label>
+                    <input type="password" id="loginPassword" class="form-control" required>
+                </div>
+                <button type="submit" class="btn">Iniciar Sesión</button>
+            </form>
+            <p style="margin-top: 15px; text-align: center;">
+                ¿No tienes cuenta? <a href="#" id="showRegister">Regístrate aquí</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Crear Cuenta</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="registerForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="registerFirstName">Nombre</label>
+                        <input type="text" id="registerFirstName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="registerLastName">Apellido</label>
+                        <input type="text" id="registerLastName" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerPassword">Contraseña</label>
+                    <input type="password" id="registerPassword" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="registerConfirmPassword">Confirmar Contraseña</label>
+                    <input type="password" id="registerConfirmPassword" class="form-control" required>
+                </div>
+                <button type="submit" class="btn">Registrarse</button>
+            </form>
+            <p style="margin-top: 15px; text-align: center;">
+                ¿Ya tienes cuenta? <a href="#" id="showLogin">Inicia sesión aquí</a>
+            </p>
+        </div>
+    </div>
+
+    <!-- Add/Edit Accommodation Modal -->
+    <div class="modal" id="accommodationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="accommodationModalTitle">Agregar Alojamiento</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="accommodationForm">
+                <input type="hidden" id="accommodationId">
+                <div class="form-group">
+                    <label for="accommodationName">Nombre</label>
+                    <input type="text" id="accommodationName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="accommodationType">Tipo</label>
+                    <select id="accommodationType" class="form-control" required>
+                        <option value="">Seleccionar tipo</option>
+                        <option value="hotel">Hotel</option>
+                        <option value="hostal">Hostal</option>
+                        <option value="apartamento">Apartamento</option>
+                        <option value="casa">Casa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="accommodationLocation">Ubicación</label>
+                    <input type="text" id="accommodationLocation" class="form-control" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="accommodationPrice">Precio por noche</label>
+                        <input type="number" id="accommodationPrice" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="accommodationCapacity">Capacidad (personas)</label>
+                        <input type="number" id="accommodationCapacity" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="accommodationDescription">Descripción</label>
+                    <textarea id="accommodationDescription" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="accommodationImage">URL de la imagen</label>
+                    <input type="text" id="accommodationImage" class="form-control">
+                </div>
+                <button type="submit" class="btn" id="saveAccommodationBtn">Guardar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div class="modal" id="bookingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Reservar Alojamiento</h2>
+                <button class="close-modal">&times;</button>
+            </div>
+            <form id="bookingForm">
+                <input type="hidden" id="bookingAccommodationId">
+                <div class="form-group">
+                    <label for="bookingAccommodationName">Alojamiento</label>
+                    <input type="text" id="bookingAccommodationName" class="form-control" readonly>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookingCheckin">Fecha de entrada</label>
+                        <input type="date" id="bookingCheckin" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookingCheckout">Fecha de salida</label>
+                        <input type="date" id="bookingCheckout" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="bookingGuests">Número de huéspedes</label>
+                    <input type="number" id="bookingGuests" class="form-control" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="bookingTotal">Total a pagar</label>
+                    <input type="text" id="bookingTotal" class="form-control" readonly>
+                </div>
+                <button type="submit" class="btn">Confirmar Reserva</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Datos de ejemplo para la demo
+        let accommodations = [
+            {
+                id: 1,
+                name: "Hotel Playa Dorada",
+                type: "hotel",
+                location: "Cartagena",
+                price: 250000,
+                capacity: 2,
+                description: "Hermoso hotel frente al mar con todas las comodidades.",
+                image: "",
+                rating: 4.5
+            },
+            {
+                id: 2,
+                name: "Hostal Montaña Verde",
+                type: "hostal",
+                location: "San Gil",
+                price: 80000,
+                capacity: 4,
+                description: "Acogedor hostal en medio de la naturaleza, ideal para aventureros.",
+                image: "",
+                rating: 4.2
+            },
+            {
+                id: 3,
+                name: "Apartamento Vista al Mar",
+                type: "apartamento",
+                location: "Santa Marta",
+                price: 180000,
+                capacity: 6,
+                description: "Amplio apartamento con vista panorámica al mar Caribe.",
+                image: "",
+                rating: 4.7
+            },
+            {
+                id: 4,
+                name: "Casa Colonial",
+                type: "casa",
+                location: "Villa de Leyva",
+                price: 320000,
+                capacity: 8,
+                description: "Encantadora casa colonial restaurada con jardín y piscina.",
+                image: "",
+                rating: 4.9
+            }
+        ];
+
+        let reservations = [];
+        let users = [];
+        let currentUser = null;
+        let nextAccommodationId = 5;
+        let nextReservationId = 1;
+        let nextUserId = 1;
+
+        // Elementos DOM
+        const accommodationsContainer = document.querySelector('.accommodations');
+        const accommodationsTable = document.getElementById('accommodationsTable');
+        const reservationsTable = document.getElementById('reservationsTable');
+        const usersTable = document.getElementById('usersTable');
+
+        // Modales
+        const loginModal = document.getElementById('loginModal');
+        const registerModal = document.getElementById('registerModal');
+        const accommodationModal = document.getElementById('accommodationModal');
+        const bookingModal = document.getElementById('bookingModal');
+
+        // Botones
+        const loginBtn = document.getElementById('loginBtn');
+        const exploreBtn = document.getElementById('exploreBtn');
+        const addAccommodationBtn = document.getElementById('addAccommodationBtn');
+        const applyFiltersBtn = document.getElementById('applyFilters');
+
+        // Formularios
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const accommodationForm = document.getElementById('accommodationForm');
+        const bookingForm = document.getElementById('bookingForm');
+        const searchForm = document.getElementById('searchForm');
+
+        // Tabs
+        const tabs = document.querySelectorAll('.tab');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            renderAccommodations();
+            renderAdminTables();
+            setupEventListeners();
+        });
+
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Botones de modales
+            loginBtn.addEventListener('click', () => openModal(loginModal));
+            exploreBtn.addEventListener('click', () => {
+                document.getElementById('alojamientos').scrollIntoView({ behavior: 'smooth' });
+            });
+            addAccommodationBtn.addEventListener('click', () => openAccommodationModal());
+            applyFiltersBtn.addEventListener('click', applyFilters);
+
+            // Formularios
+            loginForm.addEventListener('submit', handleLogin);
+            registerForm.addEventListener('submit', handleRegister);
+            accommodationForm.addEventListener('submit', handleAccommodationSubmit);
+            bookingForm.addEventListener('submit', handleBookingSubmit);
+            searchForm.addEventListener('submit', handleSearch);
+
+            // Tabs
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const tabId = tab.getAttribute('data-tab');
+                    switchTab(tabId);
+                });
+            });
+
+            // Enlaces entre modales
+            document.getElementById('showRegister').addEventListener('click', (e) => {
+                e.preventDefault();
+                closeModal(loginModal);
+                openModal(registerModal);
+            });
+
+            document.getElementById('showLogin').addEventListener('click', (e) => {
+                e.preventDefault();
+                closeModal(registerModal);
+                openModal(loginModal);
+            });
+
+            // Cerrar modales
+            document.querySelectorAll('.close-modal').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    closeModal(modal);
+                });
+            });
+
+            // Cerrar modal al hacer clic fuera
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        closeModal(this);
+                    }
+                });
+            });
+
+            // Calcular total de reserva
+            document.getElementById('bookingCheckin').addEventListener('change', calculateBookingTotal);
+            document.getElementById('bookingCheckout').addEventListener('change', calculateBookingTotal);
+        }
+
+        // Funciones para modales
+        function openModal(modal) {
+            modal.style.display = 'flex';
+        }
+
+        function closeModal(modal) {
+            modal.style.display = 'none';
+        }
+
+        function openAccommodationModal(accommodation = null) {
+            const title = document.getElementById('accommodationModalTitle');
+            const form = document.getElementById('accommodationForm');
+            
+            if (accommodation) {
+                title.textContent = 'Editar Alojamiento';
+                document.getElementById('accommodationId').value = accommodation.id;
+                document.getElementById('accommodationName').value = accommodation.name;
+                document.getElementById('accommodationType').value = accommodation.type;
+                document.getElementById('accommodationLocation').value = accommodation.location;
+                document.getElementById('accommodationPrice').value = accommodation.price;
+                document.getElementById('accommodationCapacity').value = accommodation.capacity;
+                document.getElementById('accommodationDescription').value = accommodation.description;
+                document.getElementById('accommodationImage').value = accommodation.image;
+            } else {
+                title.textContent = 'Agregar Alojamiento';
+                form.reset();
+                document.getElementById('accommodationId').value = '';
+            }
+            
+            openModal(accommodationModal);
+        }
+
+        function openBookingModal(accommodation) {
+            document.getElementById('bookingAccommodationId').value = accommodation.id;
+            document.getElementById('bookingAccommodationName').value = accommodation.name;
+            
+            // Establecer fechas mínimas (hoy y mañana)
+            const today = new Date().toISOString().split('T')[0];
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const tomorrowStr = tomorrow.toISOString().split('T')[0];
+            
+            document.getElementById('bookingCheckin').min = today;
+            document.getElementById('bookingCheckout').min = tomorrowStr;
+            document.getElementById('bookingCheckin').value = today;
+            document.getElementById('bookingCheckout').value = tomorrowStr;
+            
+            calculateBookingTotal();
+            openModal(bookingModal);
+        }
+
+        // Funciones de renderizado
+        function renderAccommodations() {
+            accommodationsContainer.innerHTML = '';
+            
+            accommodations.forEach(accommodation => {
+                const card = document.createElement('div');
+                card.className = 'accommodation-card';
+                card.innerHTML = `
+                    <div class="accommodation-img">
+                        ${accommodation.image ? 
+                            `<img src="${accommodation.image}" alt="${accommodation.name}" style="width:100%;height:100%;object-fit:cover;">` : 
+                            'Imagen no disponible'}
+                    </div>
+                    <div class="accommodation-info">
+                        <h3>${accommodation.name}</h3>
+                        <p>${accommodation.location} • ${accommodation.type}</p>
+                        <p>${accommodation.description}</p>
+                        <div class="accommodation-price">$${accommodation.price.toLocaleString()} / noche</div>
+                        <button class="btn book-btn" data-id="${accommodation.id}">Reservar</button>
+                    </div>
+                `;
+                
+                accommodationsContainer.appendChild(card);
+            });
+            
+            // Agregar event listeners a los botones de reserva
+            document.querySelectorAll('.book-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    const accommodation = accommodations.find(acc => acc.id === id);
+                    openBookingModal(accommodation);
+                });
+            });
+        }
+
+        function renderAdminTables() {
+            // Tabla de alojamientos
+            accommodationsTable.innerHTML = '';
+            accommodations.forEach(accommodation => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${accommodation.id}</td>
+                    <td>${accommodation.name}</td>
+                    <td>${accommodation.type}</td>
+                    <td>${accommodation.location}</td>
+                    <td>$${accommodation.price.toLocaleString()}</td>
+                    <td>
+                        <button class="action-btn edit-btn" data-id="${accommodation.id}">Editar</button>
+                        <button class="action-btn delete-btn" data-id="${accommodation.id}">Eliminar</button>
+                    </td>
+                `;
+                accommodationsTable.appendChild(row);
+            });
+            
+            // Tabla de reservas
+            reservationsTable.innerHTML = '';
+            reservations.forEach(reservation => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${reservation.id}</td>
+                    <td>${reservation.accommodationName}</td>
+                    <td>${reservation.userName}</td>
+                    <td>${reservation.checkin} a ${reservation.checkout}</td>
+                    <td>$${reservation.total.toLocaleString()}</td>
+                    <td>${reservation.status}</td>
+                    <td>
+                        <button class="action-btn cancel-btn" data-id="${reservation.id}">Cancelar</button>
+                    </td>
+                `;
+                reservationsTable.appendChild(row);
+            });
+            
+            // Tabla de usuarios
+            usersTable.innerHTML = '';
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.firstName} ${user.lastName}</td>
+                    <td>${user.email}</td>
+                    <td>${user.type}</td>
+                    <td>${user.registrationDate}</td>
+                    <td>
+                        <button class="action-btn delete-user-btn" data-id="${user.id}">Eliminar</button>
+                    </td>
+                `;
+                usersTable.appendChild(row);
+            });
+            
+            // Agregar event listeners a los botones de acción
+            document.querySelectorAll('.edit-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    const accommodation = accommodations.find(acc => acc.id === id);
+                    openAccommodationModal(accommodation);
+                });
+            });
+            
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    if (confirm('¿Estás seguro de que quieres eliminar este alojamiento?')) {
+                        deleteAccommodation(id);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.cancel-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    if (confirm('¿Estás seguro de que quieres cancelar esta reserva?')) {
+                        cancelReservation(id);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.delete-user-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const id = parseInt(this.getAttribute('data-id'));
+                    if (confirm('¿Estás seguro de que quieres eliminar este usuario?')) {
+                        deleteUser(id);
+                    }
+                });
+            });
+        }
+
+        // Funciones de manejo de formularios
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Simulación de inicio de sesión
+            if (email && password) {
+                currentUser = {
+                    id: 1,
+                    firstName: 'Usuario',
+                    lastName: 'Demo',
+                    email: email,
+                    type: 'user'
+                };
+                
+                alert(`Bienvenido, ${currentUser.firstName}!`);
+                loginBtn.textContent = 'Mi Cuenta';
+                closeModal(loginModal);
+            } else {
+                alert('Por favor, completa todos los campos');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const firstName = document.getElementById('registerFirstName').value;
+            const lastName = document.getElementById('registerLastName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('registerConfirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                alert('Las contraseñas no coinciden');
+                return;
+            }
+            
+            // Crear nuevo usuario
+            const newUser = {
+                id: nextUserId++,
+                firstName,
+                lastName,
+                email,
+                password,
+                type: 'user',
+                registrationDate: new Date().toLocaleDateString()
+            };
+            
+            users.push(newUser);
+            currentUser = newUser;
+            
+            alert(`¡Cuenta creada exitosamente! Bienvenido, ${firstName}`);
+            loginBtn.textContent = 'Mi Cuenta';
+            closeModal(registerModal);
+            renderAdminTables();
+        }
+
+        function handleAccommodationSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('accommodationId').value;
+            const name = document.getElementById('accommodationName').value;
+            const type = document.getElementById('accommodationType').value;
+            const location = document.getElementById('accommodationLocation').value;
+            const price = parseInt(document.getElementById('accommodationPrice').value);
+            const capacity = parseInt(document.getElementById('accommodationCapacity').value);
+            const description = document.getElementById('accommodationDescription').value;
+            const image = document.getElementById('accommodationImage').value;
+            
+            if (id) {
+                // Editar alojamiento existente
+                const index = accommodations.findIndex(acc => acc.id === parseInt(id));
+                if (index !== -1) {
+                    accommodations[index] = {
+                        ...accommodations[index],
+                        name,
+                        type,
+                        location,
+                        price,
+                        capacity,
+                        description,
+                        image
+                    };
+                }
+            } else {
+                // Crear nuevo alojamiento
+                const newAccommodation = {
+                    id: nextAccommodationId++,
+                    name,
+                    type,
+                    location,
+                    price,
+                    capacity,
+                    description,
+                    image,
+                    rating: 4.0 + Math.random() * 1.0 // Rating aleatorio entre 4.0 y 5.0
+                };
+                
+                accommodations.push(newAccommodation);
+            }
+            
+            renderAccommodations();
+            renderAdminTables();
+            closeModal(accommodationModal);
+            alert(id ? 'Alojamiento actualizado exitosamente' : 'Alojamiento agregado exitosamente');
+        }
+
+        function handleBookingSubmit(e) {
+            e.preventDefault();
+            
+            if (!currentUser) {
+                alert('Debes iniciar sesión para realizar una reserva');
+                openModal(loginModal);
+                return;
+            }
+            
+            const accommodationId = parseInt(document.getElementById('bookingAccommodationId').value);
+            const checkin = document.getElementById('bookingCheckin').value;
+            const checkout = document.getElementById('bookingCheckout').value;
+            const guests = parseInt(document.getElementById('bookingGuests').value);
+            const total = parseInt(document.getElementById('bookingTotal').value.replace(/\D/g, ''));
+            
+            const accommodation = accommodations.find(acc => acc.id === accommodationId);
+            
+            if (guests > accommodation.capacity) {
+                alert(`Este alojamiento tiene capacidad máxima para ${accommodation.capacity} huéspedes`);
+                return;
+            }
+            
+            // Crear nueva reserva
+            const newReservation = {
+                id: nextReservationId++,
+                accommodationId,
+                accommodationName: accommodation.name,
+                userId: currentUser.id,
+                userName: `${currentUser.firstName} ${currentUser.lastName}`,
+                checkin,
+                checkout,
+                guests,
+                total,
+                status: 'Confirmada'
+            };
+            
+            reservations.push(newReservation);
+            
+            renderAdminTables();
+            closeModal(bookingModal);
+            alert('¡Reserva confirmada exitosamente!');
+        }
+
+        function handleSearch(e) {
+            e.preventDefault();
+            const destination = document.getElementById('destination').value.toLowerCase();
+            
+            if (destination) {
+                const filtered = accommodations.filter(acc => 
+                    acc.location.toLowerCase().includes(destination) || 
+                    acc.name.toLowerCase().includes(destination)
+                );
+                
+                if (filtered.length === 0) {
+                    alert('No se encontraron alojamientos para el destino especificado');
+                } else {
+                    // En una implementación real, aquí se renderizarían los resultados filtrados
+                    alert(`Se encontraron ${filtered.length} alojamientos para "${destination}"`);
+                }
+            }
+        }
+
+        // Otras funciones
+        function applyFilters() {
+            // En una implementación real, aquí se aplicarían los filtros
+            alert('Filtros aplicados');
+        }
+
+        function switchTab(tabId) {
+            // Desactivar todas las pestañas
+            tabs.forEach(tab => tab.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
+            
+            // Activar la pestaña seleccionada
+            document.querySelector(`.tab[data-tab="${tabId}"]`).classList.add('active');
+            document.getElementById(`${tabId}-tab`).classList.add('active');
+        }
+
+        function calculateBookingTotal() {
+            const checkin = new Date(document.getElementById('bookingCheckin').value);
+            const checkout = new Date(document.getElementById('bookingCheckout').value);
+            const accommodationId = parseInt(document.getElementById('bookingAccommodationId').value);
+            
+            if (checkin && checkout && accommodationId) {
+                const diffTime = Math.abs(checkout - checkin);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                
+                if (diffDays > 0) {
+                    const accommodation = accommodations.find(acc => acc.id === accommodationId);
+                    const total = diffDays * accommodation.price;
+                    document.getElementById('bookingTotal').value = `$${total.toLocaleString()}`;
+                } else {
+                    document.getElementById('bookingTotal').value = '$0';
+                }
+            }
+        }
+
+        function deleteAccommodation(id) {
+            accommodations = accommodations.filter(acc => acc.id !== id);
+            renderAccommodations();
+            renderAdminTables();
+            alert('Alojamiento eliminado exitosamente');
+        }
+
+        function cancelReservation(id) {
+            const reservation = reservations.find(res => res.id === id);
+            if (reservation) {
+                reservation.status = 'Cancelada';
+                renderAdminTables();
+                alert('Reserva cancelada exitosamente');
+            }
+        }
+
+        function deleteUser(id) {
+            users = users.filter(user => user.id !== id);
+            renderAdminTables();
+            alert('Usuario eliminado exitosamente');
+        }
+    </script>
+</body>
+</html>
